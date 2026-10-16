@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Apex Academy | Interactive Clinical Guideline Quiz Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            background-color: #f4f4f5;
+            color: #09090b;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+        .quiz-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .quiz-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -8px rgba(9, 9, 11, 0.18);
+        }
+        .fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-yellow-400 selection:text-black">
+
+    <header class="bg-zinc-950 text-white sticky top-0 z-40 shadow-xl border-b-2 border-yellow-400 w-full">
+        <div class="max-w-5xl mx-auto px-3 sm:px-6 py-3 flex items-center justify-between gap-2">
+            <!-- Official Apex Academy Brand Emblem -->
+            <div class="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
+                <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-xl bg-white flex flex-col items-center justify-center shadow-md shadow-yellow-400/20 flex-shrink-0 border-2 border-yellow-400 p-1">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10 text-zinc-950" viewBox="0 0 100 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="50,6 15,22 50,38 85,22" fill="#09090B"/>
+                        <path d="M29,31.5 L50,41 L71,31.5 L71,41.5 C71,49.5 29,49.5 29,41.5 Z" fill="#09090B"/>
+                        <path d="M80,24.3 L80,38" stroke="#09090B" stroke-width="3.2" stroke-linecap="square"/>
+                        <path d="M77.5,37.5 L82.5,37.5 L83.5,45.5 L76.5,45.5 Z" fill="#09090B"/>
+                        <polygon points="50,51 12,89 29,89 50,58 71,89 88,89" fill="#09090B" stroke="#09090B" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="text-[10px] sm:text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded bg-yellow-400 text-zinc-950">APEX ACADEMY</span>
+                        <span class="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-yellow-400 border border-zinc-700">QUIZ HUB</span>
+                    </div>
+                    <h1 class="text-sm sm:text-xl font-extrabold tracking-tight text-white truncate mt-0.5">Guideline Assessment Portal</h1>
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 hidden sm:block">Medical Education at the Apex</p>
+                </div>
+            </div>
+
+            <!-- One-Tap Download Clean index.html Button (Automatically removed in downloaded file) -->
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <button id="download-menu-btn" onclick="downloadMenuHtml()" title="Download Clean index.html for GitHub" class="px-2.5 sm:px-3.5 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-zinc-950 border border-yellow-500 transition font-black text-[11px] sm:text-xs flex items-center gap-1 shadow-md active:scale-95">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span>Download index.html</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-5xl w-full mx-auto px-3 sm:px-6 py-5 sm:py-8 space-y-5">
+        
+        <!-- Hero Brand Banner -->
+        <div class="bg-zinc-950 text-white rounded-2xl p-5 sm:p-7 border-2 border-zinc-900 shadow-lg relative overflow-hidden">
+            <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 text-center sm:text-left">
+                <div class="space-y-2 max-w-xl">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-yellow-400/15 border border-yellow-400/40 text-yellow-400 text-[11px] font-black uppercase tracking-wider">
+                        <span>⚡ Interactive Case-Based Learning</span>
+                    </div>
+                    <h2 class="text-xl sm:text-3xl font-black tracking-tight text-white leading-tight">
+                        Master Clinical Cardiology Guidelines
+                    </h2>
+                    <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                        Select a guideline exam below to launch 20 high-yield clinical vignettes, interactive decision flowcharts, evidence-based drug dosing tables, and rapid-fire resident pearls.
+                    </p>
+                </div>
+
+                <!-- Standalone Full Logo Card -->
+                <div class="bg-white text-zinc-950 rounded-2xl p-3.5 border-2 border-yellow-400 shadow-md flex flex-col items-center justify-center w-36 sm:w-40 flex-shrink-0">
+                    <svg class="w-14 h-14 text-zinc-950" viewBox="0 0 100 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="50,6 15,22 50,38 85,22" fill="#09090B"/>
+                        <path d="M29,31.5 L50,41 L71,31.5 L71,41.5 C71,49.5 29,49.5 29,41.5 Z" fill="#09090B"/>
+                        <path d="M80,24.3 L80,38" stroke="#09090B" stroke-width="3.2" stroke-linecap="square"/>
+                        <path d="M77.5,37.5 L82.5,37.5 L83.5,45.5 L76.5,45.5 Z" fill="#09090B"/>
+                        <polygon points="50,51 12,89 29,89 50,58 71,89 88,89" fill="#09090B" stroke="#09090B" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="font-black text-sm tracking-wider leading-none mt-1.5">APEX</div>
+                    <div class="font-black text-xs tracking-wider leading-tight">ACADEMY</div>
+                    <div class="text-[7px] font-bold uppercase tracking-widest text-zinc-500 mt-0.5 text-center">Medical Education at the Apex</div>
+                </div>
+            </div>
+
+            <!-- Search & Society Filter Bar -->
+            <div class="mt-5 pt-4 border-t border-zinc-800 flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
+                <div class="relative flex-1">
+                    <input type="text" id="quiz-search" oninput="filterQuizzes()" placeholder="Search guideline quizzes (e.g., Heart Failure, Perioperative, ESC, AHA)..." class="w-full bg-zinc-900 text-white placeholder-zinc-400 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 border border-zinc-700 focus:outline-none focus:border-yellow-400 font-medium">
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button onclick="setFilter('all')" id="filter-all" class="filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-black bg-yellow-400 text-zinc-950 transition">All (2)</button>
+                    <button onclick="setFilter('ESC')" id="filter-ESC" class="filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-bold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:border-zinc-600 transition">ESC</button>
+                    <button onclick="setFilter('AHA')" id="filter-AHA" class="filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-bold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:border-zinc-600 transition">AHA/ACC</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="quiz-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 fade-in">
+
+            <!-- QUIZ CARD 2 (NEWEST): 2026 ESC Heart Failure Guidelines -->
+            <div class="quiz-card bg-white rounded-2xl border-2 border-zinc-900 overflow-hidden flex flex-col justify-between shadow-sm" data-society="ESC" data-title="2026 ESC Guidelines for the Management of Heart Failure HFrEF HFpEF">
+                <div>
+                    <div class="bg-zinc-950 text-white px-4 sm:px-5 py-3.5 border-b-2 border-zinc-900 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded bg-yellow-400 text-zinc-950 font-black text-[10px] uppercase tracking-wider">NEW • QUIZ #02</span>
+                            <span class="px-2 py-0.5 rounded bg-zinc-800 text-yellow-400 border border-zinc-700 font-mono font-bold text-[10px]">ESC 2026</span>
+                        </div>
+                        <span class="text-[11px] font-mono font-bold text-zinc-400">20 MCQs</span>
+                    </div>
+
+                    <div class="p-4 sm:p-5 space-y-3">
+                        <h3 class="text-base sm:text-lg font-black text-zinc-950 leading-snug">
+                            2026 ESC Guidelines for the Management of Heart Failure
+                        </h3>
+                        <p class="text-xs text-zinc-600 leading-relaxed">
+                            Test the landmark 2026 ESC paradigm shifts: elimination of HFmrEF (HFrEF &lt;50%, HFpEF &ge;50%), FMT/AMT/GDIT nomenclature, Class I Finerenone &amp; SGLT2-I across all LVEF, GLP-1/GIP agonists, Digitoxin (DIGIT-HF), Mitral TEER (Class I), DanGer Shock, and ATTR-CA silencers/stabilizers.
+                        </p>
+
+                        <!-- Feature Chips -->
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ 20 Clinical Vignettes</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ Figs 1–4 &amp; 13–15</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ Table 11 Drug Doses</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 sm:p-5 pt-3 bg-zinc-50 border-t border-zinc-200 flex flex-col sm:flex-row gap-2">
+                    <a href="esc2026_hf_quiz.html" class="flex-1 py-3 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-yellow-400 font-black text-xs sm:text-sm text-center flex items-center justify-center gap-2 shadow-sm transition active:scale-95">
+                        <span>Start ESC 2026 HF Quiz</span>
+                        <span>&rarr;</span>
+                    </a>
+                    <a href="https://doi.org/10.1093/eurheartj/ehag100" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-300 font-bold text-xs text-center flex items-center justify-center gap-1 transition">
+                        <span>Guideline</span>
+                        <span>&nearr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- QUIZ CARD 1: 2026 AHA/ACC Perioperative CV Management -->
+            <div class="quiz-card bg-white rounded-2xl border-2 border-zinc-900 overflow-hidden flex flex-col justify-between shadow-sm" data-society="AHA" data-title="2026 AHA/ACC Perioperative Cardiovascular Management for Noncardiac Surgery">
+                <div>
+                    <div class="bg-zinc-950 text-white px-4 sm:px-5 py-3.5 border-b-2 border-zinc-900 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded bg-yellow-400 text-zinc-950 font-black text-[10px] uppercase tracking-wider">QUIZ #01</span>
+                            <span class="px-2 py-0.5 rounded bg-zinc-800 text-yellow-400 border border-zinc-700 font-mono font-bold text-[10px]">AHA/ACC 2026</span>
+                        </div>
+                        <span class="text-[11px] font-mono font-bold text-zinc-400">20 MCQs</span>
+                    </div>
+
+                    <div class="p-4 sm:p-5 space-y-3">
+                        <h3 class="text-base sm:text-lg font-black text-zinc-950 leading-snug">
+                            2026 AHA/ACC Perioperative Cardiovascular Management for Noncardiac Surgery
+                        </h3>
+                        <p class="text-xs text-zinc-600 leading-relaxed">
+                            Master the 2026 stepwise preoperative risk assessment (Figure 1), DASI &le;34 &amp; BNP/NT-proBNP gatekeepers, severe aortic stenosis (Figure 2), DOAC/Warfarin interruption &amp; bridging schedules (Tables 13 &amp; 14), SGLT2i hold rules, and postoperative MINS (Figure 6).
+                        </p>
+
+                        <!-- Feature Chips -->
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ 20 Clinical Vignettes</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ Figs 1, 2 &amp; 6</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ Tables 13 &amp; 14 DOAC</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 sm:p-5 pt-3 bg-zinc-50 border-t border-zinc-200 flex flex-col sm:flex-row gap-2">
+                    <a href="periop2026.html" class="flex-1 py-3 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-yellow-400 font-black text-xs sm:text-sm text-center flex items-center justify-center gap-2 shadow-sm transition active:scale-95">
+                        <span>Start Perioperative CV Quiz</span>
+                        <span>&rarr;</span>
+                    </a>
+                    <a href="https://www.ahajournals.org/doi/10.1161/CIR.0000000000001472" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-300 font-bold text-xs text-center flex items-center justify-center gap-1 transition">
+                        <span>Guideline</span>
+                        <span>&nearr;</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Value Proposition Banner -->
+        <div class="bg-white rounded-2xl border-2 border-zinc-900 p-4 sm:p-5 shadow-sm">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-bold text-zinc-900">
+                <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-yellow-400 text-zinc-950 flex items-center justify-center font-black text-xs flex-shrink-0">✓</span>
+                    <span>Case-based learning</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-yellow-400 text-zinc-950 flex items-center justify-center font-black text-xs flex-shrink-0">✓</span>
+                    <span>Evidence-based medicine</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-yellow-400 text-zinc-950 flex items-center justify-center font-black text-xs flex-shrink-0">✓</span>
+                    <span>Self-study &amp; assessment</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-yellow-400 text-zinc-950 flex items-center justify-center font-black text-xs flex-shrink-0">✓</span>
+                    <span>AI-based active learning</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-zinc-950 text-white border-t-2 border-yellow-400 mt-auto">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-white border border-yellow-400 flex items-center justify-center flex-shrink-0 p-0.5">
+                    <svg class="w-6 h-6 text-zinc-950" viewBox="0 0 100 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="50,6 15,22 50,38 85,22" fill="#09090B"/>
+                        <path d="M29,31.5 L50,41 L71,31.5 L71,41.5 C71,49.5 29,49.5 29,41.5 Z" fill="#09090B"/>
+                        <path d="M80,24.3 L80,38" stroke="#09090B" stroke-width="3.2" stroke-linecap="square"/>
+                        <path d="M77.5,37.5 L82.5,37.5 L83.5,45.5 L76.5,45.5 Z" fill="#09090B"/>
+                        <polygon points="50,51 12,89 29,89 50,58 71,89 88,89" fill="#09090B" stroke="#09090B" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span class="font-extrabold tracking-wide text-xs sm:text-sm text-yellow-400">Apex Academy - Medical Education at the Apex</span>
+            </div>
+            <div class="text-[11px] text-zinc-400 font-mono">
+                Interactive Clinical Guideline Portal
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentFilter = 'all';
+
+        function setFilter(society) {
+            currentFilter = society;
+            ['all', 'ESC', 'AHA'].forEach(id => {
+                const btn = document.getElementById(`filter-${id}`);
+                if (id === society) {
+                    btn.className = 'filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-black bg-yellow-400 text-zinc-950 transition';
+                } else {
+                    btn.className = 'filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-bold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:border-zinc-600 transition';
+                }
+            });
+            filterQuizzes();
+        }
+
+        function filterQuizzes() {
+            const query = document.getElementById('quiz-search').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.quiz-card');
+            cards.forEach(card => {
+                const society = card.getAttribute('data-society');
+                const title = card.getAttribute('data-title').toLowerCase();
+                const matchesSociety = (currentFilter === 'all' || society === currentFilter);
+                const matchesQuery = (!query || title.includes(query));
+                card.style.display = (matchesSociety && matchesQuery) ? 'flex' : 'none';
+            });
+        }
+
+        function downloadMenuHtml() {
+            const clone = document.documentElement.cloneNode(true);
+            const dlBtn = clone.querySelector('#download-menu-btn');
+            if (dlBtn) dlBtn.remove();
+            const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth"><head><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIwNDUxMDU1MTk4MDcwNzQ5MDQ0MSIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzIxNThjNWYwNWEwNzg4OWFfZXNjMjAyNl9oZl9xdWl6Lmh0bWwtODczIn0sImV4cCI6MTc5MjE3MjYwMSwiaWF0IjoxNzkyMTY5MDAxLCJhbGciOiJSUzI1NiJ9.LUFMozXaMlRf-JqhU0pVaYJkV-JHNCC7T7cxON4V6ESuS8RAPiZVpdceDE1HCn5ffKzLIg7KilsK1jXMD_Au8nb8_g3N980-ucc9hFBUg8XBwXM33arWQGWVJXlAx2YuX2SC9FTR6ua0qCnKHwCBPT8bIevfACedpEBTxQUC0uoVqrGMRIQ9JxmjD-pPplv5Z0lZ-KEWvxdcVb9s48ulo8qkWG3Z30OWb7UEetUtA2h0-Qeqxykk4iEHqqkKId8iDIg5lafW2czIyh_iXtzwCiLYgcjBD9Y7QsvmePBi6sOzXJnNWXRBqfv3jSXwDnDmQabZUakg101HVUMFUSVGFA","c_2158c5f05a07889a_esc2026_hf_quiz.html-873")</script><script data-bard-client-injected="true">
+  document.addEventListener('input', (event) => {
+    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
+      const clonedDoc = document.cloneNode(true);
+      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
+      injectedScripts.forEach(el => el.remove());
+      window.parent.postMessage({
+        type: 'inlineEdit',
+        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
+      }, '*');
+    }
+  });
+</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const SCROLL_KEYS = new Set([
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+    ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End',
+  ]);
+  const HORIZONTAL_KEYS = new Set(['ArrowLeft', 'ArrowRight']);
+
+  function isTextEntryTarget(target) {
+    if (!target) return false;
+    const tagName = target.tagName;
+    return tagName === 'INPUT' || tagName === 'TEXTAREA' ||
+        tagName === 'SELECT' || target.isContentEditable === true;
+  }
+
+  // An element absorbs the key only if it both overflows on the axis being
+  // scrolled and is configured to scroll on that axis. The cheap dimension
+  // test runs first because getComputedStyle forces a style recalc, and this
+  // runs on every keypress. Each axis is read from its own longhand: the
+  // 'overflow' shorthand serializes as two values when the axes differ, which
+  // is the common 'overflow-x: hidden; overflow-y: auto' pane.
+  function canScroll(node, horizontal) {
+    const overflows = horizontal ? node.scrollWidth > node.clientWidth
+                                 : node.scrollHeight > node.clientHeight;
+    if (!overflows) return false;
+    const style = window.getComputedStyle(node);
+    const overflow = horizontal ? style.overflowX : style.overflowY;
+    return overflow === 'auto' || overflow === 'scroll';
+  }
+
+  // Walks up from the event target so nested scrollers keep their behavior.
+  // <body> is included because pages that pin the root height make it the
+  // scroll container.
+  function hasScrollableAncestor(target, horizontal) {
+    let node = target;
+    while (node && node !== document.documentElement) {
+      if (canScroll(node, horizontal)) return true;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
+  function rootCanScroll(horizontal) {
+    const scroller = document.scrollingElement || document.documentElement;
+    if (!scroller) return false;
+    // Tolerate a pixel of rounding so subpixel layouts do not look scrollable.
+    return horizontal ? scroller.scrollWidth > window.innerWidth + 1
+                      : scroller.scrollHeight > window.innerHeight + 1;
+  }
+
+  window.addEventListener('keydown', function(event) {
+    if (!SCROLL_KEYS.has(event.key)) return;
+    if (event.defaultPrevented) return;
+    // Alt and Meta turn arrows into browser history navigation, and Ctrl is
+    // reserved for shortcuts, so none of them are scroll intent.
+    if (event.altKey || event.metaKey || event.ctrlKey) return;
+
+    const target = event.target;
+    if (isTextEntryTarget(target)) return;
+
+    // Anything that can still absorb the scroll gets to keep it.
+    const horizontal = HORIZONTAL_KEYS.has(event.key);
+    if (rootCanScroll(horizontal)) return;
+    if (hasScrollableAncestor(target, horizontal)) return;
+
+    event.preventDefault();
+  }, {capture: true, passive: false});
+})();</script><script data-bard-client-injected="true">(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script data-bard-client-injected="true">
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
+function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
+
+ Copyright The Closure Library Authors.
+ SPDX-License-Identifier: Apache-2.0
+*/
+function A(b,d){function e(){}e.prototype=d.prototype;b.j=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
+let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
+null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.i="";var l=0,t=null,r=null,q=[],F=new TextEncoder,G=new TextDecoder;
+c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*16|0;return(f===
+"x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;(g=t)==null||g.postMessage(a)}};
+Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
+(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
+url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
+</script><script data-bard-client-injected="true">((function(modelInformation) {
+  const originalFetch = window.fetch;
+  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
+  let googleLlmBaseApiUrls = [
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
+  ];
+  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+    );
+  });
+  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedGenerateImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedImageTransformModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+
+  const pendingFetchResolvers = {};
+  let nextPromiseId = 0;
+
+  function handleStringInput(input, optionsArgument) {
+    const actualUrl = input;
+    const fetchCallArgs = [actualUrl, optionsArgument];
+    const effectiveOptions = optionsArgument || {};
+    const bodyForApiKeyCheck = effectiveOptions.body;
+    const bodyForPostMessage = effectiveOptions.body;
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  function handleRequestInput(input, optionsArgument) {
+    const actualUrl = input.url;
+    const fetchCallArgs = [input, optionsArgument];
+    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (optionsArgument) {
+      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
+      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
+      if ('body' in optionsArgument) {
+        bodyForApiKeyCheck = optionsArgument.body;
+        bodyForPostMessage = optionsArgument.body;
+      } else {
+        bodyForApiKeyCheck = undefined;
+        bodyForPostMessage = input.body;
+      }
+    } else {
+      bodyForApiKeyCheck = undefined;
+      bodyForPostMessage = input.body;
+    }
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  window.fetch = function(input, optionsArgument) {
+    let actualUrl;
+    let fetchCallArgs;
+    let effectiveOptions = {};
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (typeof input === 'string') {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
+    } else if (input instanceof Request) {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
+    } else {
+      return originalFetch.apply(window, [input, optionsArgument]);
+    }
+
+    effectiveOptions.method = effectiveOptions.method || 'GET';
+    if (!effectiveOptions.headers) {
+      effectiveOptions.headers = new Headers();
+    }
+
+
+    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
+      let apiKeyIsNull = true;
+
+      const regex = new RegExp("models/([^:]+)");
+      const modelNameMatch = actualUrl.match(regex);
+      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
+
+
+      try {
+        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
+        const apiKeyParam = urlObject.searchParams.get('key');
+        if (apiKeyParam) {
+          apiKeyIsNull = false;
+        }
+      } catch (e) {
+        // Continue checks even if URL parsing fails
+      }
+
+      if (apiKeyIsNull && effectiveOptions.headers) {
+        const h = new Headers(effectiveOptions.headers);
+        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
+        if (apiKeyHeaderValue) {
+          apiKeyIsNull = false;
+          return originalFetch.apply(window, fetchCallArgs);
+        }
+      }
+
+      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
+        try {
+          const bodyData = JSON.parse(bodyForApiKeyCheck);
+          if (bodyData && bodyData.apiKey) {
+            apiKeyIsNull = false;
+            return originalFetch.apply(window, fetchCallArgs);
+          }
+        } catch (e) {
+          // Ignore JSON parsing errors
+        }
+      }
+
+      if(apiKeyIsNull) {
+        const promiseId = nextPromiseId++;
+        const promise = new Promise((resolve) => {
+          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
+            delete pendingFetchResolvers[promiseId];
+            resolve(resolvedResponse);
+          };
+        });
+
+        let serializedBodyForPostMessage;
+        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
+            serializedBodyForPostMessage = bodyForPostMessage;
+        } else if (bodyForPostMessage instanceof ReadableStream) {
+            serializedBodyForPostMessage = null;
+        } else {
+            try {
+                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
+            } catch (e) {
+                serializedBodyForPostMessage = null;
+            }
+        }
+
+        const messageOptions = {
+            method: effectiveOptions.method,
+            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
+            body: serializedBodyForPostMessage
+        };
+
+        window.parent.postMessage({
+          type: 'requestFetch',
+          url: actualUrl,
+          modelName: modelName,
+          options: messageOptions,
+          promiseId: promiseId,
+        }, '*');
+
+        return promise;
+      }
+      return originalFetch.apply(window, fetchCallArgs);
+    }
+    return originalFetch.apply(window, fetchCallArgs);
+  };
+
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'resolveFetch') {
+      const { promiseId, response } = event.data;
+      if (pendingFetchResolvers[promiseId]) {
+        try {
+          const reconstructedResponse = new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: new Headers(response.headers),
+          });
+          pendingFetchResolvers[promiseId](reconstructedResponse);
+        } catch (error) {
+          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
+        }
+      }
+    }
+  });
+
+}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-3.1-flash-image","imageTransformModelName":"gemini-3-pro-image","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"],"deprecatedGenerateImageModelNames":["gemini-2.5-flash-image-preview","gemini-2.5-flash-image","gemini-3.1-flash-image-preview"],"deprecatedImageTransformModelNames":["gemini-3-pro-image-preview-11-2025"]})</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Apex Academy | 2026 ESC Guidelines for the Management of Heart Failure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            background-color: #f4f4f5;
+            color: #09090b;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+        .option-btn {
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            border-color: #09090b;
+            background-color: #fefce8;
+        }
+        .option-btn:active:not(:disabled) {
+            transform: translateY(0px);
+        }
+        .fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .correct-ans {
+            background-color: #ecfdf5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+        .wrong-ans {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        .disabled-ans {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+        .cor-1 { background-color: #dcfce7; color: #166534; border-color: #86efac; }
+        .cor-2a { background-color: #fef9c3; color: #854d0e; border-color: #fde047; }
+        .cor-2b { background-color: #ffedd5; color: #9a3412; border-color: #fdba74; }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Inter, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:JetBrains Mono, monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.sticky{position:sticky}.inset-0{inset:0px}.top-0{top:0px}.z-40{z-index:40}.z-50{z-index:50}.col-span-3{grid-column:span 3 / span 3}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-1\.5{margin-bottom:0.375rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mt-0\.5{margin-top:0.125rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-2\.5{margin-top:0.625rem}.mt-5{margin-top:1.25rem}.mt-auto{margin-top:auto}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-12{height:3rem}.h-28{height:7rem}.h-3\.5{height:0.875rem}.h-4{height:1rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-7{height:1.75rem}.h-8{height:2rem}.h-9{height:2.25rem}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-12{width:3rem}.w-28{width:7rem}.w-3\.5{width:0.875rem}.w-4{width:1rem}.w-6{width:1.5rem}.w-7{width:1.75rem}.w-8{width:2rem}.w-9{width:2.25rem}.w-full{width:100%}.w-px{width:1px}.min-w-0{min-width:0px}.max-w-5xl{max-width:64rem}.max-w-6xl{max-width:72rem}.max-w-sm{max-width:24rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.flex-grow{flex-grow:1}.border-collapse{border-collapse:collapse}.list-disc{list-style-type:disc}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-zinc-200 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(228 228 231 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.scroll-smooth{scroll-behavior:smooth}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-md{border-radius:0.375rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-4{border-width:4px}.border-b-2{border-bottom-width:2px}.border-t{border-top-width:1px}.border-t-2{border-top-width:2px}.border-yellow-400{--tw-border-opacity:1;border-color:rgb(250 204 21 / var(--tw-border-opacity, 1))}.border-yellow-500{--tw-border-opacity:1;border-color:rgb(234 179 8 / var(--tw-border-opacity, 1))}.border-zinc-200{--tw-border-opacity:1;border-color:rgb(228 228 231 / var(--tw-border-opacity, 1))}.border-zinc-300{--tw-border-opacity:1;border-color:rgb(212 212 216 / var(--tw-border-opacity, 1))}.border-zinc-700{--tw-border-opacity:1;border-color:rgb(63 63 70 / var(--tw-border-opacity, 1))}.border-zinc-800{--tw-border-opacity:1;border-color:rgb(39 39 42 / var(--tw-border-opacity, 1))}.border-zinc-900{--tw-border-opacity:1;border-color:rgb(24 24 27 / var(--tw-border-opacity, 1))}.border-zinc-950{--tw-border-opacity:1;border-color:rgb(9 9 11 / var(--tw-border-opacity, 1))}.bg-black\/75{background-color:rgb(0 0 0 / 0.75)}.bg-emerald-600{--tw-bg-opacity:1;background-color:rgb(5 150 105 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-yellow-400{--tw-bg-opacity:1;background-color:rgb(250 204 21 / var(--tw-bg-opacity, 1))}.bg-yellow-50{--tw-bg-opacity:1;background-color:rgb(254 252 232 / var(--tw-bg-opacity, 1))}.bg-zinc-100{--tw-bg-opacity:1;background-color:rgb(244 244 245 / var(--tw-bg-opacity, 1))}.bg-zinc-50{--tw-bg-opacity:1;background-color:rgb(250 250 250 / var(--tw-bg-opacity, 1))}.bg-zinc-800{--tw-bg-opacity:1;background-color:rgb(39 39 42 / var(--tw-bg-opacity, 1))}.bg-zinc-900{--tw-bg-opacity:1;background-color:rgb(24 24 27 / var(--tw-bg-opacity, 1))}.bg-zinc-900\/90{background-color:rgb(24 24 27 / 0.9)}.bg-zinc-950{--tw-bg-opacity:1;background-color:rgb(9 9 11 / var(--tw-bg-opacity, 1))}.bg-zinc-50\/70{background-color:rgb(250 250 250 / 0.7)}.p-0\.5{padding:0.125rem}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-0\.5{padding-left:0.125rem;padding-right:0.125rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.pb-2{padding-bottom:0.5rem}.pl-5{padding-left:1.25rem}.pt-1{padding-top:0.25rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.font-mono{font-family:JetBrains Mono, monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[8px\]{font-size:8px}.text-\[9px\]{font-size:9px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-amber-800{--tw-text-opacity:1;color:rgb(146 64 14 / var(--tw-text-opacity, 1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.text-emerald-700{--tw-text-opacity:1;color:rgb(4 120 87 / var(--tw-text-opacity, 1))}.text-emerald-800{--tw-text-opacity:1;color:rgb(6 95 70 / var(--tw-text-opacity, 1))}.text-emerald-900{--tw-text-opacity:1;color:rgb(6 78 59 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-yellow-400{--tw-text-opacity:1;color:rgb(250 204 21 / var(--tw-text-opacity, 1))}.text-zinc-200{--tw-text-opacity:1;color:rgb(228 228 231 / var(--tw-text-opacity, 1))}.text-zinc-300{--tw-text-opacity:1;color:rgb(212 212 216 / var(--tw-text-opacity, 1))}.text-zinc-400{--tw-text-opacity:1;color:rgb(161 161 170 / var(--tw-text-opacity, 1))}.text-zinc-500{--tw-text-opacity:1;color:rgb(113 113 122 / var(--tw-text-opacity, 1))}.text-zinc-600{--tw-text-opacity:1;color:rgb(82 82 91 / var(--tw-text-opacity, 1))}.text-zinc-700{--tw-text-opacity:1;color:rgb(63 63 70 / var(--tw-text-opacity, 1))}.text-zinc-800{--tw-text-opacity:1;color:rgb(39 39 42 / var(--tw-text-opacity, 1))}.text-zinc-900{--tw-text-opacity:1;color:rgb(24 24 27 / var(--tw-text-opacity, 1))}.text-zinc-950{--tw-text-opacity:1;color:rgb(9 9 11 / var(--tw-text-opacity, 1))}.opacity-75{opacity:0.75}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-yellow-400\/10{--tw-shadow-color:rgb(250 204 21 / 0.1);--tw-shadow:var(--tw-shadow-colored)}.shadow-yellow-400\/20{--tw-shadow-color:rgb(250 204 21 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.ring-2{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-zinc-950{--tw-ring-opacity:1;--tw-ring-color:rgb(9 9 11 / var(--tw-ring-opacity, 1))}.ring-offset-1{--tw-ring-offset-width:1px}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-yellow-400 *::selection{--tw-bg-opacity:1;background-color:rgb(250 204 21 / var(--tw-bg-opacity, 1))}.selection\:text-black *::selection{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.selection\:bg-yellow-400::selection{--tw-bg-opacity:1;background-color:rgb(250 204 21 / var(--tw-bg-opacity, 1))}.selection\:text-black::selection{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.hover\:border-zinc-900:hover{--tw-border-opacity:1;border-color:rgb(24 24 27 / var(--tw-border-opacity, 1))}.hover\:bg-yellow-300:hover{--tw-bg-opacity:1;background-color:rgb(253 224 71 / var(--tw-bg-opacity, 1))}.hover\:bg-yellow-400:hover{--tw-bg-opacity:1;background-color:rgb(250 204 21 / var(--tw-bg-opacity, 1))}.hover\:bg-yellow-500:hover{--tw-bg-opacity:1;background-color:rgb(234 179 8 / var(--tw-bg-opacity, 1))}.hover\:bg-zinc-100:hover{--tw-bg-opacity:1;background-color:rgb(244 244 245 / var(--tw-bg-opacity, 1))}.hover\:bg-zinc-800:hover{--tw-bg-opacity:1;background-color:rgb(39 39 42 / var(--tw-bg-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:text-zinc-950:hover{--tw-text-opacity:1;color:rgb(9 9 11 / var(--tw-text-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.disabled\:cursor-not-allowed:disabled{cursor:not-allowed}.disabled\:opacity-30:disabled{opacity:0.3}@media (min-width: 640px){.sm\:col-span-1{grid-column:span 1 / span 1}.sm\:block{display:block}.sm\:inline{display:inline}.sm\:flex{display:flex}.sm\:h-10{height:2.5rem}.sm\:h-14{height:3.5rem}.sm\:h-32{height:8rem}.sm\:h-7{height:1.75rem}.sm\:w-10{width:2.5rem}.sm\:w-14{width:3.5rem}.sm\:w-32{width:8rem}.sm\:w-auto{width:auto}.sm\:w-7{width:1.75rem}.sm\:flex-initial{flex:0 1 auto}.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.sm\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}.sm\:gap-2\.5{gap:0.625rem}.sm\:gap-3{gap:0.75rem}.sm\:space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.sm\:space-x-3 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.75rem * var(--tw-space-x-reverse));margin-left:calc(0.75rem * calc(1 - var(--tw-space-x-reverse)))}.sm\:space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.sm\:space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.sm\:p-2\.5{padding:0.625rem}.sm\:p-4{padding:1rem}.sm\:p-5{padding:1.25rem}.sm\:p-6{padding:1.5rem}.sm\:p-7{padding:1.75rem}.sm\:p-8{padding:2rem}.sm\:px-3{padding-left:0.75rem;padding-right:0.75rem}.sm\:px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.sm\:px-4{padding-left:1rem;padding-right:1rem}.sm\:px-5{padding-left:1.25rem;padding-right:1.25rem}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:px-7{padding-left:1.75rem;padding-right:1.75rem}.sm\:py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.sm\:py-8{padding-top:2rem;padding-bottom:2rem}.sm\:text-left{text-align:left}.sm\:text-2xl{font-size:1.5rem;line-height:2rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-4xl{font-size:2.25rem;line-height:2.5rem}.sm\:text-\[10px\]{font-size:10px}.sm\:text-\[11px\]{font-size:11px}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}.sm\:text-xl{font-size:1.25rem;line-height:1.75rem}.sm\:text-xs{font-size:0.75rem;line-height:1rem}}@media (min-width: 768px){.md\:inline-block{display:inline-block}.md\:inline{display:inline}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:text-2xl{font-size:1.5rem;line-height:2rem}}@media (min-width: 1024px){.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}</style></head>
+<body class="min-h-screen flex flex-col selection:bg-yellow-400 selection:text-black">
+
+    <header class="bg-zinc-950 text-white sticky top-0 z-40 shadow-xl border-b-2 border-yellow-400 w-full">
+        <div class="max-w-6xl mx-auto px-2.5 sm:px-6 py-2.5 flex items-center justify-between gap-1.5 sm:gap-3">
+            <!-- Apex Academy Official Brand Logo -->
+            <div class="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-white flex flex-col items-center justify-center shadow-md shadow-yellow-400/20 flex-shrink-0 border-2 border-yellow-400 p-1">
+                    <svg class="w-7 h-7 sm:w-10 sm:h-10 text-zinc-950" viewBox="0 0 100 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="50,6 15,22 50,38 85,22" fill="#09090B"></polygon>
+                        <path d="M29,31.5 L50,41 L71,31.5 L71,41.5 C71,49.5 29,49.5 29,41.5 Z" fill="#09090B"></path>
+                        <path d="M80,24.3 L80,38" stroke="#09090B" stroke-width="3.2" stroke-linecap="square"></path>
+                        <path d="M77.5,37.5 L82.5,37.5 L83.5,45.5 L76.5,45.5 Z" fill="#09090B"></path>
+                        <polygon points="50,51 12,89 29,89 50,58 71,89 88,89" fill="#09090B" stroke="#09090B" stroke-width="1.5" stroke-linejoin="round"></polygon>
+                    </svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1 flex-wrap">
+                        <span class="text-[9px] sm:text-xs font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-yellow-400 text-zinc-950">APEX ACADEMY</span>
+                        <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-zinc-800 text-yellow-400 border border-zinc-700 hidden md:inline-block">2026 ESC</span>
+                    </div>
+                    <h1 class="text-xs sm:text-lg font-extrabold tracking-tight text-white truncate mt-0.5">2026 ESC Heart Failure Quiz</h1>
+                    <p class="text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest text-zinc-400 hidden sm:block">Medical Education at the Apex</p>
+                </div>
+            </div>
+
+            <!-- Score, Download & Reset Controls -->
+            <div class="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+                <div class="bg-zinc-900 border border-zinc-800 rounded-xl px-2 sm:px-3 py-1 flex items-center gap-1.5 sm:gap-3">
+                    <div class="text-right">
+                        <div class="text-[8px] sm:text-[10px] uppercase tracking-wider text-zinc-400 font-bold">Score</div>
+                        <div class="text-[11px] sm:text-base font-extrabold font-mono text-yellow-400 leading-tight">
+                            <span id="header-score">0</span><span class="text-zinc-500 text-[9px]">%</span>
+                        </div>
+                    </div>
+                    <div class="h-5 w-px bg-zinc-800"></div>
+                    <div class="text-right">
+                        <div class="text-[8px] sm:text-[10px] uppercase tracking-wider text-zinc-400 font-bold">Done</div>
+                        <div class="text-[11px] sm:text-base font-extrabold font-mono text-white leading-tight">
+                            <span id="header-answered">0</span><span class="text-zinc-500 text-[9px]">/20</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="openResetModal()" title="Reset Quiz" class="p-2 sm:p-2.5 rounded-xl bg-zinc-900 hover:bg-yellow-400 text-zinc-300 hover:text-zinc-950 border border-zinc-800 transition font-bold text-xs flex items-center gap-1 active:scale-95">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    <span class="hidden md:inline">Reset</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile-Friendly Navigation Tabs -->
+        <div class="bg-zinc-900/90 border-t border-zinc-800">
+            <div class="max-w-6xl mx-auto px-2 sm:px-6 grid grid-cols-3 sm:flex sm:space-x-2 py-1.5 gap-1">
+                <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-1.5 sm:px-4 py-2 rounded-lg text-[11px] sm:text-sm font-bold transition flex items-center justify-center gap-1 whitespace-nowrap bg-yellow-400 text-zinc-950 shadow-sm">
+                    <span>⚡</span> <span>20-Q Quiz</span>
+                </button>
+                <button onclick="switchTab('algorithm')" id="tab-algorithm" class="tab-btn px-1.5 sm:px-4 py-2 rounded-lg text-[11px] sm:text-sm font-bold transition flex items-center justify-center gap-1 whitespace-nowrap text-zinc-300 hover:text-white hover:bg-zinc-800">
+                    <span>📊</span> <span>Algorithms</span>
+                </button>
+                <button onclick="switchTab('pearls')" id="tab-pearls" class="tab-btn px-1.5 sm:px-4 py-2 rounded-lg text-[11px] sm:text-sm font-bold transition flex items-center justify-center gap-1 whitespace-nowrap text-zinc-300 hover:text-white hover:bg-zinc-800">
+                    <span>🎓</span> <span>Apex Pearls</span>
+                </button>
+                <button onclick="switchTab('results')" id="tab-results" class="tab-btn hidden col-span-3 sm:col-span-1 px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-sm font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap text-zinc-300 hover:text-white hover:bg-zinc-800">
+                    <span>🏆</span> <span>Final Report</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-5xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        
+        <!-- QUIZ TAB -->
+        <div id="content-quiz" class="fade-in block space-y-4">
+            <div class="bg-white rounded-xl p-2.5 border border-zinc-200 shadow-sm">
+                <div class="flex items-center justify-between mb-1.5 px-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Question Navigator</span>
+                    <span class="text-[11px] font-mono font-semibold text-zinc-600" id="completion-badge">0 of 20 Completed</span>
+                </div>
+                <div id="question-pills" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5"><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900 ring-2 ring-zinc-950 ring-offset-1 font-black">1</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">2</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">3</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">4</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">5</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">6</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">7</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">8</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">9</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">10</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">11</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">12</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">13</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">14</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">15</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">16</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">17</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">18</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">19</button><button class="w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900">20</button></div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-md border-2 border-zinc-900 overflow-hidden">
+                <div class="p-4 sm:p-7 border-b-2 border-zinc-900 bg-zinc-950 text-white">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                        <span class="text-xs sm:text-sm font-extrabold text-yellow-400 uppercase tracking-widest font-mono" id="question-counter">QUESTION 01 / 20</span>
+                        <span class="px-2.5 py-1 bg-yellow-400 text-zinc-950 text-xs font-black uppercase tracking-wider rounded-md" id="question-category">2026 Phenotypes &amp; FMT</span>
+                    </div>
+                    <h2 class="text-base sm:text-xl md:text-2xl font-bold text-white leading-snug" id="question-text">A 64-year-old man with a prior anterior MI presents with NYHA Class II dyspnoea and ankle oedema. Echocardiography shows an LVEF of 46%. How is his heart failure classified, and what is the recommended Foundational Medical Therapy (FMT) per the 2026 ESC Guidelines?</h2>
+                </div>
+                
+                <div class="p-4 sm:p-7 bg-white">
+                    <div class="space-y-2.5 sm:space-y-3" id="options-container"><button class="option-btn w-full text-left p-3.5 sm:p-4 rounded-xl border-2 border-zinc-200 bg-zinc-50/70 font-semibold text-zinc-900 focus:outline-none flex items-start gap-3 text-xs sm:text-sm">
+                    <span class="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-lg border bg-zinc-900 text-yellow-400 border-zinc-900 flex items-center justify-center text-xs font-mono font-black mt-0.5">A</span>
+                    <span class="leading-relaxed">HFmrEF; SGLT2-I and MRA are Class I, while ACE-I/ARNI and beta-blocker are Class IIb.</span>
+                </button><button class="option-btn w-full text-left p-3.5 sm:p-4 rounded-xl border-2 border-zinc-200 bg-zinc-50/70 font-semibold text-zinc-900 focus:outline-none flex items-start gap-3 text-xs sm:text-sm">
+                    <span class="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-lg border bg-zinc-900 text-yellow-400 border-zinc-900 flex items-center justify-center text-xs font-mono font-black mt-0.5">B</span>
+                    <span class="leading-relaxed">HFrEF (expanded to LVEF &lt; 50%); 4-pillar FMT with ACE-I/ARNI (or ARB), beta-blocker, MRA, and SGLT2-I (all Class I).</span>
+                </button><button class="option-btn w-full text-left p-3.5 sm:p-4 rounded-xl border-2 border-zinc-200 bg-zinc-50/70 font-semibold text-zinc-900 focus:outline-none flex items-start gap-3 text-xs sm:text-sm">
+                    <span class="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-lg border bg-zinc-900 text-yellow-400 border-zinc-900 flex items-center justify-center text-xs font-mono font-black mt-0.5">C</span>
+                    <span class="leading-relaxed">HFpEF; SGLT2-I and loop diuretics only.</span>
+                </button><button class="option-btn w-full text-left p-3.5 sm:p-4 rounded-xl border-2 border-zinc-200 bg-zinc-50/70 font-semibold text-zinc-900 focus:outline-none flex items-start gap-3 text-xs sm:text-sm">
+                    <span class="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-lg border bg-zinc-900 text-yellow-400 border-zinc-900 flex items-center justify-center text-xs font-mono font-black mt-0.5">D</span>
+                    <span class="leading-relaxed">Stage B Pre-HF; beta-blocker and ACE-I only.</span>
+                </button></div>
+
+                    <div id="feedback-box" class="hidden mt-5 p-4 sm:p-5 rounded-xl border-2">
+                        <div class="flex items-start gap-3">
+                            <div id="feedback-icon" class="mt-0.5 flex-shrink-0"></div>
+                            <div class="min-w-0">
+                                <h3 id="feedback-title" class="font-extrabold text-base sm:text-lg mb-1"></h3>
+                                <p id="feedback-text" class="text-zinc-700 text-xs sm:text-sm leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-3.5 sm:p-5 bg-zinc-100 border-t border-zinc-200 flex justify-between items-center gap-3">
+                    <button id="btn-prev" onclick="prevQuestion()" class="flex-1 sm:flex-initial px-4 sm:px-5 py-3 rounded-xl text-xs sm:text-sm font-bold text-zinc-900 bg-white border-2 border-zinc-300 hover:border-zinc-900 transition disabled:opacity-30 disabled:cursor-not-allowed active:scale-95" disabled="">
+                        ← Prev
+                    </button>
+                    <button id="btn-next" onclick="nextQuestion()" class="flex-1 sm:flex-initial px-5 sm:px-7 py-3 rounded-xl text-xs sm:text-sm font-black bg-zinc-950 hover:bg-zinc-800 text-yellow-400 border-2 border-zinc-950 shadow-sm transition active:scale-95">
+                        Next Question →
+                    </button>
+                    <button id="btn-finish" onclick="finishQuiz()" class="hidden flex-1 sm:flex-initial px-5 sm:px-7 py-3 rounded-xl text-xs sm:text-sm font-black bg-yellow-400 hover:bg-yellow-500 text-zinc-950 border-2 border-zinc-950 shadow-sm transition active:scale-95">
+                        Finish &amp; Grade →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-algorithm" class="fade-in hidden space-y-4 sm:space-y-5">
+            <!-- Official Guideline External Link Banner -->
+            <div class="bg-white rounded-2xl p-3.5 sm:p-4 border-2 border-zinc-900 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                        <span class="px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-yellow-400 text-zinc-950 rounded">Official Source</span>
+                        <span class="text-xs font-mono font-bold text-zinc-500">European Heart Journal • 2026</span>
+                    </div>
+                    <h3 class="text-xs sm:text-sm font-extrabold text-zinc-900 mt-1">
+                        2026 ESC Guidelines for the Management of Heart Failure (Køber &amp; Adamo et al.)
+                    </h3>
+                    <p class="text-[11px] text-zinc-500 truncate">DOI: 10.1093/eurheartj/ehag100</p>
+                </div>
+                <a href="https://doi.org/10.1093/eurheartj/ehag100" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-yellow-400 font-black text-xs flex items-center justify-center gap-1.5 shadow-sm transition flex-shrink-0 active:scale-95">
+                    <span>Read Full Guideline (Eur Heart J)</span>
+                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Algorithm Sub-Navigation -->
+            <div class="bg-zinc-950 p-2 rounded-2xl border-2 border-zinc-900 shadow-md">
+                <div class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-yellow-400 px-2 pt-1 pb-2">
+                    2026 ESC Guideline Figures &amp; Tables (Select to View)
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-1.5">
+                    <button onclick="switchAlgoSubTab('fig1')" id="subtab-fig1" class="algo-subbtn px-3 py-2.5 rounded-xl text-xs font-extrabold text-left transition bg-yellow-400 text-zinc-950">
+                        <div class="text-[10px] uppercase opacity-75">Figures 1–3</div>
+                        <div class="truncate">Phenotypes, FMT &amp; GDIT</div>
+                    </button>
+                    <button onclick="switchAlgoSubTab('fig4')" id="subtab-fig4" class="algo-subbtn px-3 py-2.5 rounded-xl text-xs font-extrabold text-left transition bg-zinc-900 text-zinc-300 hover:bg-zinc-800">
+                        <div class="text-[10px] uppercase text-yellow-400">Figure 4 &amp; Table 10</div>
+                        <div class="truncate">Diagnosis &amp; Age-NPs</div>
+                    </button>
+                    <button onclick="switchAlgoSubTab('tab11')" id="subtab-tab11" class="algo-subbtn px-3 py-2.5 rounded-xl text-xs font-extrabold text-left transition bg-zinc-900 text-zinc-300 hover:bg-zinc-800">
+                        <div class="text-[10px] uppercase text-yellow-400">Table 11</div>
+                        <div class="truncate">Target Drug Doses</div>
+                    </button>
+                    <button onclick="switchAlgoSubTab('fig15')" id="subtab-fig15" class="algo-subbtn px-3 py-2.5 rounded-xl text-xs font-extrabold text-left transition bg-zinc-900 text-zinc-300 hover:bg-zinc-800">
+                        <div class="text-[10px] uppercase text-yellow-400">Figures 13–15</div>
+                        <div class="truncate">DHF &amp; Decongestion</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUB-PANEL 1: FIGURES 1, 2 & 3 -->
+            <div id="algo-fig1" class="algo-panel block bg-white rounded-2xl shadow-md border-2 border-zinc-900 overflow-hidden">
+                <div class="bg-zinc-950 text-white p-4 sm:p-6 border-b-2 border-yellow-400">
+                    <span class="text-xs font-mono uppercase tracking-widest text-yellow-400 font-bold">ESC 2026 • Table 4 &amp; Figures 1–3</span>
+                    <h2 class="text-lg sm:text-2xl font-extrabold mt-0.5">Redefined HF Phenotypes, Stages (A–D) &amp; Therapy Pyramid</h2>
+                    <p class="text-xs text-zinc-400 mt-1">HFmrEF has been eliminated. HFrEF now spans LVEF &lt;50%, and HFpEF spans LVEF ≥50%.</p>
+                </div>
+                <div class="p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl border-2 border-zinc-900 bg-zinc-50">
+                            <span class="inline-block px-2 py-0.5 text-[10px] font-black rounded bg-yellow-400 text-zinc-950 mb-1">2026 REDEFINED HFrEF</span>
+                            <h3 class="text-base font-extrabold text-zinc-950">HFrEF: LVEF &lt; 50%</h3>
+                            <p class="text-xs text-zinc-600 mt-0.5 mb-2">Includes all symptomatic patients with LVEF up to 49% (HFmrEF removed).</p>
+                            <div class="p-3 bg-white rounded-lg border border-zinc-200 space-y-1">
+                                <div class="font-extrabold text-emerald-800">Class I Foundational Medical Therapy (FMT):</div>
+                                <div>• <strong>ACE-I / ARNI</strong> (or ARB if intolerant) — <span class="font-bold text-emerald-700">Class I, A</span></div>
+                                <div>• <strong>Beta-blocker</strong> (bisoprolol, carvedilol, metoprolol CR/XL, nebivolol) — <span class="font-bold text-emerald-700">Class I, A</span></div>
+                                <div>• <strong>Steroidal MRA</strong> (spironolactone, eplerenone) — <span class="font-bold text-emerald-700">Class I, A</span></div>
+                                <div>• <strong>SGLT2-I</strong> (dapagliflozin, empagliflozin) — <span class="font-bold text-emerald-700">Class I, A</span></div>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded-xl border-2 border-zinc-900 bg-zinc-50">
+                            <span class="inline-block px-2 py-0.5 text-[10px] font-black rounded bg-emerald-600 text-white mb-1">2026 REDEFINED HFpEF</span>
+                            <h3 class="text-base font-extrabold text-zinc-950">HFpEF: LVEF ≥ 50%</h3>
+                            <p class="text-xs text-zinc-600 mt-0.5 mb-2">Requires LVEF ≥50% (never previously &lt;50%) + structural/functional abnormality + raised NPs.</p>
+                            <div class="p-3 bg-white rounded-lg border border-zinc-200 space-y-1">
+                                <div class="font-extrabold text-emerald-800">Class I Foundational Medical Therapy (FMT):</div>
+                                <div>• <strong>SGLT2-I</strong> (dapagliflozin or empagliflozin) — <span class="font-bold text-emerald-700">Class I, A</span></div>
+                                <div>• <strong>MRA</strong> (steroidal MRA or non-steroidal <strong>finerenone</strong>) — <span class="font-bold text-emerald-700">Class I, A</span></div>
+                                <div class="pt-1 text-zinc-500 text-xs">• <strong>ACE-I/ARB/ARNI</strong> may be considered to reduce HFH — <span class="font-bold text-amber-800">Class IIb, C</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-xl border-2 border-zinc-900 overflow-hidden">
+                        <div class="bg-zinc-900 text-white px-4 py-2.5 font-extrabold text-yellow-400">
+                            Figure 3 • New Nomenclature for HF Therapies (FMT + AMT = GDMT; Devices/Procedures = GDIT)
+                        </div>
+                        <div class="p-4 bg-zinc-50 grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div class="p-3 bg-white rounded-lg border border-zinc-200">
+                                <div class="font-extrabold text-zinc-900">1. Foundational Medical Therapy (FMT)</div>
+                                <p class="text-xs text-zinc-600 mt-1">Class I therapies for unselected HF patients with proven reduction in mortality and/or HFH. Uptitrate every 1–2 weeks (Class I) and continue lifelong even if LVEF improves (Class I).</p>
+                            </div>
+                            <div class="p-3 bg-white rounded-lg border border-zinc-200">
+                                <div class="font-extrabold text-zinc-900">2. Additional Medical Therapy (AMT)</div>
+                                <p class="text-xs text-zinc-600 mt-1">Loop diuretics (Class I), IV iron (Class I for QoL, IIa for HFH), <strong>Semaglutide/Tirzepatide</strong> in BMI ≥30 &amp; LVEF ≥45% (Class IIa), <strong>Digoxin/Digitoxin</strong> in LVEF ≤40% (Class IIa), Ivabradine (Class IIa), Vericiguat in LVEF &lt;45% (Class IIb).</p>
+                            </div>
+                            <div class="p-3 bg-white rounded-lg border border-zinc-200">
+                                <div class="font-extrabold text-zinc-900">3. Guideline-Directed Interventional Therapy (GDIT)</div>
+                                <p class="text-xs text-zinc-600 mt-1">ICD (Class I ischaemic, IIa non-ischaemic), CRT (Class I if LBBB ≥150 ms), <strong>Mitral TEER</strong> in severe secondary MR (upgraded to <strong>Class I, B1</strong>), SAVR/TAVI (Class I), LVAD/Transplant (Class I), AF/AVN ablation (Class IIa).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-PANEL 2: FIGURE 4 & TABLE 10 -->
+            <div id="algo-fig4" class="algo-panel hidden bg-white rounded-2xl shadow-md border-2 border-zinc-900 overflow-hidden">
+                <div class="bg-zinc-950 text-white p-4 sm:p-6 border-b-2 border-yellow-400">
+                    <span class="text-xs font-mono uppercase tracking-widest text-yellow-400 font-bold">ESC 2026 • Figure 4, Table 9 &amp; Table 10</span>
+                    <h2 class="text-lg sm:text-2xl font-extrabold mt-0.5">Diagnostic Algorithm for Chronic HF &amp; Age-Adjusted NT-proBNP</h2>
+                </div>
+                <div class="p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
+                    <div class="p-3.5 bg-zinc-900 text-white rounded-xl">
+                        <div class="font-extrabold text-yellow-400 mb-2">Figure 4 • Outpatient Age-Adjusted Natriuretic Peptide Cut-offs</div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+                            <div class="p-2.5 bg-zinc-800 rounded-lg border border-zinc-700">
+                                <div class="text-[10px] text-zinc-400 font-bold uppercase">Age &lt; 50 Years</div>
+                                <div class="text-base font-black text-yellow-400 font-mono mt-0.5">≥ 125 pg/mL</div>
+                                <div class="text-[10px] text-zinc-400">NT-proBNP</div>
+                            </div>
+                            <div class="p-2.5 bg-zinc-800 rounded-lg border border-zinc-700">
+                                <div class="text-[10px] text-zinc-400 font-bold uppercase">Age 50–74 Years</div>
+                                <div class="text-base font-black text-yellow-400 font-mono mt-0.5">≥ 250 pg/mL</div>
+                                <div class="text-[10px] text-zinc-400">NT-proBNP</div>
+                            </div>
+                            <div class="p-2.5 bg-zinc-800 rounded-lg border border-zinc-700">
+                                <div class="text-[10px] text-zinc-400 font-bold uppercase">Age ≥ 75 Years</div>
+                                <div class="text-base font-black text-yellow-400 font-mono mt-0.5">≥ 500 pg/mL</div>
+                                <div class="text-[10px] text-zinc-400">NT-proBNP</div>
+                            </div>
+                            <div class="p-2.5 bg-zinc-800 rounded-lg border border-zinc-700">
+                                <div class="text-[10px] text-zinc-400 font-bold uppercase">BNP (All Ages)</div>
+                                <div class="text-base font-black text-emerald-400 font-mono mt-0.5">≥ 35 pg/mL</div>
+                                <div class="text-[10px] text-zinc-400">Outpatient</div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-zinc-300 mt-2.5">• <strong>Expedited Rule:</strong> If <strong>NT-proBNP &gt; 2000 pg/mL</strong>, echocardiography and specialist review should preferably be performed <strong>within 2 weeks</strong>.</p>
+                        <p class="text-xs text-zinc-300 mt-1">• <strong>Baseline Labs (Class I):</strong> FBC, eGFR + <strong>UACR (urine albumin-to-creatinine ratio)</strong>, electrolytes, liver/thyroid function, HbA1c, lipids, and iron status (<strong>TSAT and ferritin</strong>).</p>
+                    </div>
+
+                    <div class="p-4 bg-zinc-50 rounded-xl border-2 border-zinc-900">
+                        <h3 class="font-extrabold text-zinc-950 mb-2">Table 10 • Simplified Echocardiographic Criteria Supporting HFpEF</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div class="p-2.5 bg-white rounded-lg border border-zinc-200"><strong>1. LV Hypertrophy:</strong> LV mass index ≥95 g/m² (female) or ≥115 g/m² (male), OR Relative wall thickness &gt;0.42</div>
+                            <div class="p-2.5 bg-white rounded-lg border border-zinc-200"><strong>2. LA Dilatation (LAVI):</strong> &gt;34 mL/m² (in sinus rhythm) OR &gt;40 mL/m² (in atrial fibrillation)</div>
+                            <div class="p-2.5 bg-white rounded-lg border border-zinc-200"><strong>3. Elevated LV Filling Pressure:</strong> E/e′ &gt; 9 at rest (E/e′ ≥15 is more specific)</div>
+                            <div class="p-2.5 bg-white rounded-lg border border-zinc-200"><strong>4. Raised PA Pressure:</strong> Estimated sPAP &gt;35 mmHg OR resting TR velocity &gt;2.8 m/s</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-PANEL 3: TABLE 11 DRUG DOSES -->
+            <div id="algo-tab11" class="algo-panel hidden bg-white rounded-2xl shadow-md border-2 border-zinc-900 overflow-hidden">
+                <div class="bg-zinc-950 text-white p-4 sm:p-6 border-b-2 border-yellow-400">
+                    <span class="text-xs font-mono uppercase tracking-widest text-yellow-400 font-bold">ESC 2026 • Table 11</span>
+                    <h2 class="text-lg sm:text-2xl font-extrabold mt-0.5">Evidence-Based Starting &amp; Target Doses of Disease-Modifying Drugs</h2>
+                </div>
+                <div class="p-3 sm:p-6 overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-zinc-900 text-white">
+                                <th class="p-2.5 border border-zinc-700">Class / Drug</th>
+                                <th class="p-2.5 border border-zinc-700">Starting Dose</th>
+                                <th class="p-2.5 border border-zinc-700 text-yellow-400">Target Dose</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-200">
+                            <tr class="bg-white"><td class="p-2.5 font-bold">Sacubitril–valsartan (ARNI)</td><td class="p-2.5 font-mono">49/51 mg b.i.d. (or 24/26 mg b.i.d.)</td><td class="p-2.5 font-mono font-bold">97/103 mg b.i.d.</td></tr>
+                            <tr class="bg-zinc-50"><td class="p-2.5 font-bold">Enalapril / Ramipril / Captopril</td><td class="p-2.5 font-mono">2.5 mg b.i.d. / 1.25–2.5 mg b.i.d. / 6.25 mg t.i.d.</td><td class="p-2.5 font-mono font-bold">10–20 mg b.i.d. / 5 mg b.i.d. / 50 mg t.i.d.</td></tr>
+                            <tr class="bg-white"><td class="p-2.5 font-bold">Candesartan / Valsartan / Losartan</td><td class="p-2.5 font-mono">4 mg o.d. / 40 mg b.i.d. / 25–50 mg o.d.</td><td class="p-2.5 font-mono font-bold">32 mg o.d. / 160 mg b.i.d. / 150 mg o.d.</td></tr>
+                            <tr class="bg-zinc-50"><td class="p-2.5 font-bold">Bisoprolol / Nebivolol</td><td class="p-2.5 font-mono">1.25 mg o.d.</td><td class="p-2.5 font-mono font-bold">10 mg o.d.</td></tr>
+                            <tr class="bg-white"><td class="p-2.5 font-bold">Carvedilol / Metoprolol CR/XL</td><td class="p-2.5 font-mono">3.125 mg b.i.d. / 12.5–25 mg o.d.</td><td class="p-2.5 font-mono font-bold">25 mg b.i.d. (50 mg if &gt;85 kg) / 200 mg o.d.</td></tr>
+                            <tr class="bg-zinc-50"><td class="p-2.5 font-bold">Spironolactone / Eplerenone (sMRA)</td><td class="p-2.5 font-mono">12.5–25 mg o.d. / 25 mg o.d.</td><td class="p-2.5 font-mono font-bold">50 mg o.d.</td></tr>
+                            <tr class="bg-yellow-50"><td class="p-2.5 font-bold text-emerald-900">Finerenone (Non-steroidal MRA)</td><td class="p-2.5 font-mono">10–20 mg o.d. (by eGFR ≤60 vs &gt;60)</td><td class="p-2.5 font-mono font-bold text-emerald-900">20–40 mg o.d. (20 mg if eGFR ≤60; 40 mg if &gt;60)</td></tr>
+                            <tr class="bg-white"><td class="p-2.5 font-bold">Dapagliflozin / Empagliflozin</td><td class="p-2.5 font-mono">10 mg o.d.</td><td class="p-2.5 font-mono font-bold">10 mg o.d.</td></tr>
+                            <tr class="bg-zinc-50"><td class="p-2.5 font-bold">Digoxin / Digitoxin (DIGIT-HF)</td><td class="p-2.5 font-mono">62.5 μg o.d. / 0.07 mg o.d.</td><td class="p-2.5 font-mono font-bold">250 μg o.d. (&lt;1.2 ng/mL) / 0.1 mg o.d.</td></tr>
+                            <tr class="bg-white"><td class="p-2.5 font-bold">Ivabradine / Vericiguat</td><td class="p-2.5 font-mono">5 mg b.i.d. / 2.5 mg o.d.</td><td class="p-2.5 font-mono font-bold">7.5 mg b.i.d. / 10 mg o.d.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SUB-PANEL 4: FIGURES 13, 14 & 15 (DHF & DECONGESTION) -->
+            <div id="algo-fig15" class="algo-panel hidden bg-white rounded-2xl shadow-md border-2 border-zinc-900 overflow-hidden">
+                <div class="bg-zinc-950 text-white p-4 sm:p-6 border-b-2 border-yellow-400">
+                    <span class="text-xs font-mono uppercase tracking-widest text-yellow-400 font-bold">ESC 2026 • Figures 11–15</span>
+                    <h2 class="text-lg sm:text-2xl font-extrabold mt-0.5">Decompensated Heart Failure (DHF) &amp; Natriuresis-Guided Decongestion</h2>
+                    <p class="text-xs text-zinc-400 mt-1">DHF replaces the term "Acute HF". Rule-out cut-offs: NT-proBNP &lt;300 pg/mL, BNP &lt;100 pg/mL, MR-proANP &lt;120 pg/mL.</p>
+                </div>
+                <div class="p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
+                    <div class="p-3.5 bg-yellow-50 border-2 border-yellow-400 rounded-xl">
+                        <div class="font-black text-zinc-950 uppercase text-xs">Figure 13 • Immediate Trigger Identification: "CHAMPIT"</div>
+                        <p class="text-zinc-800 mt-1"><strong>C</strong>oronary syndrome (acute) • <strong>H</strong>ypertensive emergency • <strong>A</strong>rrhythmias • <strong>M</strong>echanical causes • <strong>P</strong>ulmonary embolism • <strong>I</strong>nfections/Inflammation • <strong>T</strong>amponade.</p>
+                    </div>
+
+                    <div class="p-4 bg-zinc-900 text-white rounded-xl space-y-2.5">
+                        <div class="font-extrabold text-yellow-400 text-sm">Figure 15 • Stepwise I.V. Diuretic &amp; Spot Urinary Sodium Algorithm</div>
+                        <p><strong>1. Start I.V. Loop Diuretic (Class I, A):</strong> Give <strong>40 mg i.v. furosemide</strong> if diuretic-naïve, OR <strong>double (2×) the daily oral dose i.v.</strong> in chronic loop diuretic users.</p>
+                        <p><strong>2. Check Early Diuretic Response:</strong> Measure <strong>Spot urinary Na<sup>+</sup> (uNa<sup>+</sup>) at 2 h ≥ 70 mmol/L</strong> OR <strong>Urine output at 6 h ≥ 100 mL/h</strong> (Class IIb, B1).</p>
+                        <p><strong>3. If Insufficient Response:</strong> Double i.v. loop diuretic dose AND/OR add short-term <strong>i.v. acetazolamide (500 mg o.d. — ADVOR)</strong> or <strong>eGFR-based oral hydrochlorothiazide (25–100 mg — CLOROTIC)</strong> (<span class="px-1.5 py-0.5 rounded font-bold cor-2a text-zinc-950 text-[11px]">Class IIa, B1</span>).</p>
+                        <p><strong>4. Parallel Disease-Modifying Therapy:</strong> Initiate <strong>in-hospital SGLT2-I</strong> after initial stabilization (<span class="px-1.5 py-0.5 rounded font-bold cor-1 text-zinc-950 text-[11px]">Class I, B1</span>) and implement rapid pre-discharge + 6-week post-discharge FMT uptitration (<strong>STRONG-HF, Class I, B2</strong>).</p>
+                    </div>
+
+                    <div class="p-4 bg-zinc-50 rounded-xl border-2 border-zinc-900">
+                        <div class="font-extrabold text-zinc-950 mb-1.5">Figure 14 • Pre-Discharge Decongestion Targets (Exclude Residual Congestion — Class I, C)</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                            <div class="p-2.5 bg-white rounded-lg border border-zinc-200"><strong>Clinical:</strong> Congestion score = 0 (optimal) or 1–2 (acceptable); NYHA Class ≤ II.</div>
+                            <div class="p-2.5 bg-white rounded-lg border border-zinc-200"><strong>Laboratory:</strong> ΔNPs ≥30% drop, OR NT-proBNP &lt;1500 pg/mL, OR BNP &lt;250 pg/mL.</div>
+                            <div class="p-2.5 bg-white rounded-lg border border-zinc-200"><strong>Imaging:</strong> E/e′ &lt;10 (optimal) or &lt;15; IVC &lt;21 mm &amp; &gt;50% collapse; Lung US &lt;5 B-lines.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-pearls" class="fade-in hidden space-y-4">
+            <div class="bg-zinc-950 text-white p-5 rounded-2xl border-2 border-yellow-400">
+                <span class="text-xs font-mono uppercase tracking-widest text-yellow-400 font-bold">@Apex High-Yield Summary</span>
+                <h2 class="text-xl sm:text-2xl font-extrabold mt-0.5">2026 ESC Heart Failure Rapid-Fire Pearls</h2>
+                <p class="text-xs sm:text-sm text-zinc-400 mt-1">Key paradigm shifts between the 2021/2023 and 2026 ESC Heart Failure Guidelines.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white rounded-2xl shadow-sm border-2 border-zinc-900 p-5">
+                    <div class="flex items-center gap-2.5 mb-3">
+                        <span class="w-9 h-9 rounded-lg bg-yellow-400 text-zinc-950 font-black flex items-center justify-center text-lg">🫀</span>
+                        <h3 class="font-extrabold text-base sm:text-lg">Goodbye HFmrEF &amp; New Therapy Terms</h3>
+                    </div>
+                    <ul class="text-xs sm:text-sm text-zinc-700 space-y-2 list-disc pl-5">
+                        <li><strong>Two LVEF Phenotypes Only:</strong> HFmrEF is eliminated. <strong>HFrEF = LVEF &lt;50%</strong>; <strong>HFpEF = LVEF ≥50%</strong>.</li>
+                        <li><strong>FMT, AMT &amp; GDIT:</strong> GDMT is split into <strong>Foundational Medical Therapy (FMT)</strong> and <strong>Additional Medical Therapy (AMT)</strong>; devices/interventions are <strong>GDIT</strong>.</li>
+                        <li><strong>Universal Class I Pillars:</strong> Both <strong>SGLT2-Is</strong> and <strong>MRAs</strong> (including non-steroidal <strong>finerenone</strong> in HFpEF) are <strong>Class I, Level A</strong> across all LVEF!</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border-2 border-zinc-900 p-5">
+                    <div class="flex items-center gap-2.5 mb-3">
+                        <span class="w-9 h-9 rounded-lg bg-yellow-400 text-zinc-950 font-black flex items-center justify-center text-lg">💊</span>
+                        <h3 class="font-extrabold text-base sm:text-lg">GLP-1/GIP, Digitoxin &amp; Amyloidosis</h3>
+                    </div>
+                    <ul class="text-xs sm:text-sm text-zinc-700 space-y-2 list-disc pl-5">
+                        <li><strong>Obesity + HF:</strong> <strong>Semaglutide or tirzepatide</strong> is <strong>Class IIa, B1</strong> for symptomatic HF with <strong>LVEF ≥45% and BMI ≥30 kg/m²</strong> regardless of diabetes.</li>
+                        <li><strong>DIGIT-HF Upgrade:</strong> Digoxin or hepatically cleared <strong>digitoxin</strong> upgraded to <strong>Class IIa, B1</strong> in symptomatic HFrEF with LVEF ≤40%.</li>
+                        <li><strong>ATTR Amyloidosis (NYHA I–III):</strong> TTR silencer (<strong>vutrisiran</strong>) or stabilizer (<strong>tafamidis / acoramidis</strong>) is <strong>Class I, Level A</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border-2 border-zinc-900 p-5">
+                    <div class="flex items-center gap-2.5 mb-3">
+                        <span class="w-9 h-9 rounded-lg bg-yellow-400 text-zinc-950 font-black flex items-center justify-center text-lg">⚡</span>
+                        <h3 class="font-extrabold text-base sm:text-lg">Mitral TEER, DanGer Shock &amp; AF</h3>
+                    </div>
+                    <ul class="text-xs sm:text-sm text-zinc-700 space-y-2 list-disc pl-5">
+                        <li><strong>Secondary MR:</strong> Mitral <strong>TEER</strong> is upgraded to <strong>Class I, Level B1</strong> in stable HFrEF with persistent severe secondary MR despite optimal FMT + CRT.</li>
+                        <li><strong>STEMI Cardiogenic Shock:</strong> Multidisciplinary <strong>Shock Team</strong> (Class I, C) + <strong>microaxial flow pump</strong> in selected STEMI-CS without hypoxic brain injury risk (<strong>Class IIa, B1</strong>). Unselected MCS or routine IABP is <strong>Class III</strong>.</li>
+                        <li><strong>CHA<sub>2</sub>DS<sub>2</sub>-VA Score:</strong> Replaces CHA<sub>2</sub>DS<sub>2</sub>-VASc (sex category removed; OAC recommended if score ≥2, should be considered if score = 1).</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border-2 border-zinc-900 p-5">
+                    <div class="flex items-center gap-2.5 mb-3">
+                        <span class="w-9 h-9 rounded-lg bg-yellow-400 text-zinc-950 font-black flex items-center justify-center text-lg">🩸</span>
+                        <h3 class="font-extrabold text-base sm:text-lg">Iron Deficiency, CKD &amp; Pregnancy</h3>
+                    </div>
+                    <ul class="text-xs sm:text-sm text-zinc-700 space-y-2 list-disc pl-5">
+                        <li><strong>Redefined Iron Deficiency:</strong> <strong>TSAT &lt;20%</strong> has higher sensitivity/specificity for true ID and better predicts IV iron response.</li>
+                        <li><strong>Acceptable Creatinine Rise:</strong> A transient rise in creatinine <strong>&lt;50% above baseline</strong> (as long as eGFR &gt;15 mL/min/1.73 m²) after starting FMT is acceptable—do NOT stop FMT!</li>
+                        <li><strong>Pregnancy:</strong> Switch non-selective beta-blockers (carvedilol) to <strong>beta1-selective blockers (metoprolol, bisoprolol) (Class I, C)</strong>; stop ACE-I/ARB/ARNI, MRA, SGLT2-I, and ivabradine (Class III).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS TAB -->
+        <div id="content-results" class="fade-in hidden">
+            <div class="bg-zinc-950 text-white rounded-2xl shadow-lg border-2 border-yellow-400 p-6 sm:p-8 text-center mb-6">
+                <span class="text-xs font-mono uppercase tracking-widest text-yellow-400 font-bold">Apex Academy Performance Assessment</span>
+                <h2 class="text-2xl sm:text-3xl font-black mt-1 mb-2">2026 ESC HF Guideline Mastery Report</h2>
+                <p class="text-zinc-400 text-xs sm:text-sm mb-6">Review your score and question-by-question explanations below.</p>
+                
+                <div class="inline-flex items-center justify-center w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-yellow-400 bg-zinc-900 mb-4 shadow-lg shadow-yellow-400/10">
+                    <span id="final-score-text" class="text-3xl sm:text-4xl font-black text-yellow-400 font-mono">0%</span>
+                </div>
+                
+                <div id="performance-message" class="font-bold text-sm sm:text-base mt-2 text-zinc-200"></div>
+                <button onclick="openResetModal()" class="mt-5 px-6 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-500 text-zinc-950 font-black text-xs sm:text-sm transition">
+                    Retake 20-Question Exam
+                </button>
+            </div>
+
+            <div class="space-y-4" id="results-review-container"></div>
+        </div>
+
+    </main>
+
+    <!-- Custom Reset Modal -->
+    <div id="reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 p-4">
+        <div class="bg-white border-2 border-zinc-950 rounded-2xl max-w-sm w-full p-6 shadow-2xl fade-in">
+            <div class="w-12 h-12 rounded-xl bg-yellow-400 text-zinc-950 flex items-center justify-center font-black text-xl mb-4">!</div>
+            <h3 class="text-lg font-black text-zinc-950">Reset Quiz Progress?</h3>
+            <p class="text-xs sm:text-sm text-zinc-600 mt-1 mb-6">This will clear all 20 answers and reset your score to 0%. Are you sure you want to start over?</p>
+            <div class="flex gap-3">
+                <button onclick="closeResetModal()" class="flex-1 py-2.5 rounded-xl border-2 border-zinc-300 font-bold text-xs sm:text-sm text-zinc-700 hover:bg-zinc-100">Cancel</button>
+                <button onclick="confirmResetQuiz()" class="flex-1 py-2.5 rounded-xl bg-zinc-950 text-yellow-400 font-black text-xs sm:text-sm hover:bg-zinc-800">Yes, Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-zinc-950 text-white border-t-2 border-yellow-400 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-white border border-yellow-400 flex items-center justify-center flex-shrink-0 p-0.5">
+                    <svg class="w-6 h-6 text-zinc-950" viewBox="0 0 100 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="50,6 15,22 50,38 85,22" fill="#09090B"></polygon>
+                        <path d="M29,31.5 L50,41 L71,31.5 L71,41.5 C71,49.5 29,49.5 29,41.5 Z" fill="#09090B"></path>
+                        <path d="M80,24.3 L80,38" stroke="#09090B" stroke-width="3.2" stroke-linecap="square"></path>
+                        <path d="M77.5,37.5 L82.5,37.5 L83.5,45.5 L76.5,45.5 Z" fill="#09090B"></path>
+                        <polygon points="50,51 12,89 29,89 50,58 71,89 88,89" fill="#09090B" stroke="#09090B" stroke-width="1.5" stroke-linejoin="round"></polygon>
+                    </svg>
+                </div>
+                <span class="font-extrabold tracking-wide text-xs sm:text-sm text-yellow-400">Apex Academy - Medical Education at the Apex</span>
+            </div>
+            <div class="text-[11px] text-zinc-400 font-mono">
+                Based on the 2026 ESC Guidelines for the Management of Heart Failure (Eur Heart J)
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const quizData = [
+            {
+                category: "2026 Phenotypes & FMT",
+                question: "A 64-year-old man with a prior anterior MI presents with NYHA Class II dyspnoea and ankle oedema. Echocardiography shows an LVEF of 46%. How is his heart failure classified, and what is the recommended Foundational Medical Therapy (FMT) per the 2026 ESC Guidelines?",
+                options: [
+                    "HFmrEF; SGLT2-I and MRA are Class I, while ACE-I/ARNI and beta-blocker are Class IIb.",
+                    "HFrEF (expanded to LVEF < 50%); 4-pillar FMT with ACE-I/ARNI (or ARB), beta-blocker, MRA, and SGLT2-I (all Class I).",
+                    "HFpEF; SGLT2-I and loop diuretics only.",
+                    "Stage B Pre-HF; beta-blocker and ACE-I only."
+                ],
+                correct: 1,
+                explanation: "In the 2026 ESC Guidelines (Table 4 & Section 3.3.1), HFmrEF has been eliminated and HFrEF has been expanded to include LVEF < 50% (up to 49%). All four foundational pillars (ACE-I/ARNI/ARB, beta-blocker, MRA, and SGLT2-I) carry a Class I recommendation for HFrEF."
+            },
+            {
+                category: "Stage B Pre-HF",
+                question: "A 58-year-old asymptomatic woman with hypertension and a remote NSTEMI has an LVEF of 44% on routine echocardiography without current or prior signs or symptoms of HF. What is her HF stage and recommended preventative therapy?",
+                options: [
+                    "Stage A HF; lifestyle counselling only.",
+                    "Stage B (Pre-HF); a beta-blocker is recommended (Class I, Level B1) along with strict SBP control < 130 mmHg (Class I, Level A).",
+                    "Stage C HFrEF; immediate initiation of ivabradine and vericiguat.",
+                    "Stage B (Pre-HF); ACE-I is Class I for LVEF < 50%, while beta-blockers are Class III."
+                ],
+                correct: 1,
+                explanation: "Asymptomatic structural/functional cardiac abnormality is Stage B (Pre-HF). Per Recommendation Tables 1 & 2, strict SBP < 130 mmHg is Class I (Level A), a beta-blocker is recommended in Stage B HF with LVEF < 50% (Class I, Level B1), and an ACE-I/ARB is recommended in Stage B HF with LVEF <= 40% (Class I, Level A)."
+            },
+            {
+                category: "Figure 4 Outpatient NPs",
+                question: "A 78-year-old woman presents to the outpatient clinic with progressive exertional dyspnoea. Per Figure 4, what is the age-adjusted NT-proBNP threshold above which HF is likely for her age group, and what timeframe is recommended for echocardiography if her NT-proBNP is 2450 pg/mL?",
+                options: [
+                    "NT-proBNP >= 125 pg/mL; echocardiography within 6 months.",
+                    "NT-proBNP >= 250 pg/mL; echocardiography within 4 weeks.",
+                    "NT-proBNP >= 500 pg/mL (for age >= 75 years); echocardiography preferably within 2 weeks because NT-proBNP is > 2000 pg/mL.",
+                    "NT-proBNP >= 300 pg/mL; immediate admission without outpatient echocardiography."
+                ],
+                correct: 2,
+                explanation: "Figure 4 specifies age-adjusted outpatient NT-proBNP thresholds: >= 125 pg/mL (< 50 years), >= 250 pg/mL (50-74 years), and >= 500 pg/mL (>= 75 years). Footnote d states that echocardiography and specialist review should preferably be performed within 2 weeks if NT-proBNP > 2000 pg/mL."
+            },
+            {
+                category: "HFpEF Foundational Therapy",
+                question: "A 72-year-old man has symptomatic HFpEF (LVEF 58%, NYHA Class II, LA volume index 38 mL/m2, E/e' 14, eGFR 52 mL/min/1.73 m2). Per Recommendation Table 5, which disease-modifying therapies are Class I, Level A Foundational Medical Therapy (FMT) for his HFpEF?",
+                options: [
+                    "An SGLT2-I (dapagliflozin or empagliflozin) AND an MRA (steroidal MRA or non-steroidal finerenone).",
+                    "An SGLT2-I only; MRAs remain Class IIb in HFpEF.",
+                    "Sacubitril-valsartan and bisoprolol (both Class I, Level A).",
+                    "Spironolactone only; SGLT2-Is are Class IIa in LVEF >= 50%."
+                ],
+                correct: 0,
+                explanation: "Following FINEARTS-HF and meta-analyses with TOPCAT, the 2026 ESC Guidelines upgrade MRAs (sMRA or nsMRA finerenone) to Class I, Level A alongside SGLT2 inhibitors (dapagliflozin or empagliflozin, Class I, Level A) in all symptomatic HF patients independent of LVEF."
+            },
+            {
+                category: "Table 11 Finerenone Dosing",
+                question: "You initiate the non-steroidal MRA finerenone in the 72-year-old HFpEF patient from Question 4 (eGFR 52 mL/min/1.73 m2, K+ 4.4 mmol/L). Per Table 11, what are the starting and target doses of finerenone according to eGFR?",
+                options: [
+                    "Starting dose 25 mg o.d., target dose 50 mg o.d.",
+                    "10-20 mg o.d. if eGFR <= 60 mL/min/1.73 m2; 20-40 mg o.d. if eGFR > 60 mL/min/1.73 m2.",
+                    "Starting dose 5 mg b.i.d., target dose 10 mg b.i.d.",
+                    "Contraindicated when eGFR is < 60 mL/min/1.73 m2."
+                ],
+                correct: 1,
+                explanation: "Table 11 (footnote g) specifies that finerenone has an eGFR-adjusted starting and target dose: 10-20 mg o.d. if eGFR <= 60 mL/min/1.73 m2 (down to 25 mL/min/1.73 m2), and 20-40 mg o.d. if eGFR > 60 mL/min/1.73 m2."
+            },
+            {
+                category: "FMT Uptitration & Remission",
+                question: "A 49-year-old woman with non-ischaemic DCM (baseline LVEF 28%) is started on 4-pillar FMT. How frequently should FMT be uptitrated, and what should be done if she becomes asymptomatic with an improved LVEF of 52% at 1 year?",
+                options: [
+                    "Uptitrate every 3 months; discontinue MRA and SGLT2-I once LVEF >= 50%.",
+                    "Uptitrate at least every 1-2 weeks (Class I, C); continue FMT at highest tolerated doses even after symptom resolution and LVEF improvement (Class I, C).",
+                    "Uptitrate every 4-6 weeks; halve all doses once NT-proBNP normalizes.",
+                    "Only uptitrate if symptoms worsen; stop beta-blocker after 6 months."
+                ],
+                correct: 1,
+                explanation: "Table 5 recommends uptitrating FMT at least every 1-2 weeks (Class I, C) to achieve optimal target doses, and continuing FMT at the highest tolerated doses in all patients with HF, including those who become asymptomatic or have LVEF improvement (Class I, C), based on TRED-HF."
+            },
+            {
+                category: "Cardiac Glycosides (DIGIT-HF)",
+                question: "A 66-year-old man with chronic HFrEF (LVEF 28%, NYHA Class III) and Stage 4 CKD (eGFR 26 mL/min/1.73 m2) has recurrent HF hospitalizations despite optimal FMT. Which statement regarding cardiac glycosides is accurate per the 2026 ESC Guidelines?",
+                options: [
+                    "Cardiac glycosides are Class III in CKD.",
+                    "A cardiac glycoside (digoxin or digitoxin) should be considered (upgraded to Class IIa, Level B1) in symptomatic HFrEF with LVEF <= 40% despite optimal FMT to reduce HFH; digitoxin undergoes hepatic elimination.",
+                    "Only digoxin is recommended, with a target serum concentration > 2.0 ng/mL.",
+                    "DIGIT-HF showed digitoxin increased mortality in patients with AF."
+                ],
+                correct: 1,
+                explanation: "Following the DIGIT-HF trial, cardiac glycosides (digoxin or digitoxin) were upgraded from Class IIb to Class IIa, Level B1 in symptomatic HFrEF with LVEF <= 40% despite optimal FMT to reduce HFH (Table 6). Digitoxin (0.07-0.1 mg o.d.) undergoes hepatic elimination, making it useful in impaired kidney function."
+            },
+            {
+                category: "Vericiguat (VICTORIA/VICTOR)",
+                question: "A 70-year-old man with HFrEF (LVEF 38%) had an episode of worsening HF requiring i.v. diuretics 1 month ago despite optimal 4-pillar FMT. What is the 2026 ESC Guideline recommendation for vericiguat?",
+                options: [
+                    "Class I, Level A in all HFrEF patients.",
+                    "May be considered (Class IIb, Level B1) in patients with symptomatic HFrEF and LVEF < 45% despite optimal FMT to reduce the risk of HFH and CV death.",
+                    "Indicated only if LVEF is < 25%.",
+                    "Removed from the 2026 guidelines."
+                ],
+                correct: 1,
+                explanation: "Based on VICTORIA and pooled analyses with VICTOR, vericiguat (2.5 mg starting, 10 mg o.d. target) may be considered (Class IIb, Level B1) in patients with symptomatic HFrEF and LVEF < 45% despite optimal FMT (Table 6)."
+            },
+            {
+                category: "Obesity & GLP-1/GIP RAs",
+                question: "A 61-year-old non-diabetic woman with symptomatic HF (LVEF 52%, NYHA Class II) and a BMI of 34 kg/m2 asks about weight-loss pharmacotherapy. What do the 2026 ESC Guidelines recommend?",
+                options: [
+                    "Semaglutide or tirzepatide should be considered (Class IIa, Level B1) in patients with symptomatic HF, LVEF >= 45%, and BMI >= 30 kg/m2, regardless of diabetes status.",
+                    "GLP-1 RAs are only recommended if the patient has Type 2 Diabetes.",
+                    "GLP-1 RAs are Class III in HFpEF.",
+                    "Bariatric surgery is Class I first-line before pharmacotherapy."
+                ],
+                correct: 0,
+                explanation: "Based on STEP-HFpEF and SUMMIT, semaglutide or tirzepatide should be considered (Class IIa, Level B1) for patients with symptomatic HF, LVEF >= 45%, and BMI >= 30 kg/m2, regardless of diabetes status, to reduce body weight and improve exercise capacity and QoL (Table 5 & Rec Table 18)."
+            },
+            {
+                category: "CRT & Conduction Disease",
+                question: "A 68-year-old man with HFrEF (LVEF 32%) develops high-degree AV block requiring ventricular pacing. Another patient presents with de novo HFrEF (LVEF 28%) and LBBB with QRS 164 ms. Which statement reflects the 2026 ESC CRT recommendations?",
+                options: [
+                    "Standard RV apical pacing is preferred in HFrEF with AV block if QRS < 120 ms.",
+                    "CRT rather than RV pacing should be considered (Class IIa, B1) in HFrEF with an indication for ventricular pacing for high-degree AV block; and simultaneous initiation of FMT and planning for CRT may be considered (Class IIb, C) in symptomatic HFrEF with LBBB >= 150 ms and LVEF <= 35%.",
+                    "CRT is Class I in QRS < 130 ms without AV block.",
+                    "Upgrading from RV pacing to CRT is contraindicated."
+                ],
+                correct: 1,
+                explanation: "Per Recommendation Table 7: CRT rather than RV pacing is Class IIa, B1 for HFrEF with high-degree AV block; upgrade to CRT in worsening HFrEF with significant RV pacing burden (BUDAPEST-CRT) is Class IIa, B1; and simultaneous FMT initiation + planning for CRT (with LVEF reassessment prior to implant) in LBBB >= 150 ms and LVEF <= 35% is Class IIb, C."
+            },
+            {
+                category: "Figure 15 DHF Decongestion",
+                question: "A 71-year-old man taking oral furosemide 80 mg daily at home is admitted with decompensated HF (DHF) and fluid overload. Per Figure 15, what initial i.v. furosemide dose should be given, and what defines a satisfactory early diuretic response?",
+                options: [
+                    "40 mg i.v. furosemide; check serum creatinine at 24 hours.",
+                    "Double his daily oral dose i.v. (160 mg i.v. furosemide); satisfactory response is spot urinary Na+ (uNa+) >= 70 mmol/L at 2 h OR urine output >= 100 mL/h at 6 h.",
+                    "20 mg i.v. furosemide; spot uNa+ >= 30 mmol/L at 12 h.",
+                    "Start oral metolazone alone before i.v. loop diuretics."
+                ],
+                correct: 1,
+                explanation: "Per Figure 15, start i.v. loop diuretic at 40 mg furosemide in diuretic-naïve patients OR double the daily oral dose in chronic users. A satisfactory response is defined as spot uNa+ >= 70 mmol/L at 2 h OR urine output >= 100 mL/h at 6 h."
+            },
+            {
+                category: "ADVOR & CLOROTIC Trials",
+                question: "Two hours after receiving 160 mg i.v. furosemide, the patient in Question 11 has a spot uNa+ of 42 mmol/L and 6-hour urine output is 55 mL/h with persistent congestion. Per Figure 15 and Table 6, what is the recommended next step?",
+                options: [
+                    "Immediate veno-venous ultrafiltration as first-line therapy.",
+                    "Double the i.v. loop diuretic dose AND/OR consider adding short-term i.v. acetazolamide (500 mg o.d.) or eGFR-based oral hydrochlorothiazide (Class IIa, Level B1).",
+                    "Stop loop diuretics and give hypertonic saline alone.",
+                    "Start routine i.v. morphine (Class I)."
+                ],
+                correct: 1,
+                explanation: "Based on ADVOR (i.v. acetazolamide 500 mg o.d.) and CLOROTIC (oral HCTZ 25-100 mg by eGFR), adding short-term i.v. acetazolamide or oral hydrochlorothiazide should be considered (Class IIa, Level B1) alongside doubling the loop diuretic dose in patients with fluid overload previously treated with loop diuretics."
+            },
+            {
+                category: "Pre-Discharge & STRONG-HF",
+                question: "A 63-year-old man hospitalized for DHF is haemodynamically stabilized. Which pre-discharge and early post-discharge strategy is recommended in the 2026 ESC Guidelines (Recommendation Tables 8 & 9)?",
+                options: [
+                    "Delay SGLT2-I initiation until 3 months after discharge.",
+                    "In-hospital initiation of SGLT2-I after initial stabilization (Class I, B1), careful evaluation before discharge to exclude persistent congestion (Class I, C), and rapid initiation/uptitration of FMT before discharge and during frequent follow-up visits in the first 6 weeks (Class I, B2).",
+                    "Discharge on oral furosemide alone and start FMT 2 months later.",
+                    "Routine opiates prior to discharge."
+                ],
+                correct: 1,
+                explanation: "The 2026 ESC Guidelines recommend in-hospital SGLT2-I initiation after initial stabilization (Class I, B1; EMPULSE), pre-discharge evaluation to exclude residual congestion (Class I, C; Figure 14), and an intensive strategy of rapid FMT initiation and uptitration before discharge and during frequent follow-up visits in the first 6 weeks post-HFH (Class I, B2; STRONG-HF)."
+            },
+            {
+                category: "Cardiogenic Shock (DanGer Shock)",
+                question: "A 59-year-old man presents with an anterior STEMI complicated by cardiogenic shock (LVEF 22%, lactate 4.8 mmol/L) and undergoes primary PCI. He had no cardiac arrest and has no risk of hypoxic brain injury. What temporary MCS strategy is recommended in Table 5 & Recommendation Table 10?",
+                options: [
+                    "Routine IABP in all STEMI cardiogenic shock patients (Class I, A).",
+                    "Multidisciplinary Shock Team guidance (Class I, C) and temporary MCS with a microaxial flow pump (Impella) in selected patients with STEMI cardiogenic shock and no risk of hypoxic brain injury (Class IIa, Level B1).",
+                    "Routine VA-ECMO in all unselected patients with acute MI cardiogenic shock (Class I, B1).",
+                    "Temporary MCS is Class III in all STEMI patients."
+                ],
+                correct: 1,
+                explanation: "Based on the DanGer Shock trial, temporary MCS with a microaxial flow pump should be considered (Class IIa, Level B1) in selected patients with cardiogenic shock caused by STEMI with LV systolic dysfunction and no risk of hypoxic brain injury to reduce death. Unselected temporary MCS (ECLS-SHOCK) and routine IABP (IABP-SHOCK II) in CS are Class III, Level B1."
+            },
+            {
+                category: "Advanced HF & LVAD",
+                question: "A 54-year-old man with advanced HFrEF (LVEF 18%) has persistent organ hypoperfusion despite initial therapy while on carvedilol and ivabradine. Along with early consultation with an Advanced HF Centre (Class I, A), what do the 2026 ESC Guidelines recommend?",
+                options: [
+                    "Double the beta-blocker dose immediately.",
+                    "Downtitration or discontinuation of beta-blockers or ivabradine should be considered (Class IIa, C) to increase cardiac output; continuous inotropes are Class IIa, C as BTD/BTT/bridge to MCS; and durable MCS (LVAD) is recommended (upgraded to Class I, C) in selected advanced HFrEF patients.",
+                    "Durable LVAD is only Class IIb for destination therapy.",
+                    "Keep ivabradine at 7.5 mg b.i.d. during cardiogenic shock."
+                ],
+                correct: 1,
+                explanation: "In advanced HFrEF with evidence of organ hypoperfusion despite initial treatment, downtitration or discontinuation of beta-blockers or ivabradine should be considered (Class IIa, C) to increase cardiac output. Continuous inotropes as a bridge are upgraded to Class IIa, C, and durable LVAD is upgraded to Class I, C (as BTT, BTC, BTR, or destination therapy)."
+            },
+            {
+                category: "Secondary Mitral Regurgitation",
+                question: "A 69-year-old woman with HFrEF (LVEF 30%) is haemodynamically stable on optimal FMT and CRT but has persistent severe ventricular secondary mitral regurgitation (NYHA Class III) fulfilling COAPT/RESHAPE-HF2 criteria (Table 19). What is the 2026 ESC recommendation for mitral TEER?",
+                options: [
+                    "Mitral TEER is recommended (upgraded to Class I, Level B1) to reduce the risk of HFH and improve QoL.",
+                    "Mitral TEER remains Class IIb and requires concomitant CABG.",
+                    "Surgical mitral valve replacement is Class I over TEER.",
+                    "Mitral TEER is contraindicated if LVEF is <= 30%."
+                ],
+                correct: 0,
+                explanation: "Following RESHAPE-HF2 and COAPT meta-analyses, the 2026 ESC Guidelines (Table 6 & Rec Table 17) upgraded mitral transcatheter edge-to-edge repair (TEER) from Class IIa to Class I, Level B1 in haemodynamically stable, symptomatic HFrEF patients with persistent severe secondary MR despite optimized FMT and CRT."
+            },
+            {
+                category: "Atrial Fibrillation & HF",
+                question: "Which set of recommendations accurately reflects the 2026 ESC Guidelines (Recommendation Table 15) for managing atrial fibrillation in patients with HFrEF?",
+                options: [
+                    "Verapamil is Class I for rate control; CHA2DS2-VASc sex category is still used.",
+                    "Oral anticoagulation by CHA2DS2-VA score (Class I, A); beta-blockers as first-line rate control in stable HFrEF + AF (upgraded to Class I, C); catheter ablation in selected symptomatic AF + HFrEF (Class IIa, C); and AV node ablation + CRT in severely symptomatic permanent AF with poor rate control and >= 1 HFH (Class IIa, B1).",
+                    "Dronedarone and flecainide are Class I for rhythm control in HFrEF.",
+                    "DOACs are inferior to warfarin in non-valvular AF with HF."
+                ],
+                correct: 1,
+                explanation: "The 2026 ESC Guidelines adopt the sex-neutral CHA2DS2-VA score (Table 18), upgrade beta-blockers to Class I, C for short- and long-term rate control in stable HFrEF + AF, add AV node ablation + CRT (APAF-CRT) as Class IIa, B1 in severely symptomatic permanent AF with >= 1 HFH, and recommend catheter ablation (Class IIa, C) in selected HFrEF patients."
+            },
+            {
+                category: "ATTR Cardiac Amyloidosis",
+                question: "A 76-year-old man with LV wall thickness of 16 mm, HFpEF, carpal tunnel syndrome, and apical sparing on echo is suspected of having cardiac amyloidosis (CA). What is the Class I diagnostic work-up and Class I, Level A therapy if ATTR-CA (NYHA Class II) is confirmed?",
+                options: [
+                    "Endomyocardial biopsy in all patients first; treat with oral digoxin and verapamil.",
+                    "Serum and urine immunofixation + serum free light chains + DPD/PYP/HMDP bone scintigraphy (Class I, B); treat with a TTR silencer (vutrisiran) or TTR stabilizer (tafamidis or acoramidis) for variant or wild-type ATTR-CA in NYHA Class I-III (Class I, Level A).",
+                    "Bone scintigraphy alone without light-chain assay; treat with tafamidis only in NYHA Class IV.",
+                    "CMR alone is sufficient to type AL vs ATTR without blood tests."
+                ],
+                correct: 1,
+                explanation: "Per Table 5 & 6 (Pages 11, 15, 76): Initial diagnostic testing with serum/urine immunofixation, serum free light chains, and DPD/PYP/HMDP bone scintigraphy is Class I, B. For confirmed wild-type or variant ATTR-CA in NYHA Class I-III, treatment with a TTR silencer (vutrisiran — HELIOS-B) or TTR stabilizer (tafamidis — ATTR-ACT; acoramidis — ATTRibute-CM) is Class I, Level A."
+            },
+            {
+                category: "Pregnancy & Heart Failure",
+                question: "A 31-year-old woman with chronic HFrEF (LVEF 38%) on sacubitril-valsartan, carvedilol, spironolactone, and dapagliflozin becomes pregnant. Per Recommendation Table 27 (Page 74), how should her medications be managed?",
+                options: [
+                    "Continue all four medications throughout pregnancy.",
+                    "Discontinue ACE-I/ARB/ARNI, MRA, ivabradine, and SGLT2-I (Class III, C due to foetotoxicity/teratogenicity), and switch non-selective beta-blockers (carvedilol) to a beta1-selective blocker (metoprolol or bisoprolol) with close maternal and foetal monitoring (Class I, C).",
+                    "Stop carvedilol and continue sacubitril-valsartan and dapagliflozin.",
+                    "Switch carvedilol to atenolol and start finerenone."
+                ],
+                correct: 1,
+                explanation: "Per Recommendation Table 27: ACE-Is, ARBs, ARNIs, MRAs, ivabradine, and SGLT2-Is are NOT recommended during pregnancy due to foetotoxicity/teratogenicity (Class III, C). Non-selective beta-blockers (carvedilol) should be switched to beta1-selective blockers (metoprolol or bisoprolol) with close mother and foetus monitoring (Class I, C)."
+            },
+            {
+                category: "Iron Deficiency, CKD & PA Sensor",
+                question: "Which of the following combinations of 2026 ESC Guideline statements is accurate regarding iron deficiency (ID), renal function changes on FMT, and remote pulmonary artery (PA) pressure monitoring?",
+                options: [
+                    "Darbepoetin-alpha is Class I for anaemia in HF; stop FMT if creatinine rises by 15%.",
+                    "TSAT < 20% better identifies true ID and i.v. iron responders (i.v. iron is Class I, B1 for symptoms/QoL and Class IIa, B1 to reduce HFH in HFrEF); a transient creatinine increase < 50% above baseline (with eGFR > 15 mL/min/1.73 m2) after starting FMT is acceptable; and remote PA pressure monitoring is upgraded to Class IIa, B1 in NYHA Class III with an HFH in the past 12 months.",
+                    "Oral iron is superior to i.v. ferric carboxymaltose or ferric derisomaltose.",
+                    "Adaptive servo-ventilation (ASV) is Class I in HFrEF with predominant central sleep apnoea (CSA)."
+                ],
+                correct: 1,
+                explanation: "In the 2026 ESC Guidelines: (1) TSAT < 20% is highlighted as the most sensitive/specific marker of ID (Section 10.4), with i.v. iron recommended for QoL (Class I, B1) and to reduce HFH (Class IIa, B1); (2) A creatinine rise < 50% above baseline (eGFR > 15) on FMT is acceptable (Section 10.3); (3) Remote PA pressure monitoring (MONITOR-HF) is upgraded to Class IIa, B1 in NYHA III with prior-year HFH; and (4) ASV remains Class III, A in predominant CSA (SERVE-HF) but is Class IIb, C in predominant OSA (ADVENT-HF)."
+            }
+        ];
+
+        let currentQ = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+
+        const elQuestionText = document.getElementById('question-text');
+        const elOptionsContainer = document.getElementById('options-container');
+        const elFeedbackBox = document.getElementById('feedback-box');
+        const elFeedbackIcon = document.getElementById('feedback-icon');
+        const elFeedbackTitle = document.getElementById('feedback-title');
+        const elFeedbackText = document.getElementById('feedback-text');
+        const elBtnNext = document.getElementById('btn-next');
+        const elBtnPrev = document.getElementById('btn-prev');
+        const elBtnFinish = document.getElementById('btn-finish');
+        const elCounter = document.getElementById('question-counter');
+        const elCategory = document.getElementById('question-category');
+        const elHeaderScore = document.getElementById('header-score');
+        const elHeaderAnswered = document.getElementById('header-answered');
+        const elQuestionPills = document.getElementById('question-pills');
+        const elCompletionBadge = document.getElementById('completion-badge');
+
+        function initQuiz() {
+            currentQ = 0;
+            userAnswers = new Array(quizData.length).fill(null);
+            updateHeader();
+            renderPills();
+            renderQuestion();
+        }
+
+        function renderPills() {
+            elQuestionPills.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const pill = document.createElement('button');
+                const isCurrent = idx === currentQ;
+                const ans = userAnswers[idx];
+                
+                let colorClass = 'bg-zinc-100 text-zinc-700 border-zinc-300 hover:border-zinc-900';
+                if (ans !== null) {
+                    colorClass = ans === q.correct 
+                        ? 'bg-emerald-500 text-white border-emerald-600' 
+                        : 'bg-red-500 text-white border-red-600';
+                }
+                if (isCurrent) {
+                    colorClass += ' ring-2 ring-zinc-950 ring-offset-1 font-black';
+                }
+
+                pill.className = `w-8 h-8 rounded-lg text-xs font-mono font-bold border flex-shrink-0 flex items-center justify-center transition ${colorClass}`;
+                pill.innerText = idx + 1;
+                pill.onclick = () => {
+                    currentQ = idx;
+                    renderPills();
+                    renderQuestion();
+                };
+                elQuestionPills.appendChild(pill);
+            });
+        }
+
+        function renderQuestion() {
+            const q = quizData[currentQ];
+            const hasAnswered = userAnswers[currentQ] !== null;
+
+            const qNumFormatted = String(currentQ + 1).padStart(2, '0');
+            elCounter.innerText = `QUESTION ${qNumFormatted} / ${quizData.length}`;
+            elCategory.innerText = q.category;
+            elQuestionText.innerHTML = q.question;
+            
+            elOptionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `option-btn w-full text-left p-3.5 sm:p-4 rounded-xl border-2 border-zinc-200 bg-zinc-50/70 font-semibold text-zinc-900 focus:outline-none flex items-start gap-3 text-xs sm:text-sm`;
+                
+                let badgeClass = 'bg-zinc-900 text-yellow-400 border-zinc-900';
+
+                if (hasAnswered) {
+                    btn.disabled = true;
+                    if (idx === q.correct) {
+                        btn.classList.add('correct-ans');
+                        badgeClass = 'bg-emerald-700 text-white border-emerald-700';
+                    } else if (idx === userAnswers[currentQ]) {
+                        btn.classList.add('wrong-ans');
+                        badgeClass = 'bg-red-700 text-white border-red-700';
+                    } else {
+                        btn.classList.add('disabled-ans');
+                        badgeClass = 'bg-zinc-300 text-zinc-600 border-zinc-300';
+                    }
+                } else {
+                    btn.onclick = () => selectOption(idx);
+                }
+
+                btn.innerHTML = `
+                    <span class="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-lg border ${badgeClass} flex items-center justify-center text-xs font-mono font-black mt-0.5">${String.fromCharCode(65 + idx)}</span>
+                    <span class="leading-relaxed">${opt}</span>
+                `;
+                elOptionsContainer.appendChild(btn);
+            });
+
+            elBtnPrev.disabled = currentQ === 0;
+            
+            if (hasAnswered) {
+                showFeedback();
+            } else {
+                hideFeedback();
+            }
+
+            if (currentQ === quizData.length - 1) {
+                elBtnNext.classList.add('hidden');
+                elBtnFinish.classList.remove('hidden');
+            } else {
+                elBtnNext.classList.remove('hidden');
+                elBtnFinish.classList.add('hidden');
+            }
+        }
+
+        function selectOption(idx) {
+            if (userAnswers[currentQ] !== null) return;
+            userAnswers[currentQ] = idx;
+            updateHeader();
+            renderPills();
+            renderQuestion();
+        }
+
+        function showFeedback() {
+            const q = quizData[currentQ];
+            const isCorrect = userAnswers[currentQ] === q.correct;
+            
+            elFeedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-500', 'bg-red-50', 'border-red-500');
+            
+            if (isCorrect) {
+                elFeedbackBox.classList.add('bg-emerald-50', 'border-emerald-500');
+                elFeedbackIcon.innerHTML = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-600 text-white font-black text-sm">✓</span>`;
+                elFeedbackTitle.innerText = "Correct — Apex Clinical Pearl";
+                elFeedbackTitle.className = "font-extrabold text-sm sm:text-base mb-1 text-emerald-900";
+            } else {
+                elFeedbackBox.classList.add('bg-red-50', 'border-red-500');
+                elFeedbackIcon.innerHTML = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-red-600 text-white font-black text-sm">✕</span>`;
+                elFeedbackTitle.innerText = `Incorrect (Correct Answer: ${String.fromCharCode(65 + q.correct)})`;
+                elFeedbackTitle.className = "font-extrabold text-sm sm:text-base mb-1 text-red-900";
+            }
+            
+            elFeedbackText.innerHTML = q.explanation;
+        }
+
+        function hideFeedback() {
+            elFeedbackBox.classList.add('hidden');
+        }
+
+        function nextQuestion() {
+            if (currentQ < quizData.length - 1) {
+                currentQ++;
+                renderPills();
+                renderQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQ > 0) {
+                currentQ--;
+                renderPills();
+                renderQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function updateHeader() {
+            const answeredCount = userAnswers.filter(a => a !== null).length;
+            const correctCount = userAnswers.filter((a, i) => a === quizData[i].correct).length;
+            
+            elHeaderAnswered.innerText = answeredCount;
+            elCompletionBadge.innerText = `${answeredCount} of ${quizData.length} Completed`;
+            
+            const scorePercent = answeredCount === 0 ? 0 : Math.round((correctCount / answeredCount) * 100);
+            elHeaderScore.innerText = scorePercent;
+        }
+
+        function switchTab(tabId) {
+            ['quiz', 'algorithm', 'pearls', 'results'].forEach(id => {
+                const contentEl = document.getElementById(`content-${id}`);
+                contentEl.classList.add('hidden');
+                contentEl.classList.remove('block');
+                
+                const btn = document.getElementById(`tab-${id}`);
+                if (btn) {
+                    btn.classList.remove('bg-yellow-400', 'text-zinc-950', 'shadow-sm');
+                    btn.classList.add('text-zinc-300', 'hover:text-white', 'hover:bg-zinc-800');
+                }
+            });
+
+            const activeContent = document.getElementById(`content-${tabId}`);
+            activeContent.classList.remove('hidden');
+            activeContent.classList.add('block');
+            
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-yellow-400', 'text-zinc-950', 'shadow-sm');
+                activeBtn.classList.remove('text-zinc-300', 'hover:text-white', 'hover:bg-zinc-800');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchAlgoSubTab(subId) {
+            ['fig1', 'fig4', 'tab11', 'fig15'].forEach(id => {
+                const panel = document.getElementById(`algo-${id}`);
+                if (panel) {
+                    panel.classList.add('hidden');
+                    panel.classList.remove('block');
+                }
+                const btn = document.getElementById(`subtab-${id}`);
+                if (btn) {
+                    btn.classList.remove('bg-yellow-400', 'text-zinc-950');
+                    btn.classList.add('bg-zinc-900', 'text-zinc-300');
+                }
+            });
+
+            const activePanel = document.getElementById(`algo-${subId}`);
+            if (activePanel) {
+                activePanel.classList.remove('hidden');
+                activePanel.classList.add('block');
+            }
+            const activeBtn = document.getElementById(`subtab-${subId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-yellow-400', 'text-zinc-950');
+                activeBtn.classList.remove('bg-zinc-900', 'text-zinc-300');
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('tab-results').classList.remove('hidden');
+            generateResultsReport();
+            switchTab('results');
+        }
+
+        function openResetModal() {
+            const modal = document.getElementById('reset-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeResetModal() {
+            const modal = document.getElementById('reset-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function confirmResetQuiz() {
+            closeResetModal();
+            document.getElementById('tab-results').classList.add('hidden');
+            initQuiz();
+            switchTab('quiz');
+        }
+
+        function downloadHtmlFile() {
+            const clone = document.documentElement.cloneNode(true);
+            const dlBtn = clone.querySelector('#download-html-btn');
+            if (dlBtn) dlBtn.remove();
+            const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Apex_Academy_2026_ESC_Heart_Failure_Quiz.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function generateResultsReport() {
+            const correctCount = userAnswers.filter((a, i) => a === quizData[i].correct).length;
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            document.getElementById('final-score-text').innerText = `${scorePercent}%`;
+            
+            const msgEl = document.getElementById('performance-message');
+            if (scorePercent >= 85) {
+                msgEl.innerText = `Apex Level (${correctCount}/20)! Outstanding command of the 2026 ESC Heart Failure Guidelines.`;
+                msgEl.className = "font-bold text-sm sm:text-base mt-2 text-yellow-400";
+            } else if (scorePercent >= 65) {
+                msgEl.innerText = `Solid Performance (${correctCount}/20). Review the Algorithms & Apex Pearls tabs to master the 2026 updates.`;
+                msgEl.className = "font-bold text-sm sm:text-base mt-2 text-zinc-200";
+            } else {
+                msgEl.innerText = `Score: ${correctCount}/20. Study the 2026 ESC Algorithms & Pearls tabs and try the exam again!`;
+                msgEl.className = "font-bold text-sm sm:text-base mt-2 text-red-400";
+            }
+
+            const container = document.getElementById('results-review-container');
+            container.innerHTML = '';
+
+            quizData.forEach((q, i) => {
+                const userAnswerIdx = userAnswers[i];
+                const isCorrect = userAnswerIdx === q.correct;
+                
+                const card = document.createElement('div');
+                card.className = `p-4 sm:p-5 rounded-2xl border-2 bg-white ${isCorrect ? 'border-emerald-500' : 'border-red-500'}`;
+                
+                card.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="mt-0.5 flex-shrink-0">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-md font-black text-xs text-white ${isCorrect ? 'bg-emerald-600' : 'bg-red-600'}">
+                                ${isCorrect ? '✓' : '✕'}
+                            </span>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+                                <span class="text-xs font-black font-mono text-zinc-500 uppercase">Question ${i + 1} • ${q.category}</span>
+                            </div>
+                            <h4 class="font-bold text-sm sm:text-base text-zinc-900 mb-2">${q.question}</h4>
+                            <p class="text-xs sm:text-sm text-zinc-700 mb-1">
+                                <strong>Your Answer:</strong> ${userAnswerIdx !== null ? q.options[userAnswerIdx] : '<em class="text-red-600">Unanswered</em>'}
+                            </p>
+                            ${!isCorrect ? `<p class="text-xs sm:text-sm text-emerald-700 font-semibold mb-2"><strong>Correct Answer:</strong> ${q.options[q.correct]}</p>` : ''}
+                            <div class="mt-2.5 text-xs sm:text-sm text-zinc-700 bg-zinc-100 p-3 rounded-xl border border-zinc-200">
+                                <strong class="text-zinc-950">Guideline Rationale:</strong> ${q.explanation}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.onload = initQuiz;
+    </script>
+
+</body></html>

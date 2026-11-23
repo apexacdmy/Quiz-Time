@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Apex Academy — AHA/ACC 2025 Hypertension (30-MCQ)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    html, body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #09090B;
+      color: #FAFAFA;
+      overflow-x: hidden;
+      max-width: 100vw;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#09090B] text-[#FAFAFA] min-h-screen flex flex-col antialiased selection:bg-[#FACC15] selection:text-black">
+
+  <!-- Sticky Header (@apex_quiz_time) -->
+  <header class="sticky top-0 z-40 bg-[#09090B]/95 backdrop-blur-md border-b border-[#27272A]">
+    <div class="max-w-3xl mx-auto px-3 sm:px-5 py-3 flex items-center justify-between gap-2">
+      <!-- Left: Official Apex Academy SVG Logo & Title -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-white border-2 border-[#FACC15] p-1 flex items-center justify-center shrink-0 shadow-sm">
+          <svg viewBox="0 0 120 110" class="w-full h-full" aria-label="Apex Academy Logo">
+            <polygon points="60,8 22,24 60,40 98,24" fill="#000000"/>
+            <path d="M38,33 L38,44 C38,51 82,51 82,44 L82,33 L60,43 Z" fill="#000000"/>
+            <line x1="90" y1="27" x2="90" y2="45" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
+            <rect x="87.5" y="43" width="5" height="7" rx="1" fill="#000000"/>
+            <polygon points="60,52 20,98 37,98 60,64 83,98 100,98" fill="#000000"/>
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10px] sm:text-[11px] font-black tracking-widest uppercase text-white">APEX ACADEMY</span>
+            <span class="px-1.5 py-0.5 text-[10px] font-extrabold rounded bg-[#FACC15] text-black leading-none">AHA/ACC 2025</span>
+          </div>
+          <h1 class="text-xs sm:text-sm font-bold text-zinc-200 truncate mt-0.5">High Blood Pressure Guidelines</h1>
+        </div>
+      </div>
+
+      <!-- Right: Live Score, One-Tap .HTML Export, Reset -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div class="px-2.5 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-center">
+          <div class="text-[9px] font-bold uppercase tracking-wider text-zinc-400 leading-none">SCORE</div>
+          <div id="scoreCounter" class="text-xs sm:text-sm font-black text-[#FACC15] leading-tight mt-0.5">0 / 30</div>
+        </div>
+        <button id="downloadBtn" onclick="downloadStudentHtml()" title="Download clean student HTML file" class="px-2.5 py-2 rounded-lg bg-[#FACC15] hover:bg-yellow-300 text-black text-[11px] sm:text-xs font-extrabold transition flex items-center gap-1">
+          <span>⬇</span><span class="hidden xs:inline sm:inline">.HTML</span>
+        </button>
+        <button onclick="openResetModal()" title="Reset Quiz" class="px-2.5 py-2 rounded-lg bg-[#18181B] hover:bg-zinc-800 border border-[#27272A] text-zinc-300 text-[11px] sm:text-xs font-bold transition">
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- 3-Column Tab Navigation Bar -->
+    <nav class="max-w-3xl mx-auto px-3 sm:px-5 pb-2.5">
+      <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-[#18181B] border border-[#27272A]">
+        <button id="tab-quiz" onclick="switchTab('quiz')" class="py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition bg-[#FACC15] text-black">
+          30-MCQ Quiz
+        </button>
+        <button id="tab-algorithms" onclick="switchTab('algorithms')" class="py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition text-zinc-400 hover:text-white">
+          PDF Algorithms
+        </button>
+        <button id="tab-pearls" onclick="switchTab('pearls')" class="py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition text-zinc-400 hover:text-white">
+          2025 Pearls
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-3 sm:px-5 py-4 sm:py-6">
+
+    <!-- TAB 1: 30-MCQ QUIZ -->
+    <section id="panel-quiz" class="space-y-4">
+      <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-3">
+        <div class="flex items-center justify-between mb-2 px-0.5">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Question Navigator (1–30)</span>
+          <span id="answeredCounter" class="text-[11px] font-bold text-[#FACC15]">0 / 30 Answered</span>
+        </div>
+        <div id="questionNav" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1"></div>
+      </div>
+
+      <div id="completionBanner" class="hidden bg-[#18181B] border-2 border-[#FACC15] rounded-2xl p-4 sm:p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase tracking-wider mb-1">Board Assessment Complete</span>
+            <h2 id="finalScoreTitle" class="text-lg sm:text-xl font-black text-white"></h2>
+            <p id="finalScoreMsg" class="text-xs sm:text-sm text-zinc-400 mt-0.5"></p>
+          </div>
+          <button onclick="openResetModal()" class="px-4 py-2.5 rounded-xl bg-[#FACC15] text-black font-extrabold text-xs sm:text-sm hover:bg-yellow-300 transition shrink-0">
+            Retake &amp; Reshuffle
+          </button>
+        </div>
+      </div>
+
+      <article class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-6 shadow-lg">
+        <div class="flex items-center justify-between gap-2 mb-3 pb-3 border-b border-[#27272A]">
+          <span id="qDomain" class="px-2.5 py-1 rounded-md bg-zinc-900 border border-[#27272A] text-[#FACC15] text-[11px] font-extrabold uppercase tracking-wider">Category</span>
+          <span id="qCounter" class="text-xs font-bold text-zinc-400">Case 1 of 30</span>
+        </div>
+
+        <h2 id="qStem" class="text-sm sm:text-base font-semibold leading-relaxed text-white mb-5"></h2>
+        <div id="optionsList" class="space-y-2.5"></div>
+        <div id="rationaleBox" class="hidden mt-5 p-4 rounded-xl border text-xs sm:text-sm leading-relaxed"></div>
+      </article>
+
+      <div class="flex items-center justify-between gap-3 pt-1">
+        <button id="prevBtn" onclick="moveQuestion(-1)" class="flex-1 sm:flex-none px-4 py-3 rounded-xl bg-[#18181B] hover:bg-zinc-800 border border-[#27272A] text-white text-xs sm:text-sm font-bold disabled:opacity-35 transition">
+          ← Previous
+        </button>
+        <button id="nextBtn" onclick="moveQuestion(1)" class="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-[#FACC15] hover:bg-yellow-300 text-black text-xs sm:text-sm font-extrabold disabled:opacity-35 transition">
+          Next Question →
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB 2: PDF ALGORITHMS -->
+    <section id="panel-algorithms" class="hidden space-y-4">
+      <a href="https://doi.org/10.1161/CIR.0000000000001356" target="_blank" rel="noopener noreferrer" class="block bg-[#18181B] border border-[#FACC15]/60 hover:border-[#FACC15] rounded-2xl p-4 transition">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#FACC15]">Official Source Guideline</div>
+            <div class="text-sm font-bold text-white mt-0.5">2025 AHA/ACC Multisociety High Blood Pressure Guideline</div>
+            <div class="text-xs text-zinc-400 mt-0.5">Circulation • https://doi.org/10.1161/CIR.0000000000001356</div>
+          </div>
+          <span class="px-3 py-1.5 rounded-lg bg-[#FACC15] text-black text-xs font-extrabold shrink-0">Open DOI ↗</span>
+        </div>
+      </a>
+
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+        <button onclick="switchAlgoSub('staging')" id="algoBtn-staging" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-[#FACC15] text-black shrink-0">PREVENT &amp; Targets</button>
+        <button onclick="switchAlgoSub('resistant')" id="algoBtn-resistant" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#18181B] border border-[#27272A] text-zinc-300 shrink-0">Resistant &amp; PA</button>
+        <button onclick="switchAlgoSub('emergencies')" id="algoBtn-emergencies" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#18181B] border border-[#27272A] text-zinc-300 shrink-0">Acute Stroke &amp; Pregnancy</button>
+      </div>
+
+      <div id="algo-staging" class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-5 space-y-3 text-xs sm:text-sm">
+        <h3 class="text-sm sm:text-base font-extrabold text-[#FACC15]">2025 Risk-Based Initiation &amp; Goals</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A]">
+            <div class="font-black text-[#FACC15] mb-1">Stage 1 HTN (130–139 / 80–89)</div>
+            <p class="text-zinc-300">Start medication immediately if clinical CVD, DM, CKD, or <strong>PREVENT 10-yr CVD risk ≥7.5%</strong>. If &lt;7.5%, start medication if BP remains ≥130/80 after 3–6 mo lifestyle therapy.</p>
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A]">
+            <div class="font-black text-[#FACC15] mb-1">Stage 2 HTN (≥140 / ≥90)</div>
+            <p class="text-zinc-300">Start 2 first-line agents of different classes—preferring a <strong>single-pill fixed-dose combination</strong> (Class 1). Race-based drug selection is removed.</p>
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A]">
+            <div class="font-black text-[#FACC15] mb-1">Treatment Targets</div>
+            <p class="text-zinc-300">Universal goal <strong>&lt;130/80 mmHg</strong>; actively encouraged to pursue <strong>SBP &lt;120 mmHg</strong> in higher-risk adults if tolerated.</p>
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A]">
+            <div class="font-black text-[#FACC15] mb-1">Routine Baseline Workup</div>
+            <p class="text-zinc-300">Now includes routine spot <strong>UACR</strong> alongside BMP, lipids, HbA1c, and ECG. Avoid cuffless smartwatches for diagnosis or titration.</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="algo-resistant" class="hidden bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-5 space-y-3 text-xs sm:text-sm">
+        <h3 class="text-sm sm:text-base font-extrabold text-[#FACC15]">Primary Aldosteronism &amp; Resistant HTN</h3>
+        <ul class="space-y-2 text-zinc-300 list-disc pl-4">
+          <li><strong class="text-white">Expanded PA Screening:</strong> Screen all Stage 2 and resistant HTN patients with PAC/PRA <em>regardless of normal serum potassium</em>. Hold MRAs ≥4 weeks prior.</li>
+          <li><strong class="text-white">True Resistant HTN:</strong> Confirm adherence + out-of-office BP (ABPM/HBPM) on ≥3 optimal agents (including a diuretic).</li>
+          <li><strong class="text-white">4th-Line Agent:</strong> Spironolactone 25 mg daily is preferred (PATHWAY-2) when eGFR &amp; K+ allow.</li>
+          <li><strong class="text-white">Renal Denervation:</strong> Class 2b cautious option after multidisciplinary evaluation and shared decision-making.</li>
+        </ul>
+      </div>
+
+      <div id="algo-emergencies" class="hidden bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-5 space-y-3 text-xs sm:text-sm">
+        <h3 class="text-sm sm:text-base font-extrabold text-[#FACC15]">Acute Vascular &amp; Pregnancy Thresholds</h3>
+        <ul class="space-y-2 text-zinc-300 list-disc pl-4">
+          <li><strong class="text-white">Severe HTN (&gt;180/120, no TOD):</strong> Replaces "hypertensive urgency." Manage outpatient with oral therapy; avoid IV agents.</li>
+          <li><strong class="text-white">Acute ICH (SBP 150–220):</strong> Smoothly lower SBP to 130–140 mmHg (avoiding steep drops or SBP &lt;110).</li>
+          <li><strong class="text-white">Aortic Dissection:</strong> IV beta-blocker FIRST (HR &lt;60), then IV vasodilator to SBP 100–120 within 20 min.</li>
+          <li><strong class="text-white">Pregnancy Chronic HTN (CHAP):</strong> Treat at ≥140/90 mmHg with labetalol or ER nifedipine; early postpartum surveillance + lifelong CVD risk flagging.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TAB 3: 2025 PEARLS -->
+    <section id="panel-pearls" class="hidden space-y-3">
+      <a href="https://doi.org/10.1161/CIR.0000000000001356" target="_blank" rel="noopener noreferrer" class="block bg-[#18181B] border border-[#FACC15]/60 hover:border-[#FACC15] rounded-2xl p-4 transition">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#FACC15]">High-Yield Board Review</div>
+            <div class="text-sm font-bold text-white mt-0.5">Top 2025 AHA/ACC Hypertension Paradigm Shifts</div>
+          </div>
+          <span class="px-3 py-1.5 rounded-lg bg-[#FACC15] text-black text-xs font-extrabold shrink-0">Guideline ↗</span>
+        </div>
+      </a>
+
+      <div class="space-y-2.5 text-xs sm:text-sm">
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 1 • Race-Free PREVENT</span>
+          <p class="text-zinc-200">PREVENT replaces Pooled Cohort Equations (10-year total CVD ≥7.5% triggers immediate Stage 1 therapy), and race-based antihypertensive drug selection is eliminated.</p>
+        </div>
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 2 • Dementia Prevention</span>
+          <p class="text-zinc-200">Intensive BP lowering (&lt;130/80 and &lt;120 when tolerated) is explicitly affirmed to reduce mild cognitive impairment and dementia (SPRINT-MIND).</p>
+        </div>
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 3 • Potassium Salt Substitutes</span>
+          <p class="text-zinc-200">Endorsed for home-cooked sodium reduction (SSaSS) EXCEPT in CKD or patients on K+-sparing medications. Optimal sodium goal &lt;1500 mg/day; zero alcohol is safest.</p>
+        </div>
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 4 • CKD Creatinine Bump</span>
+          <p class="text-zinc-200">Continue ACEi/ARB if serum creatinine rises ≤30% acutely after initiation—this reflects beneficial reduction in intraglomerular pressure.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Standardized Apex Academy Footer -->
+  <footer class="border-t border-[#27272A] bg-[#09090B] py-4 px-4 mt-8">
+    <div class="max-w-3xl mx-auto flex items-center justify-center gap-2.5">
+      <div class="w-6 h-6 rounded-md bg-white border border-[#FACC15] p-0.5 flex items-center justify-center shrink-0">
+        <svg viewBox="0 0 120 110" class="w-full h-full" aria-hidden="true">
+          <polygon points="60,8 22,24 60,40 98,24" fill="#000000"/>
+          <path d="M38,33 L38,44 C38,51 82,51 82,44 L82,33 L60,43 Z" fill="#000000"/>
+          <line x1="90" y1="27" x2="90" y2="45" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
+          <rect x="87.5" y="43" width="5" height="7" rx="1" fill="#000000"/>
+          <polygon points="60,52 20,98 37,98 60,64 83,98 100,98" fill="#000000"/>
+        </svg>
+      </div>
+      <span class="text-xs font-semibold text-zinc-400">Apex Academy - Medical Education at the Apex</span>
+    </div>
+  </footer>
+
+  <!-- Custom Reset Confirmation Modal (#resetModal) -->
+  <div id="resetModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#18181B] border border-[#27272A] rounded-2xl max-w-sm w-full p-5 shadow-2xl">
+      <h3 class="text-base font-extrabold text-white mb-1.5">Reset Quiz Progress?</h3>
+      <p class="text-xs sm:text-sm text-zinc-400 mb-5">This will clear your score, reset all 30 answers, and reshuffle option order A–D.</p>
+      <div class="flex justify-end gap-2.5">
+        <button onclick="closeResetModal()" class="px-4 py-2 rounded-xl bg-zinc-900 border border-[#27272A] text-zinc-300 text-xs font-bold hover:bg-zinc-800">Cancel</button>
+        <button onclick="confirmReset()" class="px-4 py-2 rounded-xl bg-[#FACC15] text-black text-xs font-extrabold hover:bg-yellow-300">Reset Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 30 High-Yield Board-Level Questions: AHA/ACC 2025 High Blood Pressure Guideline
+    const RAW_QUESTIONS = [
+      {
+        domain: "Risk Stratification",
+        stem: "A 56-year-old man without clinical CVD, diabetes, or CKD has confirmed Stage 1 hypertension (average BP 136/84 mmHg). Which risk calculator and 10-year total CVD threshold now guide immediate pharmacotherapy in the 2025 AHA/ACC Guideline?",
+        options: [
+          "Race-free PREVENT equations with a 10-year total CVD risk ≥7.5%",
+          "Pooled Cohort Equations with a 10-year ASCVD risk threshold ≥10.0%",
+          "Framingham Risk Score with a 10-year coronary risk threshold ≥15.0%",
+          "SCORE2-OP algorithm with a 10-year fatal CVD risk threshold ≥5.0%"
+        ],
+        answer: 0,
+        rationale: "The 2025 AHA/ACC Guideline replaces the Pooled Cohort Equations with the race-free PREVENT equations (predicting total CVD including heart failure) and sets ≥7.5% 10-year risk as the threshold for immediate pharmacotherapy in Stage 1 HTN."
+      },
+      {
+        domain: "Stage 1 Management",
+        stem: "A 44-year-old woman with confirmed Stage 1 hypertension (average BP 134/84 mmHg) has a 10-year PREVENT CVD risk of 3.2%. After 4 months of adherent lifestyle modification, her average home BP remains 134/82 mmHg. What is the 2025 AHA/ACC recommendation?",
+        options: [
+          "Initiate antihypertensive medication because BP remains ≥130/80 mmHg",
+          "Continue lifestyle therapy alone until BP reaches ≥140/90 mmHg",
+          "Reassess PREVENT score in 5 years without starting medication",
+          "Start dual fixed-dose combination therapy targeting SBP <115 mmHg"
+        ],
+        answer: 0,
+        rationale: "A key 2025 update: in lower-risk adults (PREVENT <7.5%) with Stage 1 HTN, pharmacotherapy is recommended if average BP remains ≥130/80 mmHg after an initial 3- to 6-month trial of lifestyle modification (Class 1)."
+      },
+      {
+        domain: "BP Targets",
+        stem: "A 64-year-old man with Stage 2 hypertension and type 2 diabetes initiates combination therapy. What is the overarching BP target for adults in the 2025 AHA/ACC Guideline, and what additional systolic goal is encouraged in selected higher-risk patients?",
+        options: [
+          "Overarching goal <130/80 mmHg; encouraging SBP <120 mmHg if tolerated",
+          "Overarching goal <140/90 mmHg; encouraging SBP <130 mmHg in diabetes",
+          "Overarching goal <125/75 mmHg; encouraging SBP <110 mmHg in CKD",
+          "Overarching goal <135/85 mmHg; encouraging SBP <125 mmHg in elderly"
+        ],
+        answer: 0,
+        rationale: "The 2025 guideline maintains the universal treatment goal of <130/80 mmHg for adults and explicitly encourages pursuing SBP <120 mmHg in appropriately selected higher-risk adults (supported by SPRINT, BPROAD, ESPRIT) when feasible and tolerated."
+      },
+      {
+        domain: "Severe Hypertension",
+        stem: "A 61-year-old asymptomatic woman presents to an urgent care clinic with BP 192/114 mmHg. Physical exam, ECG, troponin, creatinine, and fundoscopy show no acute target-organ damage. What terminology and management does the 2025 guideline endorse?",
+        options: [
+          "Severe hypertension; manage outpatient by starting or intensifying oral therapy",
+          "Hypertensive urgency; give IV labetalol to lower MAP 25% in 1 hour",
+          "Hypertensive crisis; admit to telemetry for 24-hour IV nicardipine infusion",
+          "Accelerated hypertension; administer sublingual nifedipine before discharge"
+        ],
+        answer: 0,
+        rationale: "The 2025 guideline replaces 'hypertensive urgency' with 'severe hypertension' (BP >180/120 mmHg without acute target-organ damage) and recommends outpatient evaluation with initiation, reinstitution, or intensification of oral therapy—avoiding IV agents."
+      },
+      {
+        domain: "Primary Aldosteronism",
+        stem: "A 52-year-old man with Stage 2 hypertension (BP 154/94 mmHg) has a normal serum potassium of 4.2 mEq/L. Under the expanded 2025 AHA/ACC screening criteria, what is the recommendation regarding primary aldosteronism (PA) testing?",
+        options: [
+          "Screen with PAC and PRA regardless of normal serum potassium levels",
+          "Defer PA screening unless spontaneous or diuretic-induced hypokalemia occurs",
+          "Order adrenal CT first before obtaining plasma aldosterone and renin",
+          "Reserve PA screening solely for patients failing four antihypertensive drugs"
+        ],
+        answer: 0,
+        rationale: "Because hypokalemia is absent in most PA cases, the 2025 AHA/ACC Guideline expands PA screening to all adults with Stage 2 or resistant hypertension regardless of serum potassium concentration."
+      },
+      {
+        domain: "Primary Aldosteronism",
+        stem: "A patient with resistant hypertension is undergoing biochemical screening for primary aldosteronism (PAC/PRA ratio). Which antihypertensive class must be withheld for at least 4 weeks prior to testing to avoid invalidating results?",
+        options: [
+          "Mineralocorticoid receptor antagonists such as spironolactone or eplerenone",
+          "Dihydropyridine calcium channel blockers such as amlodipine or nifedipine",
+          "Peripheral alpha-1 adrenergic blockers such as doxazosin or prazosin",
+          "Direct arterial vasodilators such as hydralazine or minoxidil therapy"
+        ],
+        answer: 0,
+        rationale: "MRAs (spironolactone, eplerenone) strongly stimulate renin and confound ARR interpretation, so they must be held for ≥4 weeks before screening. Most other agents (ACEi, ARB, CCB, alpha-blockers) can usually be continued during initial screening."
+      },
+      {
+        domain: "Initial Evaluation",
+        stem: "Which laboratory test was newly emphasized as a routine baseline measurement for all adults diagnosed with hypertension in the 2025 AHA/ACC Guideline to refine cardiovascular-kidney-metabolic risk?",
+        options: [
+          "Urine albumin-to-creatinine ratio (UACR) on a spot urine sample",
+          "High-sensitivity cardiac troponin T on initial outpatient visit",
+          "Serum B-type natriuretic peptide in all asymptomatic patients",
+          "24-hour urinary free metanephrines for every Stage 1 patient"
+        ],
+        answer: 0,
+        rationale: "The 2025 guideline elevates routine UACR measurement as part of the initial hypertension evaluation, aligning with PREVENT optional variables and early detection of kidney/cardiovascular risk."
+      },
+      {
+        domain: "Pharmacotherapy",
+        stem: "A 58-year-old Black man without CKD or diabetes is newly diagnosed with Stage 2 hypertension (average BP 156/94 mmHg). How does the 2025 AHA/ACC Guideline address race-based drug selection and initial regimen structure?",
+        options: [
+          "Remove race-based drug selection; start a single-pill dual combination",
+          "Mandate CCB or thiazide monotherapy specifically based on Black race",
+          "Start ACE inhibitor monotherapy and uptitrate for 6 months first",
+          "Prescribe two separate generic pills rather than a fixed-dose combination"
+        ],
+        answer: 0,
+        rationale: "The 2025 guideline removes race-based antihypertensive drug selection and recommends initiating two first-line agents of different classes—preferring a single-pill fixed-dose combination (Class 1)—for Stage 2 hypertension to improve adherence and control."
+      },
+      {
+        domain: "BP Measurement",
+        stem: "A 49-year-old tech executive brings 3 months of systolic BP logs from a cuffless optical smartwatch averaging 126/78 mmHg, whereas standardized office readings average 144/88 mmHg. What does the 2025 guideline state about cuffless devices?",
+        options: [
+          "Avoid relying on cuffless devices until precision and reliability improve",
+          "Use cuffless smartwatch averages to replace upper-arm home BP cuffs",
+          "Diagnose white-coat hypertension immediately using optical wrist logs",
+          "Average smartwatch readings equally with automated office BP values"
+        ],
+        answer: 0,
+        rationale: "The 2025 AHA/ACC Guideline explicitly advises against relying on cuffless BP devices, including smartwatches, for diagnosing hypertension or directing treatment until greater validation and precision are demonstrated."
+      },
+      {
+        domain: "Lifestyle & Diet",
+        stem: "A 60-year-old man with Stage 1 hypertension and normal renal function (eGFR 88 mL/min, K+ 4.0 mEq/L) prepares most meals at home. Which dietary potassium intervention is newly endorsed in the 2025 AHA/ACC Guideline?",
+        options: [
+          "Potassium-based salt substitutes to prevent or treat elevated blood pressure",
+          "Oral potassium chloride tablets 40 mEq daily for all hypertensive adults",
+          "Strict potassium restriction below 1500 mg/day regardless of eGFR",
+          "Potassium-based salt substitutes even in Stage 4 CKD on spironolactone"
+        ],
+        answer: 0,
+        rationale: "Supported by SSaSS, the 2025 guideline states potassium-based salt substitutes can be useful to prevent or treat elevated BP/HTN in patients whose sodium intake comes mainly from home cooking, EXCEPT in CKD or with K+-sparing medications."
+      },
+      {
+        domain: "Lifestyle & Diet",
+        stem: "What are the optimal daily sodium intake target and alcohol counseling recommendation for adults with hypertension in the 2025 AHA/ACC Guideline?",
+        options: [
+          "Sodium <1500 mg/day optimal (<2300 mg/day max); reduce or eliminate alcohol",
+          "Sodium <3000 mg/day optimal; up to 3 alcoholic drinks daily for men",
+          "Sodium <2500 mg/day optimal; red wine 2 glasses daily for vasodilation",
+          "Sodium <1000 mg/day mandatory; avoid caffeine rather than alcohol intake"
+        ],
+        answer: 0,
+        rationale: "The 2025 guideline strongly recommends reducing sodium intake (<2300 mg/day, moving toward an optimal goal of <1500 mg/day) and reducing or eliminating alcohol consumption (zero is safest; if drinking, ≤2 drinks/day men, ≤1 women)."
+      },
+      {
+        domain: "Renal Denervation",
+        stem: "A 55-year-old woman with confirmed true resistant hypertension (average ABPM 154/92 mmHg) despite maximally tolerated chlorthalidone, amlodipine, losartan, and spironolactone asks about renal denervation. How does the 2025 guideline position this procedure?",
+        options: [
+          "Cautious option after multidisciplinary evaluation and shared decision-making",
+          "First-line Class 1 alternative before initiating any oral antihypertensive",
+          "Strictly contraindicated (Class 3 Harm) across all resistant hypertension",
+          "Recommended only in patients with fibromuscular dysplasia or eGFR <30"
+        ],
+        answer: 0,
+        rationale: "Following FDA approval and sham-controlled trials (SPYRAL, RADIANCE), the 2025 guideline cautiously incorporates catheter-based renal denervation (Class 2b) for selected patients with resistant or uncontrolled HTN after multidisciplinary review and shared decision-making."
+      },
+      {
+        domain: "Resistant Hypertension",
+        stem: "Before diagnosing true resistant hypertension in a patient on three antihypertensive medications with office BP 152/90 mmHg, which mandatory exclusions must be confirmed?",
+        options: [
+          "Exclude pseudoresistance via out-of-office BP, adherence check, and diuretic inclusion",
+          "Exclude secondary causes only after adding hydralazine and minoxidil first",
+          "Exclude white-coat effect solely by repeating one manual office measurement",
+          "Confirm that beta-blocker therapy is included among the three baseline agents"
+        ],
+        answer: 0,
+        rationale: "True resistant HTN requires BP above goal on ≥3 optimally dosed agents of different classes (including a diuretic), after confirming medication adherence and excluding white-coat/pseudoresistance using ABPM or HBPM."
+      },
+      {
+        domain: "Resistant Hypertension",
+        stem: "A 63-year-old man has true resistant hypertension on amlodipine 10 mg, olmesartan 40 mg, and chlorthalidone 25 mg (eGFR 72 mL/min, K+ 3.9 mEq/L). Which fourth-line pharmacologic agent has the strongest evidence for BP reduction?",
+        options: [
+          "Spironolactone 25 mg daily as the preferred fourth-line mineralocorticoid blocker",
+          "Clonidine 0.1 mg twice daily as the preferred fourth-line central agonist",
+          "Doxazosin 4 mg daily as the preferred fourth-line alpha-1 receptor blocker",
+          "Bisoprolol 10 mg daily as the preferred fourth-line cardioselective agent"
+        ],
+        answer: 0,
+        rationale: "Consistent with PATHWAY-2, spironolactone (or eplerenone if not tolerated) remains the most effective fourth-line agent for resistant hypertension when eGFR and serum potassium permit."
+      },
+      {
+        domain: "Acute Stroke & ICH",
+        stem: "A 68-year-old man presents 2 hours after acute spontaneous intracerebral hemorrhage (ICH) with initial BP 196/108 mmHg. What acute BP management strategy aligns with the 2025 AHA/ACC Guideline?",
+        options: [
+          "Smoothly lower SBP to 130–140 mmHg (or <130 mmHg) while avoiding steep drops",
+          "Permit permissive hypertension up to 220/120 mmHg for the first 72 hours",
+          "Rapidly drop SBP below 100 mmHg within 15 minutes using nitroprusside",
+          "Avoid intravenous antihypertensives until repeat head CT at 48 hours"
+        ],
+        answer: 0,
+        rationale: "In acute mild-to-moderate ICH presenting with SBP 150–220 mmHg, smooth, sustained SBP lowering (targeting <140 mmHg / 130–140 mmHg, avoiding SBP <110 or rapid fluctuations >60 mmHg/hr) reduces hematoma expansion and improves functional outcomes."
+      },
+      {
+        domain: "Acute Ischemic Stroke",
+        stem: "A 72-year-old woman presents with acute ischemic stroke (onset 8 hours ago), ineligible for thrombolysis or mechanical thrombectomy. Her BP is 198/104 mmHg without aortic dissection or acute HF. What is the appropriate acute BP strategy?",
+        options: [
+          "Avoid initiating antihypertensives unless BP ≥220/120 mmHg in first 24–48 hours",
+          "Immediately infuse nicardipine to achieve BP <140/90 mmHg within 1 hour",
+          "Reduce systolic blood pressure by 30% over the first 6 hours of admission",
+          "Resume all home oral antihypertensives immediately in the emergency room"
+        ],
+        answer: 0,
+        rationale: "In acute ischemic stroke not receiving thrombolysis/thrombectomy, antihypertensive therapy should not be initiated in the first 24–48 hours unless BP is ≥220/120 mmHg (then lower cautiously by ~15% over 24h) or another acute indication exists."
+      },
+      {
+        domain: "Pregnancy Hypertension",
+        stem: "A 31-year-old woman at 14 weeks gestation with chronic hypertension has confirmed office BP 144/92 mmHg without proteinuria. Based on the CHAP trial integrated into the 2025 guideline, what is the treatment threshold and preferred drug?",
+        options: [
+          "Initiate labetalol or extended-release nifedipine at BP ≥140/90 mmHg",
+          "Withhold antihypertensives until BP reaches ≥160/110 mmHg in pregnancy",
+          "Initiate lisinopril 10 mg daily targeting BP <120/80 mmHg immediately",
+          "Initiate atenolol 50 mg daily to prevent fetal growth restriction"
+        ],
+        answer: 0,
+        rationale: "Following the CHAP trial, treating mild chronic hypertension in pregnancy at a threshold of ≥140/90 mmHg (targeting <140/90 mmHg) with safe agents (labetalol, extended-release nifedipine, methyldopa) reduces preeclampsia and preterm birth without impairing fetal growth. ACEi/ARBs are teratogenic; atenolol causes IUGR."
+      },
+      {
+        domain: "Postpartum & Long-Term Risk",
+        stem: "A 34-year-old woman delivered after preeclampsia with severe features; her BP normalized to 124/78 mmHg on postpartum day 2. What postpartum and long-term recommendation is emphasized in the 2025 AHA/ACC Guideline?",
+        options: [
+          "Ensure early postpartum BP surveillance and flag elevated lifelong CVD risk",
+          "Discharge without BP follow-up because preeclampsia resolves permanently at birth",
+          "Avoid home BP monitoring for 6 weeks due to physiologic postpartum shifts",
+          "Start lifelong ACE inhibitor therapy immediately during breastfeeding"
+        ],
+        answer: 0,
+        rationale: "Postpartum BP often peaks 3–7 days after delivery, necessitating early postpartum surveillance (often via home BP monitoring). Furthermore, hypertensive disorders of pregnancy must be documented as a permanent risk-enhancing marker for lifelong CVD."
+      },
+      {
+        domain: "Chronic Kidney Disease",
+        stem: "A 65-year-old man with Stage 3b CKD (eGFR 38 mL/min) and severely increased albuminuria (UACR 420 mg/g) has BP 142/86 mmHg. Which first-line drug class and expected post-initiation creatinine change should guide care?",
+        options: [
+          "ACEi or ARB; continue therapy if serum creatinine rises ≤30% acutely",
+          "ACEi plus ARB dual blockade; discontinue if creatinine rises >10% acutely",
+          "Hydrochlorothiazide monotherapy; avoid RAS blockers when eGFR is <45",
+          "Amlodipine monotherapy; ACEi/ARBs worsen proteinuria in Stage 3b CKD"
+        ],
+        answer: 0,
+        rationale: "ACEi or ARB (never combined—Class 3 Harm) is Class 1 for hypertension with CKD and albuminuria. An acute hemodynamic creatinine rise up to 20–30% reflects reduced intraglomerular pressure and should not prompt discontinuation unless progressive or hyperkalemia occurs."
+      },
+      {
+        domain: "Heart Failure & HTN",
+        stem: "A 67-year-old man with HFrEF (LVEF 30%) has BP 146/88 mmHg on sacubitril/valsartan, carvedilol, empagliflozin, and spironolactone. Which antihypertensive class is strictly contraindicated (Class 3 Harm) for additional BP lowering?",
+        options: [
+          "Non-dihydropyridine calcium channel blockers such as diltiazem or verapamil",
+          "Dihydropyridine calcium channel blockers such as amlodipine or felodipine",
+          "Fixed-dose hydralazine plus isosorbide dinitrate in self-identified Black adults",
+          "Thiazide-like diuretics such as chlorthalidone for persistent volume overload"
+        ],
+        answer: 0,
+        rationale: "Non-dihydropyridine CCBs (diltiazem, verapamil) have negative inotropic effects and worsen outcomes in HFrEF (Class 3 Harm). Amlodipine is neutral and safe if additional BP lowering is needed after GDMT optimization."
+      },
+      {
+        domain: "Aortic Dissection",
+        stem: "A 59-year-old man presents with acute Type B aortic dissection, HR 104 bpm, and BP 192/106 mmHg. What is the immediate hemodynamic sequence and target?",
+        options: [
+          "IV beta-blocker first to HR <60 bpm, then IV vasodilator to SBP 100–120 mmHg",
+          "IV nicardipine first to SBP <120 mmHg, then IV esmolol to HR <80 bpm",
+          "IV hydralazine bolus first, followed by oral metoprolol after 4 hours",
+          "IV sodium nitroprusside alone targeting MAP <90 mmHg without rate control"
+        ],
+        answer: 0,
+        rationale: "In acute aortic dissection, anti-impulse therapy requires IV beta-blockade (esmolol or labetalol) FIRST to reduce dP/dt and heart rate (<60 bpm), followed by IV vasodilator (nicardipine/clevidipine) if needed to achieve SBP 100–120 mmHg within 20 minutes."
+      },
+      {
+        domain: "Secondary HTN: Pheochromocytoma",
+        stem: "A 46-year-old woman with episodic paroxysmal hypertension (210/118 mmHg), headaches, and diaphoresis has markedly elevated plasma free metanephrines and a 3.5 cm adrenal mass. What preoperative pharmacologic sequence is mandatory?",
+        options: [
+          "Alpha-adrenergic blockade for 7–14 days before adding any beta-blocker",
+          "Beta-adrenergic blockade for 7–14 days before adding any alpha-blocker",
+          "High-dose loop diuretic therapy to deplete intravascular volume pre-op",
+          "Immediate laparoscopic adrenalectomy without prior adrenergic blockade"
+        ],
+        answer: 0,
+        rationale: "Unopposed alpha-adrenergic vasoconstriction from starting a beta-blocker first can trigger lethal hypertensive crisis in pheochromocytoma. Alpha-blockade (phenoxybenzamine or doxazosin) plus salt/volume repletion must precede beta-blockade."
+      },
+      {
+        domain: "Secondary HTN: Renovascular",
+        stem: "A 71-year-old smoker with coronary artery disease has unilateral 75% atherosclerotic renal artery stenosis and BP 148/84 mmHg controlled on amlodipine, chlorthalidone, and losartan (stable eGFR 58 mL/min). What is the recommended management?",
+        options: [
+          "Continue optimal medical therapy; routine renal artery stenting has no benefit",
+          "Perform immediate renal artery stenting to preserve long-term kidney function",
+          "Discontinue losartan permanently because unilateral RAS contraindicates ARBs",
+          "Refer for surgical aortorenal bypass grafting to prevent heart failure"
+        ],
+        answer: 0,
+        rationale: "Based on CORAL and ASTRAL, medical therapy is first-line for atherosclerotic RAS. Revascularization is reserved for refractory resistant HTN, progressive ischemic nephropathy, or recurrent flash pulmonary edema."
+      },
+      {
+        domain: "Cognitive Decline & Dementia",
+        stem: "A 70-year-old man with Stage 2 hypertension and mild subjective memory concerns asks whether intensive blood pressure control (<130/80 or <120 mmHg) increases dementia risk by reducing cerebral perfusion. What does the 2025 guideline affirm?",
+        options: [
+          "Intensive BP lowering reduces risk of mild cognitive impairment and dementia",
+          "Intensive BP lowering accelerates vascular dementia in adults over age 65",
+          "Systolic BP should be kept >150 mmHg to preserve cerebral autoregulation",
+          "Antihypertensive therapy has zero documented effect on cognitive outcomes"
+        ],
+        answer: 0,
+        rationale: "Supported by SPRINT-MIND and recent meta-analyses, the 2025 AHA/ACC Guideline highlights that achieving BP <130/80 mmHg (and intensive SBP lowering when tolerated) significantly reduces the risk of mild cognitive impairment and dementia."
+      },
+      {
+        domain: "Older Adults",
+        stem: "An 82-year-old community-dwelling, ambulatory woman with Stage 2 hypertension (BP 158/82 mmHg) has no orthostatic hypotension or frailty. What BP goal is recommended for non-institutionalized older adults?",
+        options: [
+          "Target SBP <130 mmHg with careful monitoring for orthostasis and tolerance",
+          "Target SBP <150 mmHg solely because chronological age exceeds 80 years",
+          "Avoid antihypertensive therapy to prevent hip fractures in all octogenarians",
+          "Target DBP <60 mmHg aggressively regardless of wide pulse pressure"
+        ],
+        answer: 0,
+        rationale: "Age alone is not a barrier to intensive BP control (SPRINT, STEP). For ambulatory community-dwelling older adults, <130/80 mmHg is recommended, whereas goals are individualized for institutionalized patients or those with limited life expectancy."
+      },
+      {
+        domain: "Medication Classes",
+        stem: "In a 58-year-old man with uncomplicated primary Stage 1 hypertension (no CAD, HFrEF, or arrhythmia), which four antihypertensive drug classes are recommended as primary first-line agents?",
+        options: [
+          "Thiazide/thiazide-like diuretics, ACE inhibitors, ARBs, and dihydropyridine CCBs",
+          "Beta-blockers, ACE inhibitors, loop diuretics, and peripheral alpha-blockers",
+          "Thiazide diuretics, beta-blockers, direct renin inhibitors, and central agonists",
+          "MRAs, ACE inhibitors, non-dihydropyridine CCBs, and direct vasodilators"
+        ],
+        answer: 0,
+        rationale: "Thiazide/thiazide-like diuretics, ACEis, ARBs, and CCBs remain the four primary first-line classes for uncomplicated hypertension. Beta-blockers are reserved for compelling indications (post-MI, HFrEF, angina, AF rate control)."
+      },
+      {
+        domain: "Drug-Induced HTN",
+        stem: "A 50-year-old woman previously well-controlled on lisinopril presents with newly elevated BP of 154/92 mmHg. Which combination of commonly overlooked agents is most notorious for blunting ACE inhibitor efficacy and raising BP?",
+        options: [
+          "Oral NSAIDs, systemic decongestants, and combined estrogen contraceptives",
+          "Proton pump inhibitors, inhaled albuterol, and topical corticosteroids",
+          "Statins, low-dose aspirin 81 mg, and selective serotonin reuptake inhibitors",
+          "Metformin, SGLT2 inhibitors, and vitamin D3 oral supplementation"
+        ],
+        answer: 0,
+        rationale: "NSAIDs (inhibiting renal prostaglandins and blunting ACEi/ARB/diuretic efficacy), sympathomimetic decongestants (pseudoephedrine), and estrogen-containing contraceptives are classic reversible causes of elevated BP."
+      },
+      {
+        domain: "Out-of-Office Monitoring",
+        stem: "A 53-year-old man has office BP averaging 126/78 mmHg, but he has left ventricular hypertrophy on ECG and UACR of 65 mg/g. Home BP monitoring averages 138/86 mmHg. What is this phenotype and its prognostic significance?",
+        options: [
+          "Masked hypertension; carries cardiovascular risk similar to sustained hypertension",
+          "White-coat hypertension; requires annual reassurance without pharmacotherapy",
+          "Isolated diastolic hypotension; indicates inaccurate oscillometric home cuff",
+          "Pseudohypertension; caused by calcified non-compressible brachial arteries"
+        ],
+        answer: 0,
+        rationale: "Masked hypertension (normal office BP <130/80 mmHg but elevated out-of-office BP ≥130/80 mmHg) confers a CV risk nearly identical to sustained hypertension and warrants lifestyle plus pharmacologic therapy."
+      },
+      {
+        domain: "Follow-Up Intervals",
+        stem: "After initiating or intensifying antihypertensive pharmacotherapy in an adult with Stage 2 hypertension, what is the recommended follow-up interval to reassess BP and laboratory parameters until goal is achieved?",
+        options: [
+          "Reassess in 1 month (every 2–4 weeks) until blood pressure goal is met",
+          "Reassess in 6 months to allow full vascular remodeling before titration",
+          "Reassess in 12 months alongside routine annual preventive lipid testing",
+          "Reassess only via emergency department visits if headache symptoms arise"
+        ],
+        answer: 0,
+        rationale: "Monthly follow-up (every 2–4 weeks) after starting or adjusting antihypertensive therapy is Class 1 to overcome therapeutic inertia, check electrolytes/creatinine (for RAS blockers/diuretics), and reach BP control rapidly."
+      },
+      {
+        domain: "Team-Based Care",
+        stem: "Which health-system intervention carries a Class 1 recommendation in the 2025 AHA/ACC Guideline for improving BP control rates and overcoming clinical inertia?",
+        options: [
+          "Multidisciplinary team-based care combined with structured home BP telemonitoring",
+          "Restricting antihypertensive titration exclusively to annual cardiologist visits",
+          "Requiring manual mercury sphygmomanometry for every outpatient encounter",
+          "Eliminating nurse and pharmacist medication protocols in primary care clinics"
+        ],
+        answer: 0,
+        rationale: "Team-based care (involving physicians, pharmacists, nurses, and community health workers) paired with validated home BP monitoring and telehealth/titration protocols is a Class 1 recommendation to achieve sustained BP control."
+      }
+    ];
+
+    let questions = [];
+    let currentIdx = 0;
+    let userAnswers = [];
+
+    function buildShuffledQuestions() {
+      return RAW_QUESTIONS.map(q => {
+        const indexed = q.options.map((text, idx) => ({ text, isCorrect: idx === q.answer }));
+        for (let i = indexed.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [indexed[i], indexed[j]] = [indexed[j], indexed[i]];
+        }
+        return {
+          domain: q.domain,
+          stem: q.stem,
+          options: indexed.map(item => item.text),
+          answer: indexed.findIndex(item => item.isCorrect),
+          rationale: q.rationale
+        };
+      });
+    }
+
+    function initQuiz() {
+      questions = buildShuffledQuestions();
+      currentIdx = 0;
+      userAnswers = new Array(questions.length).fill(null);
+      document.getElementById('completionBanner').classList.add('hidden');
+      renderAll();
+    }
+
+    function renderAll() {
+      renderHeaderStats();
+      renderNavigator();
+      renderQuestion();
+    }
+
+    function renderHeaderStats() {
+      let score = 0;
+      let answered = 0;
+      userAnswers.forEach((ans, idx) => {
+        if (ans !== null) {
+          answered++;
+          if (ans === questions[idx].answer) score++;
+        }
+      });
+      document.getElementById('scoreCounter').textContent = `${score} / ${questions.length}`;
+      document.getElementById('answeredCounter').textContent = `${answered} / ${questions.length} Answered`;
+
+      const banner = document.getElementById('completionBanner');
+      if (answered === questions.length) {
+        const pct = Math.round((score / questions.length) * 100);
+        document.getElementById('finalScoreTitle').textContent = `Final Score: ${score} / ${questions.length} (${pct}%)`;
+        document.getElementById('finalScoreMsg').textContent = pct >= 75
+          ? 'Board pass benchmark achieved (≥75%). Excellent mastery of AHA/ACC 2025 HTN guidelines.'
+          : 'Review the red navigator items and 2025 Pearls tab to reach the ≥75% board benchmark.';
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    function renderNavigator() {
+      const nav = document.getElementById('questionNav');
+      nav.innerHTML = '';
+      questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = idx + 1;
+        let cls = 'w-8 h-8 rounded-lg text-xs font-extrabold shrink-0 transition flex items-center justify-center border ';
+        if (userAnswers[idx] === null) {
+          cls += 'bg-[#09090B] border-[#27272A] text-zinc-300 hover:border-zinc-500 ';
+        } else if (userAnswers[idx] === q.answer) {
+          cls += 'bg-emerald-600/25 border-emerald-500 text-emerald-300 ';
+        } else {
+          cls += 'bg-rose-600/25 border-rose-500 text-rose-300 ';
+        }
+        if (idx === currentIdx) cls += 'ring-2 ring-[#FACC15] border-[#FACC15] ';
+        btn.className = cls;
+        btn.onclick = () => { currentIdx = idx; renderAll(); };
+        nav.appendChild(btn);
+      });
+      const activeBtn = nav.children[currentIdx];
+      if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    function renderQuestion() {
+      const q = questions[currentIdx];
+      document.getElementById('qDomain').textContent = q.domain;
+      document.getElementById('qCounter').textContent = `Case ${currentIdx + 1} of ${questions.length}`;
+      document.getElementById('qStem').textContent = q.stem;
+
+      const list = document.getElementById('optionsList');
+      list.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      const chosen = userAnswers[currentIdx];
+
+      q.options.forEach((optText, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        let cardCls = 'bg-[#09090B] border-[#27272A] hover:border-[#FACC15]/70 text-zinc-100';
+        let badgeCls = 'bg-[#18181B] border border-[#27272A] text-zinc-300';
+
+        if (chosen !== null) {
+          if (i === q.answer) {
+            cardCls = 'bg-emerald-950/50 border-emerald-500 text-emerald-100';
+            badgeCls = 'bg-emerald-500 text-black';
+          } else if (i === chosen && i !== q.answer) {
+            cardCls = 'bg-rose-950/50 border-rose-500 text-rose-100';
+            badgeCls = 'bg-rose-500 text-white';
+          } else {
+            cardCls = 'bg-[#09090B] border-[#27272A] opacity-45 text-zinc-400';
+          }
+        }
+
+        btn.className = `w-full text-left p-3.5 sm:p-4 rounded-xl border transition flex items-start gap-3 ${cardCls}`;
+        btn.innerHTML = `
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${badgeCls}">${letters[i]}</span>
+          <span class="text-xs sm:text-sm font-medium leading-snug pt-0.5">${optText}</span>
+        `;
+        btn.onclick = () => selectAnswer(i);
+        list.appendChild(btn);
+      });
+
+      const ratBox = document.getElementById('rationaleBox');
+      if (chosen !== null) {
+        const isCorrect = chosen === q.answer;
+        ratBox.className = `mt-5 p-4 rounded-xl border text-xs sm:text-sm leading-relaxed ${
+          isCorrect ? 'bg-emerald-950/30 border-emerald-500/50 text-zinc-100' : 'bg-rose-950/30 border-rose-500/50 text-zinc-100'
+        }`;
+        ratBox.innerHTML = `
+          <div class="flex items-center flex-wrap gap-2 mb-2">
+            <span class="px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase tracking-wider">Resident Pearl</span>
+            <span class="font-extrabold ${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+              ${isCorrect ? '✓ Correct Answer' : '✕ Incorrect — Correct Option: ' + letters[q.answer]}
+            </span>
+          </div>
+          <p class="text-zinc-200">${q.rationale}</p>
+        `;
+      } else {
+        ratBox.className = 'hidden';
+      }
+
+      document.getElementById('prevBtn').disabled = currentIdx === 0;
+      document.getElementById('nextBtn').disabled = currentIdx === questions.length - 1;
+    }
+
+    function selectAnswer(optIdx) {
+      if (userAnswers[currentIdx] !== null) return;
+      userAnswers[currentIdx] = optIdx;
+      renderAll();
+    }
+
+    function moveQuestion(delta) {
+      const next = currentIdx + delta;
+      if (next >= 0 && next < questions.length) {
+        currentIdx = next;
+        renderAll();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function switchTab(tabName) {
+      ['quiz', 'algorithms', 'pearls'].forEach(t => {
+        document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tabName);
+        const btn = document.getElementById(`tab-${t}`);
+        btn.className = t === tabName
+          ? 'py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition bg-[#FACC15] text-black'
+          : 'py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition text-zinc-400 hover:text-white';
+      });
+    }
+
+    function switchAlgoSub(sub) {
+      ['staging', 'resistant', 'emergencies'].forEach(s => {
+        document.getElementById(`algo-${s}`).classList.toggle('hidden', s !== sub);
+        const btn = document.getElementById(`algoBtn-${s}`);
+        btn.className = s === sub
+          ? 'px-3.5 py-2 rounded-xl text-xs font-extrabold bg-[#FACC15] text-black shrink-0'
+          : 'px-3.5 py-2 rounded-xl text-xs font-bold bg-[#18181B] border border-[#27272A] text-zinc-300 shrink-0';
+      });
+    }
+
+    function openResetModal() { document.getElementById('resetModal').classList.remove('hidden'); }
+    function closeResetModal() { document.getElementById('resetModal').classList.add('hidden'); }
+    function confirmReset() { closeResetModal(); initQuiz(); }
+
+    function downloadStudentHtml() {
+      try {
+        const clone = document.documentElement.cloneNode(true);
+        const dlBtn = clone.querySelector('#downloadBtn');
+        if (dlBtn) dlBtn.remove();
+        const modal = clone.querySelector('#resetModal');
+        if (modal) modal.classList.add('hidden');
+        const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
+        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Apex_Academy_AHA_2025_HTN_Quiz.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('Export failed:', err);
+      }
+    }
+
+    window.onload = initQuiz;
+  </script>
+</body>
+</html>

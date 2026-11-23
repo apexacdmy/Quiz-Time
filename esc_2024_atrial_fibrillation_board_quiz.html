@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Apex Academy — ESC 2024 Atrial Fibrillation (30-MCQ)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    html, body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #09090B;
+      color: #FAFAFA;
+      overflow-x: hidden;
+      max-width: 100vw;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#09090B] text-[#FAFAFA] min-h-screen flex flex-col antialiased selection:bg-[#FACC15] selection:text-black">
+
+  <!-- Sticky Header (@apex_quiz_time) -->
+  <header class="sticky top-0 z-40 bg-[#09090B]/95 backdrop-blur-md border-b border-[#27272A]">
+    <div class="max-w-3xl mx-auto px-3 sm:px-5 py-3 flex items-center justify-between gap-2">
+      <!-- Left: Official Apex Academy SVG Logo & Title -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-white border-2 border-[#FACC15] p-1 flex items-center justify-center shrink-0 shadow-sm">
+          <svg viewBox="0 0 120 110" class="w-full h-full" aria-label="Apex Academy Logo">
+            <polygon points="60,8 22,24 60,40 98,24" fill="#000000"/>
+            <path d="M38,33 L38,44 C38,51 82,51 82,44 L82,33 L60,43 Z" fill="#000000"/>
+            <line x1="90" y1="27" x2="90" y2="45" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
+            <rect x="87.5" y="43" width="5" height="7" rx="1" fill="#000000"/>
+            <polygon points="60,52 20,98 37,98 60,64 83,98 100,98" fill="#000000"/>
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10px] sm:text-[11px] font-black tracking-widest uppercase text-white">APEX ACADEMY</span>
+            <span class="px-1.5 py-0.5 text-[10px] font-extrabold rounded bg-[#FACC15] text-black leading-none">ESC 2024</span>
+          </div>
+          <h1 class="text-xs sm:text-sm font-bold text-zinc-200 truncate mt-0.5">Atrial Fibrillation Guidelines</h1>
+        </div>
+      </div>
+
+      <!-- Right: Live Score, One-Tap .HTML Export, Reset -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div class="px-2.5 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-center">
+          <div class="text-[9px] font-bold uppercase tracking-wider text-zinc-400 leading-none">SCORE</div>
+          <div id="scoreCounter" class="text-xs sm:text-sm font-black text-[#FACC15] leading-tight mt-0.5">0 / 30</div>
+        </div>
+        <button id="downloadBtn" onclick="downloadStudentHtml()" title="Download clean student HTML file" class="px-2.5 py-2 rounded-lg bg-[#FACC15] hover:bg-yellow-300 text-black text-[11px] sm:text-xs font-extrabold transition flex items-center gap-1">
+          <span>⬇</span><span class="hidden xs:inline sm:inline">.HTML</span>
+        </button>
+        <button onclick="openResetModal()" title="Reset Quiz" class="px-2.5 py-2 rounded-lg bg-[#18181B] hover:bg-zinc-800 border border-[#27272A] text-zinc-300 text-[11px] sm:text-xs font-bold transition">
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- 3-Column Tab Navigation Bar -->
+    <nav class="max-w-3xl mx-auto px-3 sm:px-5 pb-2.5">
+      <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-[#18181B] border border-[#27272A]">
+        <button id="tab-quiz" onclick="switchTab('quiz')" class="py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition bg-[#FACC15] text-black">
+          30-MCQ Quiz
+        </button>
+        <button id="tab-algorithms" onclick="switchTab('algorithms')" class="py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition text-zinc-400 hover:text-white">
+          PDF Algorithms
+        </button>
+        <button id="tab-pearls" onclick="switchTab('pearls')" class="py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition text-zinc-400 hover:text-white">
+          2024 Pearls
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-3 sm:px-5 py-4 sm:py-6">
+
+    <!-- TAB 1: 30-MCQ QUIZ -->
+    <section id="panel-quiz" class="space-y-4">
+      <!-- Horizontally Scrollable Question Navigator (1 to 30) -->
+      <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-3">
+        <div class="flex items-center justify-between mb-2 px-0.5">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Question Navigator (1–30)</span>
+          <span id="answeredCounter" class="text-[11px] font-bold text-[#FACC15]">0 / 30 Answered</span>
+        </div>
+        <div id="questionNav" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1"></div>
+      </div>
+
+      <!-- Completion Summary Banner (shown when all 30 answered) -->
+      <div id="completionBanner" class="hidden bg-[#18181B] border-2 border-[#FACC15] rounded-2xl p-4 sm:p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase tracking-wider mb-1">Board Assessment Complete</span>
+            <h2 id="finalScoreTitle" class="text-lg sm:text-xl font-black text-white"></h2>
+            <p id="finalScoreMsg" class="text-xs sm:text-sm text-zinc-400 mt-0.5"></p>
+          </div>
+          <button onclick="openResetModal()" class="px-4 py-2.5 rounded-xl bg-[#FACC15] text-black font-extrabold text-xs sm:text-sm hover:bg-yellow-300 transition shrink-0">
+            Retake &amp; Reshuffle
+          </button>
+        </div>
+      </div>
+
+      <!-- Clinical Vignette Card -->
+      <article class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-6 shadow-lg">
+        <div class="flex items-center justify-between gap-2 mb-3 pb-3 border-b border-[#27272A]">
+          <span id="qDomain" class="px-2.5 py-1 rounded-md bg-zinc-900 border border-[#27272A] text-[#FACC15] text-[11px] font-extrabold uppercase tracking-wider">Category</span>
+          <span id="qCounter" class="text-xs font-bold text-zinc-400">Case 1 of 30</span>
+        </div>
+
+        <h2 id="qStem" class="text-sm sm:text-base font-semibold leading-relaxed text-white mb-5"></h2>
+
+        <!-- 4 Touch-Friendly Options (A–D) -->
+        <div id="optionsList" class="space-y-2.5"></div>
+
+        <!-- Immediate Rationale Feedback Box with Yellow Resident Pearl Badge -->
+        <div id="rationaleBox" class="hidden mt-5 p-4 rounded-xl border text-xs sm:text-sm leading-relaxed"></div>
+      </article>
+
+      <!-- Previous / Next Controls -->
+      <div class="flex items-center justify-between gap-3 pt-1">
+        <button id="prevBtn" onclick="moveQuestion(-1)" class="flex-1 sm:flex-none px-4 py-3 rounded-xl bg-[#18181B] hover:bg-zinc-800 border border-[#27272A] text-white text-xs sm:text-sm font-bold disabled:opacity-35 transition">
+          ← Previous
+        </button>
+        <button id="nextBtn" onclick="moveQuestion(1)" class="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-[#FACC15] hover:bg-yellow-300 text-black text-xs sm:text-sm font-extrabold disabled:opacity-35 transition">
+          Next Question →
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB 2: PDF ALGORITHMS -->
+    <section id="panel-algorithms" class="hidden space-y-4">
+      <!-- Source Guideline Banner -->
+      <a href="https://doi.org/10.1093/eurheartj/ehae176" target="_blank" rel="noopener noreferrer" class="block bg-[#18181B] border border-[#FACC15]/60 hover:border-[#FACC15] rounded-2xl p-4 transition">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#FACC15]">Official Source Guideline</div>
+            <div class="text-sm font-bold text-white mt-0.5">2024 ESC/EACTS Guidelines for the Management of Atrial Fibrillation</div>
+            <div class="text-xs text-zinc-400 mt-0.5">European Heart Journal • https://doi.org/10.1093/eurheartj/ehae176</div>
+          </div>
+          <span class="px-3 py-1.5 rounded-lg bg-[#FACC15] text-black text-xs font-extrabold shrink-0">Open DOI ↗</span>
+        </div>
+      </a>
+
+      <!-- Interactive Sub-Tabs -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+        <button onclick="switchAlgoSub('afcare')" id="algoBtn-afcare" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-[#FACC15] text-black shrink-0">AF-CARE Pathway</button>
+        <button onclick="switchAlgoSub('oac')" id="algoBtn-oac" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#18181B] border border-[#27272A] text-zinc-300 shrink-0">CHA₂DS₂-VA &amp; DOACs</button>
+        <button onclick="switchAlgoSub('rhythm')" id="algoBtn-rhythm" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#18181B] border border-[#27272A] text-zinc-300 shrink-0">Cardioversion &amp; Ablation</button>
+      </div>
+
+      <!-- Sub-panel: AF-CARE -->
+      <div id="algo-afcare" class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-5 space-y-3">
+        <h3 class="text-sm sm:text-base font-extrabold text-[#FACC15]">AF-CARE Integrated Management Framework</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+          <div class="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A]">
+            <div class="font-black text-[#FACC15] mb-1">[C] Comorbidity &amp; Risk Factor Control</div>
+            <p class="text-zinc-300">Placed FIRST. BP target 120–129/70–79 mmHg, ≥10% weight loss, alcohol ≤3 drinks/week (≤30 g), optimal HF GDMT (SGLT2i), diabetes &amp; OSA management.</p>
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A]">
+            <div class="font-black text-[#FACC15] mb-1">[A] Avoid Stroke &amp; Thromboembolism</div>
+            <p class="text-zinc-300">Use sex-neutral CHA₂DS₂-VA (≥2 Class I; 1 Class IIa). DOACs preferred over VKAs (except mechanical valves &amp; mod-severe MS). Manage modifiable bleeding risks.</p>
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A]">
+            <div class="font-black text-[#FACC15] mb-1">[R] Reduce Symptoms (Rate &amp; Rhythm)</div>
+            <p class="text-zinc-300">Lenient initial rate &lt;110 bpm. First-line catheter ablation is Class I in symptomatic paroxysmal AF. Early rhythm control (&lt;12 mo) is Class IIa.</p>
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A]">
+            <div class="font-black text-[#FACC15] mb-1">[E] Evaluation &amp; Dynamic Reassessment</div>
+            <p class="text-zinc-300">Mandatory structured reassessment at 6 months post-presentation and at least annually thereafter for renal function, stroke/bleeding risk, and adherence.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-panel: OAC & Dosing -->
+      <div id="algo-oac" class="hidden bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-5 space-y-3">
+        <h3 class="text-sm sm:text-base font-extrabold text-[#FACC15]">DOAC Dose-Reduction Criteria (Off-Label Reduction = Class III)</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-[#27272A] text-zinc-400">
+                <th class="py-2 pr-3">Agent</th>
+                <th class="py-2 pr-3">Standard</th>
+                <th class="py-2 pr-3">Reduced</th>
+                <th class="py-2">Strict Criteria</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#27272A] text-zinc-200">
+              <tr><td class="py-2.5 pr-3 font-bold text-[#FACC15]">Apixaban</td><td class="py-2.5 pr-3">5 mg BID</td><td class="py-2.5 pr-3">2.5 mg BID</td><td class="py-2.5">≥2 of: Age ≥80, Wt ≤60 kg, SCr ≥1.5 mg/dL (or CrCl 15–29)</td></tr>
+              <tr><td class="py-2.5 pr-3 font-bold text-[#FACC15]">Rivaroxaban</td><td class="py-2.5 pr-3">20 mg QD</td><td class="py-2.5 pr-3">15 mg QD</td><td class="py-2.5">CrCl 15–49 mL/min (take with food)</td></tr>
+              <tr><td class="py-2.5 pr-3 font-bold text-[#FACC15]">Edoxaban</td><td class="py-2.5 pr-3">60 mg QD</td><td class="py-2.5 pr-3">30 mg QD</td><td class="py-2.5">CrCl 15–50 mL/min, Wt ≤60 kg, or strong P-gp inhibitor</td></tr>
+              <tr><td class="py-2.5 pr-3 font-bold text-[#FACC15]">Dabigatran</td><td class="py-2.5 pr-3">150 mg BID</td><td class="py-2.5 pr-3">110 mg BID</td><td class="py-2.5">Age ≥80, verapamil use, or high bleed risk (avoid CrCl &lt;30)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sub-panel: Cardioversion & Ablation -->
+      <div id="algo-rhythm" class="hidden bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-5 space-y-3 text-xs sm:text-sm">
+        <h3 class="text-sm sm:text-base font-extrabold text-[#FACC15]">2024 Cardioversion &amp; Catheter Ablation Rules</h3>
+        <ul class="space-y-2 text-zinc-300 list-disc pl-4">
+          <li><strong class="text-white">24-Hour Safe Window (New):</strong> Early cardioversion without 3 weeks OAC or TEE is now restricted to AF duration <strong>≤24 hours</strong> (shortened from 48h).</li>
+          <li><strong class="text-white">First-Line Paroxysmal Ablation:</strong> Class I (LOE A) after shared decision-making to reduce symptoms and recurrence.</li>
+          <li><strong class="text-white">HFrEF &amp; Tachycardia-Induced CMP:</strong> Class I for catheter ablation to reverse LV systolic dysfunction.</li>
+          <li><strong class="text-white">Post-Ablation OAC:</strong> Continue OAC for ≥2 months in all patients, then indefinitely per CHA₂DS₂-VA regardless of sinus rhythm.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TAB 3: 2024 PEARLS -->
+    <section id="panel-pearls" class="hidden space-y-3">
+      <a href="https://doi.org/10.1093/eurheartj/ehae176" target="_blank" rel="noopener noreferrer" class="block bg-[#18181B] border border-[#FACC15]/60 hover:border-[#FACC15] rounded-2xl p-4 transition">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#FACC15]">High-Yield Board Review</div>
+            <div class="text-sm font-bold text-white mt-0.5">Top 2024 ESC AF Paradigm Shifts &amp; Resident Pearls</div>
+          </div>
+          <span class="px-3 py-1.5 rounded-lg bg-[#FACC15] text-black text-xs font-extrabold shrink-0">Guideline ↗</span>
+        </div>
+      </a>
+
+      <div class="space-y-2.5 text-xs sm:text-sm">
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 1 • CHA₂DS₂-VA</span>
+          <p class="text-zinc-200">Female sex was removed from stroke risk scoring. OAC is Class I at CHA₂DS₂-VA ≥2 and Class IIa at 1. HCM and cardiac amyloidosis mandate OAC irrespective of score (Class I).</p>
+        </div>
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 2 • Surgical LAAO (LAAOS III)</span>
+          <p class="text-zinc-200">Concomitant surgical LAA closure during cardiac surgery in AF patients is Class I as an <strong>adjunct</strong> to—not a substitute for—ongoing oral anticoagulation.</p>
+        </div>
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 3 • Breakthrough Stroke</span>
+          <p class="text-zinc-200">Do NOT add antiplatelets to OAC (Class III) and do NOT routinely switch between DOACs empirically after breakthrough stroke—investigate adherence, dosing, and non-AF etiologies.</p>
+        </div>
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 4 • FRAIL-AF &amp; Subclinical AF</span>
+          <p class="text-zinc-200">In frail elderly stable on VKA (TTR ≥70%), continuing VKA may be considered over switching to DOAC (Class IIb). For device-detected AHRE, DOACs are Class IIb if high stroke/low bleed risk.</p>
+        </div>
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 5 • Bleeding Risk Scores</span>
+          <p class="text-zinc-200">Never withhold or withdraw OAC based on HAS-BLED alone (Class III). Actively treat modifiable bleeding risks (HTN, NSAIDs, alcohol).</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Standardized Apex Academy Footer -->
+  <footer class="border-t border-[#27272A] bg-[#09090B] py-4 px-4 mt-8">
+    <div class="max-w-3xl mx-auto flex items-center justify-center gap-2.5">
+      <div class="w-6 h-6 rounded-md bg-white border border-[#FACC15] p-0.5 flex items-center justify-center shrink-0">
+        <svg viewBox="0 0 120 110" class="w-full h-full" aria-hidden="true">
+          <polygon points="60,8 22,24 60,40 98,24" fill="#000000"/>
+          <path d="M38,33 L38,44 C38,51 82,51 82,44 L82,33 L60,43 Z" fill="#000000"/>
+          <line x1="90" y1="27" x2="90" y2="45" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
+          <rect x="87.5" y="43" width="5" height="7" rx="1" fill="#000000"/>
+          <polygon points="60,52 20,98 37,98 60,64 83,98 100,98" fill="#000000"/>
+        </svg>
+      </div>
+      <span class="text-xs font-semibold text-zinc-400">Apex Academy - Medical Education at the Apex</span>
+    </div>
+  </footer>
+
+  <!-- Custom Reset Confirmation Modal (#resetModal) -->
+  <div id="resetModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#18181B] border border-[#27272A] rounded-2xl max-w-sm w-full p-5 shadow-2xl">
+      <h3 class="text-base font-extrabold text-white mb-1.5">Reset Quiz Progress?</h3>
+      <p class="text-xs sm:text-sm text-zinc-400 mb-5">This will clear your score, reset all 30 answers, and reshuffle option order A–D.</p>
+      <div class="flex justify-end gap-2.5">
+        <button onclick="closeResetModal()" class="px-4 py-2 rounded-xl bg-zinc-900 border border-[#27272A] text-zinc-300 text-xs font-bold hover:bg-zinc-800">Cancel</button>
+        <button onclick="confirmReset()" class="px-4 py-2 rounded-xl bg-[#FACC15] text-black text-xs font-extrabold hover:bg-yellow-300">Reset Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 30 High-Yield Board-Level Questions: ESC 2024 Atrial Fibrillation Guidelines
+    const RAW_QUESTIONS = [
+      {
+        domain: "AF-CARE Framework",
+        stem: "A 66-year-old woman with obesity (BMI 34 kg/m²), hypertension (BP 146/88 mmHg), and newly diagnosed paroxysmal AF presents to clinic. Under the 2024 ESC AF-CARE pathway, which pillar is placed first to optimize rhythm control and prognosis?",
+        options: [
+          "Comorbidity and risk factor management",
+          "Anticoagulation and stroke prevention",
+          "Rate and rhythm symptom reduction",
+          "Evaluation and dynamic reassessment"
+        ],
+        answer: 0,
+        rationale: "The 2024 ESC Guidelines introduce the AF-CARE framework, deliberately placing [C] Comorbidity and risk factor management first because targeting hypertension, HF, diabetes, obesity, and alcohol reduces AF burden and improves rhythm control outcomes."
+      },
+      {
+        domain: "Stroke Prevention",
+        stem: "A 67-year-old woman with paroxysmal AF has no hypertension, diabetes, heart failure, vascular disease, or prior stroke. According to the 2024 ESC CHA₂DS₂-VA score, what is her score and recommended anticoagulation class?",
+        options: [
+          "Score 1; oral anticoagulation should be considered (Class IIa)",
+          "Score 2; oral anticoagulation is strongly recommended (Class I)",
+          "Score 0; oral anticoagulation is not indicated (Class III)",
+          "Score 1; low-dose aspirin therapy is recommended (Class I)"
+        ],
+        answer: 0,
+        rationale: "ESC 2024 replaced CHA₂DS₂-VASc with CHA₂DS₂-VA, removing female sex as a scoring criterion because it is an age-dependent risk modifier rather than an independent risk factor. Age 65–74 gives 1 point (Class IIa for OAC; ≥2 is Class I)."
+      },
+      {
+        domain: "Stroke Prevention",
+        stem: "A 71-year-old man with persistent AF and hypertension (BP 152/90 mmHg) also has hypertrophic cardiomyopathy (HCM). Even if his CHA₂DS₂-VA score were 0, how do the 2024 ESC Guidelines direct anticoagulation in HCM or cardiac amyloidosis?",
+        options: [
+          "Initiate oral anticoagulation irrespective of CHA₂DS₂-VA score (Class I)",
+          "Initiate oral anticoagulation only if CHA₂DS₂-VA score is ≥1 (Class IIa)",
+          "Perform transesophageal echo before starting oral anticoagulation (Class I)",
+          "Restrict anticoagulation to vitamin K antagonists targeting INR 2–3 (Class I)"
+        ],
+        answer: 0,
+        rationale: "Patients with AF and hypertrophic cardiomyopathy or cardiac amyloidosis carry exceptionally high thromboembolic risk; ESC 2024 recommends OAC regardless of the CHA₂DS₂-VA score (Class I)."
+      },
+      {
+        domain: "Cardioversion",
+        stem: "A hemodynamically stable 58-year-old man with CHA₂DS₂-VA 1 presents to the ED with symptomatic AF of confirmed 30-hour duration. He is not on anticoagulation. What is the 2024 ESC recommendation regarding immediate cardioversion?",
+        options: [
+          "Defer cardioversion unless TEE excludes thrombus or 3 weeks OAC is completed",
+          "Proceed with immediate electrical cardioversion followed by 4 weeks of DOAC",
+          "Administer intravenous unfractionated heparin and cardiovert within 48 hours",
+          "Give single-dose oral flecainide immediately and discharge without anticoagulation"
+        ],
+        answer: 0,
+        rationale: "A landmark 2024 ESC update shortened the safe window for early cardioversion without prior 3-week OAC or TEE from 48 hours down to 24 hours (Class I), as thromboembolic risk rises significantly between 12 and 48 hours."
+      },
+      {
+        domain: "Catheter Ablation",
+        stem: "A 54-year-old man with highly symptomatic recurrent paroxysmal AF, normal LVEF, and no prior antiarrhythmic drug exposure asks about catheter ablation versus flecainide. What is the 2024 ESC Class of Recommendation for first-line catheter ablation?",
+        options: [
+          "Class I recommendation after shared decision-making to reduce symptoms",
+          "Class IIa recommendation only after failing one antiarrhythmic medication",
+          "Class IIb recommendation reserved exclusively for young athletic patients",
+          "Class III recommendation until beta-blockers have been maximally titrated"
+        ],
+        answer: 0,
+        rationale: "Based on EARLY-AF, STOP-AF First, and CRYO-FIRST, ESC 2024 upgraded catheter ablation to a Class I (LOE A) first-line rhythm control option in patients with symptomatic paroxysmal AF after shared decision-making."
+      },
+      {
+        domain: "Heart Failure & AF",
+        stem: "A 61-year-old man with HFrEF (LVEF 30%) on optimal GDMT has persistent AF with rapid ventricular rates despite beta-blocker therapy, and tachycardia-induced cardiomyopathy is strongly suspected. What is the 2024 ESC Class I intervention?",
+        options: [
+          "Catheter ablation to reverse left ventricular systolic dysfunction",
+          "AV nodal ablation with single-chamber right ventricular pacing",
+          "Long-term oral sotalol initiation with inpatient QT monitoring",
+          "Oral dronedarone combined with low-dose digoxin for rhythm control"
+        ],
+        answer: 0,
+        rationale: "Catheter ablation carries a Class I recommendation to reverse LV dysfunction in AF patients when tachycardia-induced cardiomyopathy is highly probable, irrespective of symptom status. Dronedarone and sotalol are avoided/contraindicated in HFrEF."
+      },
+      {
+        domain: "Subclinical AF",
+        stem: "A 78-year-old man with hypertension, diabetes, and prior TIA has a dual-chamber pacemaker showing a 9-hour episode of device-detected subclinical AF (AHRE). No surface ECG AF is documented. Based on NOAH-AFNET 6 and ARTESIA, what is the ESC 2024 stance?",
+        options: [
+          "DOAC therapy may be considered given elevated stroke and low bleeding risk (Class IIb)",
+          "DOAC therapy is strongly recommended for all AHRE lasting >6 minutes (Class I)",
+          "Oral anticoagulation is contraindicated until 12-lead ECG confirms AF (Class III)",
+          "Dual antiplatelet therapy should be started immediately to prevent stroke (Class IIa)"
+        ],
+        answer: 0,
+        rationale: "ESC 2024 gives a Class IIb recommendation that DOAC therapy may be considered in patients with asymptomatic device-detected subclinical AF and elevated thromboembolic risk to prevent ischemic stroke, excluding those at high bleeding risk."
+      },
+      {
+        domain: "Comorbidity Control",
+        stem: "A 62-year-old man with paroxysmal AF and hypertension (BP 148/86 mmHg) starts antihypertensive therapy. What systolic and diastolic BP target do the 2024 ESC AF Guidelines recommend to minimize cardiovascular events and AF recurrence?",
+        options: [
+          "Systolic 120–129 mmHg and diastolic 70–79 mmHg if well tolerated",
+          "Systolic 130–139 mmHg and diastolic 80–89 mmHg in all AF patients",
+          "Systolic 110–119 mmHg and diastolic 60–69 mmHg regardless of age",
+          "Systolic 140–149 mmHg and diastolic 85–90 mmHg to prevent syncope"
+        ],
+        answer: 0,
+        rationale: "Aligned with the 2024 ESC Hypertension Guidelines, the optimal treated BP target in AF patients is 120–129/70–79 mmHg (or as low as reasonably achievable) to reduce stroke, major CV events, and AF recurrence."
+      },
+      {
+        domain: "Comorbidity Control",
+        stem: "A 57-year-old woman with persistent AF has a BMI of 33 kg/m² and consumes 12 standard alcoholic drinks per week. Which lifestyle targets carry a Class I recommendation in the 2024 ESC AF Guidelines to reduce AF recurrence?",
+        options: [
+          "Weight reduction ≥10% and alcohol reduction to ≤3 standard drinks weekly",
+          "Weight reduction ≥5% and alcohol reduction to ≤7 standard drinks weekly",
+          "Weight reduction ≥15% and complete lifelong caffeine elimination daily",
+          "Weight reduction ≥3% and alcohol reduction to ≤10 standard drinks weekly"
+        ],
+        answer: 0,
+        rationale: "ESC 2024 recommends ≥10% weight loss in overweight/obese patients with AF (Class I) and reducing alcohol consumption to ≤3 standard drinks (≤30 g alcohol) per week (Class I) to reduce AF symptoms and recurrence."
+      },
+      {
+        domain: "Surgical LAAO",
+        stem: "A 69-year-old man with persistent AF (CHA₂DS₂-VA 4) is scheduled for elective coronary artery bypass grafting. What is the 2024 ESC recommendation regarding surgical left atrial appendage occlusion (LAAO) during cardiac surgery?",
+        options: [
+          "Perform surgical LAAO as an adjunct to continued oral anticoagulation (Class I)",
+          "Perform surgical LAAO to allow permanent cessation of oral anticoagulation (Class I)",
+          "Avoid surgical LAAO unless the patient has a prior major GI bleed (Class III)",
+          "Perform surgical LAAO only if concomitant mitral valve surgery is planned (Class IIb)"
+        ],
+        answer: 0,
+        rationale: "Based on LAAOS III, ESC 2024 gives a Class I (LOE A) recommendation for surgical LAA occlusion in patients with AF undergoing cardiac surgery as an ADJUNCT to—not a replacement for—oral anticoagulation."
+      },
+      {
+        domain: "Anticoagulation Dosing",
+        stem: "An 82-year-old man (weight 74 kg, serum creatinine 1.2 mg/dL, CrCl 58 mL/min) with persistent AF and mild bruising on apixaban 5 mg BID asks to lower his dose to 2.5 mg BID. What is the 2024 ESC guideline recommendation?",
+        options: [
+          "Maintain full-dose apixaban 5 mg BID; off-label dose reduction is Class III Harm",
+          "Reduce to apixaban 2.5 mg BID because age ≥80 years alone meets reduction criteria",
+          "Switch to rivaroxaban 15 mg daily to lower bruising risk while preserving efficacy",
+          "Switch to clopidogrel 75 mg daily to balance bleeding and thromboembolic risk"
+        ],
+        answer: 0,
+        rationale: "Apixaban dose reduction requires ≥2 of 3 criteria (age ≥80, weight ≤60 kg, SCr ≥1.5 mg/dL). He meets only 1 criterion. ESC 2024 explicitly assigns Class III (Harm/Not Recommended) to reduced-dose DOACs unless specific criteria are met."
+      },
+      {
+        domain: "Trigger-Induced AF",
+        stem: "A 73-year-old woman (CHA₂DS₂-VA 3) develops new-onset AF lasting 18 hours during hospitalization for severe community-acquired pneumonia, then spontaneously converts to sinus rhythm. How do the 2024 ESC Guidelines address long-term OAC?",
+        options: [
+          "Long-term OAC should be considered based on individual thromboembolic risk (Class IIa)",
+          "Long-term OAC is contraindicated because sepsis-triggered AF rarely recurs (Class III)",
+          "Four weeks of prophylactic LMWH is sufficient without oral anticoagulation (Class I)",
+          "Aspirin 100 mg daily is preferred over DOACs after trigger-induced AF (Class IIa)"
+        ],
+        answer: 0,
+        rationale: "Trigger-induced AF (e.g., sepsis, pneumonia, non-cardiac surgery) carries high recurrence and stroke rates. ESC 2024 recommends considering long-term OAC (Class IIa) in eligible patients with elevated thromboembolic risk."
+      },
+      {
+        domain: "AF & ACS/PCI",
+        stem: "A 68-year-old man with persistent AF on apixaban undergoes uncomplicated PCI with a drug-eluting stent for NSTEMI. His bleeding risk is average and ischemic risk is moderate. What is the recommended antithrombotic duration per ESC 2024?",
+        options: [
+          "Triple therapy for up to 1 week, then DOAC plus clopidogrel up to 12 months",
+          "Triple therapy for 6 months, then DOAC plus aspirin for an additional 6 months",
+          "DOAC plus ticagrelor for 3 months, then aspirin monotherapy indefinitely",
+          "Triple therapy for 12 months followed by permanent DOAC plus clopidogrel"
+        ],
+        answer: 0,
+        rationale: "After uncomplicated PCI in AF patients, ESC 2024 recommends early cessation of aspirin (≤1 week) and continuation of dual therapy (DOAC + P2Y12 inhibitor, preferably clopidogrel) for up to 12 months in ACS (6 months in CCS), then DOAC monotherapy."
+      },
+      {
+        domain: "Antiarrhythmic Drugs",
+        stem: "A 64-year-old man with prior anterior myocardial infarction (LVEF 48%, no active angina) has symptomatic paroxysmal AF despite metoprolol. Which long-term antiarrhythmic drug is strictly contraindicated (Class III) in this patient?",
+        options: [
+          "Flecainide due to increased proarrhythmic mortality in structural CAD",
+          "Dronedarone due to severe pulmonary fibrosis risk in prior MI patients",
+          "Amiodarone due to negative inotropic effects in preserved LV function",
+          "Sotalol due to complete lack of efficacy in ischemic heart disease"
+        ],
+        answer: 0,
+        rationale: "Class IC agents (flecainide, propafenone) are strictly contraindicated (Class III) in patients with coronary artery disease, prior MI, or significant structural heart disease (CAST trial). Dronedarone, sotalol, or amiodarone may be used."
+      },
+      {
+        domain: "Rate Control",
+        stem: "A 72-year-old man with permanent AF and HFrEF (LVEF 34%) has a resting heart rate of 116 bpm despite maximally tolerated bisoprolol. Which agent should be added per ESC 2024, and which must be avoided?",
+        options: [
+          "Add low-dose digoxin; strictly avoid diltiazem and verapamil (Class III)",
+          "Add oral diltiazem; strictly avoid digoxin due to mortality risk (Class III)",
+          "Add oral verapamil; strictly avoid amiodarone for rate control (Class III)",
+          "Add ivabradine 5 mg BID; strictly avoid beta-blocker titration (Class III)"
+        ],
+        answer: 0,
+        rationale: "In HFrEF (LVEF ≤40%), non-dihydropyridine calcium channel blockers (diltiazem, verapamil) are contraindicated (Class III) due to negative inotropy. Beta-blockers and/or digoxin (targeting serum level <1.2 ng/mL) are first-line."
+      },
+      {
+        domain: "Rate Control",
+        stem: "In a 75-year-old asymptomatic woman with permanent AF and preserved LVEF (60%) undergoing initial rate control therapy, what resting heart rate target is recommended as the initial strategy in ESC 2024?",
+        options: [
+          "Lenient resting heart rate target of <110 bpm unless symptoms persist",
+          "Strict resting heart rate target of <80 bpm in all permanent AF patients",
+          "Resting heart rate target of <70 bpm with exercise rate <100 bpm",
+          "Resting heart rate target of <90 bpm confirmed by 24-hour Holter"
+        ],
+        answer: 0,
+        rationale: "Based on RACE II, ESC 2024 recommends lenient rate control (<110 bpm at rest) as an acceptable initial approach (Class IIa), pursuing stricter control (<80 bpm) only if symptoms persist or LV dysfunction develops."
+      },
+      {
+        domain: "Breakthrough Stroke",
+        stem: "A 76-year-old man with AF compliant on full-dose rivaroxaban 20 mg daily (with food) suffers an acute cardioembolic ischemic stroke. After excluding non-cardioembolic causes and drug interactions, what does ESC 2024 advise against?",
+        options: [
+          "Adding an antiplatelet agent to OAC or routinely switching DOACs without cause",
+          "Performing brain MRI and carotid imaging to rule out competing stroke etiologies",
+          "Evaluating medication adherence, dosing criteria, and renal function parameters",
+          "Considering multidisciplinary evaluation for left atrial appendage occlusion trials"
+        ],
+        answer: 0,
+        rationale: "ESC 2024 specifically recommends AGAINST adding antiplatelet therapy to OAC to prevent recurrent embolic stroke (Class III—increases bleeding without stroke reduction) and against routine empirical switching between DOACs or from DOAC to VKA (Class III)."
+      },
+      {
+        domain: "Dynamic Reassessment",
+        stem: "Under the [E] Evaluation and dynamic reassessment pillar of ESC 2024 AF-CARE, what is the recommended reassessment schedule for patients with AF following initial presentation or therapeutic change?",
+        options: [
+          "Reassess at 6 months after presentation and at least annually thereafter",
+          "Reassess at 1 month after presentation and every 3 months indefinitely",
+          "Reassess only when new cardiovascular symptoms or bleeding events occur",
+          "Reassess every 2 years with routine transthoracic echocardiography alone"
+        ],
+        answer: 0,
+        rationale: "ESC 2024 emphasizes periodic re-evaluation of stroke/bleeding risk, comorbidities, renal function, and therapy adherence at 6 months post-presentation and at least annually thereafter (Class I)."
+      },
+      {
+        domain: "Anticoagulation Choice",
+        stem: "A 65-year-old woman with AF has a mechanical St. Jude mitral valve prosthesis and an eGFR of 75 mL/min. Which anticoagulation regimen is recommended by the 2024 ESC Guidelines?",
+        options: [
+          "Vitamin K antagonist therapy; DOACs are contraindicated (Class III)",
+          "Full-dose apixaban 5 mg BID given superior intracranial safety (Class I)",
+          "Dabigatran 150 mg BID combined with low-dose aspirin daily (Class IIa)",
+          "Edoxaban 60 mg daily with monthly anti-Xa level monitoring (Class IIb)"
+        ],
+        answer: 0,
+        rationale: "DOACs are strictly contraindicated (Class III) in patients with mechanical heart valves (RE-ALIGN) or moderate-to-severe mitral stenosis (INVICTUS); VKAs remain the sole recommended oral anticoagulants."
+      },
+      {
+        domain: "Anticoagulation Choice",
+        stem: "A 52-year-old woman with rheumatic moderate-to-severe mitral stenosis (valve area 1.2 cm²) develops persistent AF. Based on the INVICTUS trial reflected in ESC 2024, what is the appropriate anticoagulant?",
+        options: [
+          "Vitamin K antagonist targeting INR 2.0–3.0 over any DOAC (Class I)",
+          "Rivaroxaban 20 mg daily due to lower fatal bleeding events (Class I)",
+          "Apixaban 5 mg BID if left atrial diameter is below 50 mm (Class IIa)",
+          "Dual antiplatelet therapy until percutaneous balloon valvuloplasty (Class IIb)"
+        ],
+        answer: 0,
+        rationale: "In INVICTUS, VKA therapy resulted in lower rates of composite cardiovascular events and death compared with rivaroxaban in rheumatic heart disease-associated AF with mitral stenosis. VKAs remain Class I."
+      },
+      {
+        domain: "Frail Elderly & VKA",
+        stem: "An 84-year-old frail man with persistent AF has been stable on warfarin for 6 years with a Time in Therapeutic Range (TTR) of 78% and no bleeding. Based on the FRAIL-AF trial integrated into ESC 2024, what is the preferred action?",
+        options: [
+          "Continue current VKA therapy rather than switching to a DOAC (Class IIb)",
+          "Mandate an immediate switch to a DOAC to reduce mortality (Class I)",
+          "Lower his target INR range to 1.5–2.0 to prevent subdural hematoma (Class IIa)",
+          "Discontinue all anticoagulation because frailty outweighs stroke risk (Class III)"
+        ],
+        answer: 0,
+        rationale: "Following FRAIL-AF (which showed more bleeding when frail elderly patients stable on VKA were switched to DOACs), ESC 2024 states that maintaining VKA rather than switching to a DOAC may be considered (Class IIb) in stable elderly/frail patients with high TTR (≥70%)."
+      },
+      {
+        domain: "Post-Ablation OAC",
+        stem: "A 66-year-old man with hypertension and diabetes (CHA₂DS₂-VA 3) undergoes successful pulmonary vein isolation for paroxysmal AF. At 12 months, continuous monitoring shows zero AF recurrence. What does ESC 2024 recommend regarding OAC?",
+        options: [
+          "Continue oral anticoagulation long-term based on CHA₂DS₂-VA score (Class I)",
+          "Discontinue oral anticoagulation after confirming 12 months of sinus rhythm",
+          "Switch from full-dose DOAC to aspirin 81 mg daily after 6 months",
+          "Reduce DOAC to half-dose prophylaxis if left atrial volume normalizes"
+        ],
+        answer: 0,
+        rationale: "ESC 2024 recommends continuing OAC for at least 2 months post-ablation in all patients, and indefinitely thereafter according to the patient's underlying CHA₂DS₂-VA risk profile regardless of apparent rhythm outcome (Class I)."
+      },
+      {
+        domain: "Pharmacologic Cardioversion",
+        stem: "A 59-year-old man with lone paroxysmal AF of 10-hour duration and normal echocardiogram requests rapid pharmacologic cardioversion in the ED. Which intravenous agent provides the fastest conversion in patients without structural heart disease?",
+        options: [
+          "Intravenous vernakalant or flecainide for rapid rhythm conversion (Class I)",
+          "Intravenous amiodarone because it converts AF within 15 minutes (Class I)",
+          "Intravenous digoxin loading for immediate sinus rhythm restoration (Class I)",
+          "Intravenous metoprolol bolus as primary pharmacologic cardioversion (Class I)"
+        ],
+        answer: 0,
+        rationale: "IV flecainide, propafenone, or vernakalant carry Class I recommendations for rapid pharmacologic cardioversion in patients without structural heart disease/ischemia. Amiodarone has delayed conversion; digoxin and beta-blockers do not cardiovert AF."
+      },
+      {
+        domain: "Persistent AF Ablation",
+        stem: "A 61-year-old woman with symptomatic persistent AF refractory to amiodarone undergoes catheter ablation. If prior percutaneous endocardial ablation fails to maintain sinus rhythm, what alternative carries a Class IIa recommendation in ESC 2024?",
+        options: [
+          "Endoscopic or hybrid thoracoscopic-catheter ablation by a Heart Team",
+          "Routine empirical left atrial appendage electrical isolation alone",
+          "Permanent discontinuation of all rhythm control and rate medications",
+          "Surgical Maze procedure via median sternotomy as standalone therapy"
+        ],
+        answer: 0,
+        rationale: "ESC 2024 recommends considering hybrid/endoscopic AF ablation (Class IIa) in symptomatic patients with persistent AF refractory to AADs (and failed percutaneous ablation) to prevent recurrence and improve symptoms, guided by a multidisciplinary Heart Team."
+      },
+      {
+        domain: "Percutaneous LAAO",
+        stem: "A 77-year-old man with persistent AF (CHA₂DS₂-VA 5) suffered a spontaneous lobar intracerebral hemorrhage attributed to cerebral amyloid angiopathy, creating an absolute contraindication to long-term OAC. What is the ESC 2024 recommendation for percutaneous LAAO?",
+        options: [
+          "Percutaneous LAAO may be considered to prevent ischemic stroke (Class IIb)",
+          "Percutaneous LAAO is strongly recommended as first-line over DOACs (Class I)",
+          "Percutaneous LAAO is contraindicated in all prior intracranial bleeds (Class III)",
+          "Dual antiplatelet therapy is superior to LAAO in this clinical scenario (Class I)"
+        ],
+        answer: 0,
+        rationale: "Percutaneous LAAO carries a Class IIb recommendation in patients with AF and contraindications to long-term OAC to prevent ischemic stroke and thromboembolism, pending results of ongoing head-to-head RCTs."
+      },
+      {
+        domain: "AF Screening",
+        stem: "Which population-based screening strategy carries a Class I recommendation in the 2024 ESC AF Guidelines to enable earlier detection of undiagnosed atrial fibrillation?",
+        options: [
+          "Routine heart rhythm assessment during healthcare contacts in adults ≥65 years",
+          "Mandatory implantable loop recorder placement in all adults aged ≥70 years",
+          "Weekly 12-lead ECGs for all asymptomatic adults aged 40–55 years",
+          "Universal consumer smartwatch ECG screening in healthy adults under 50"
+        ],
+        answer: 0,
+        rationale: "ESC 2024 gives a Class I recommendation for routine heart rhythm assessment (pulse check or ECG strip) during healthcare contact in all individuals aged ≥65 years, and Class IIa for population-based non-invasive ECG screening in those ≥75 years or ≥65 with risk factors."
+      },
+      {
+        domain: "Acute Stroke & OAC",
+        stem: "A 70-year-old woman with AF not on OAC suffers a mild-to-moderate acute ischemic stroke (NIHSS 6, no hemorrhagic transformation on repeat CT). Based on recent RCTs (ELAN/TIMING) in ESC 2024, when should DOAC therapy be initiated?",
+        options: [
+          "Early DOAC initiation within 48 hours for minor/moderate stroke is reasonable",
+          "Delay DOAC initiation strictly for 14 days regardless of infarct size",
+          "Administer full-dose intravenous heparin immediately for the first 7 days",
+          "Wait 30 days and initiate vitamin K antagonist with enoxaparin bridging"
+        ],
+        answer: 0,
+        rationale: "While early DOAC initiation (within 48h for minor/moderate stroke; day 6–7 for major stroke) is supported by ELAN/TIMING, ESC 2024 emphasizes avoiding early parenteral anticoagulation/heparin bridging (Class III) due to hemorrhagic transformation risk."
+      },
+      {
+        domain: "Pre-Excited AF",
+        stem: "A 29-year-old man with Wolff-Parkinson-White syndrome presents with irregular wide-complex tachycardia at 220 bpm and BP 82/50 mmHg. Which immediate management and contraindication pair is correct?",
+        options: [
+          "Immediate synchronized DC cardioversion; strictly avoid IV verapamil and digoxin",
+          "Immediate IV amiodarone bolus; strictly avoid synchronized electrical cardioversion",
+          "Immediate IV diltiazem infusion; strictly avoid intravenous procainamide therapy",
+          "Immediate IV adenosine 12 mg; strictly avoid catheter ablation afterward"
+        ],
+        answer: 0,
+        rationale: "Hemodynamically unstable pre-excited AF requires immediate synchronized DC cardioversion (Class I). AV nodal blockers (adenosine, digoxin, diltiazem, verapamil, beta-blockers, IV amiodarone) are contraindicated (Class III) as they can precipitate ventricular fibrillation."
+      },
+      {
+        domain: "Early Rhythm Control",
+        stem: "A 71-year-old man with hypertension, diabetes, and newly diagnosed AF (onset 3 months ago) has minimal symptoms (EHRA class I). Based on EAST-AFNET 4 incorporated into ESC 2024, what is the role of early rhythm control?",
+        options: [
+          "Early rhythm control within 12 months should be considered to reduce CV events (Class IIa)",
+          "Rhythm control is strictly contraindicated in asymptomatic EHRA I patients (Class III)",
+          "Rate control alone is superior for reducing cardiovascular mortality in new AF (Class I)",
+          "Early rhythm control is beneficial only if left atrial diameter is <35 mm (Class IIb)"
+        ],
+        answer: 0,
+        rationale: "Reflecting EAST-AFNET 4, ESC 2024 states that implementation of a rhythm control strategy should be considered within 12 months of diagnosis in selected patients with AF at risk of thromboembolic events to reduce CV death or hospitalization (Class IIa)."
+      },
+      {
+        domain: "Bleeding Risk Assessment",
+        stem: "A 74-year-old man with persistent AF has a CHA₂DS₂-VA score of 4 and a high bleeding risk due to uncontrolled hypertension (BP 168/94 mmHg) and concomitant NSAID use. How do the 2024 ESC Guidelines direct bleeding risk management?",
+        options: [
+          "Address modifiable bleeding risk factors; do not withhold OAC based on score alone",
+          "Withhold oral anticoagulation whenever HAS-BLED score exceeds 3 points (Class I)",
+          "Substitute low-dose aspirin until blood pressure remains below 140/90 mmHg",
+          "Mandate routine bleeding risk score calculation to exclude DOAC eligibility"
+        ],
+        answer: 0,
+        rationale: "ESC 2024 emphasizes identifying and actively managing modifiable bleeding risk factors (hypertension, NSAIDs, alcohol, labile INR) in all patients (Class I), and explicitly recommends AGAINST using bleeding risk scores to decide on starting or withdrawing OAC (Class III)."
+      }
+    ];
+
+    let questions = [];
+    let currentIdx = 0;
+    let userAnswers = [];
+
+    // Fisher-Yates option shuffler so correct answer is evenly distributed across A-D
+    function buildShuffledQuestions() {
+      return RAW_QUESTIONS.map(q => {
+        const indexed = q.options.map((text, idx) => ({ text, isCorrect: idx === q.answer }));
+        for (let i = indexed.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [indexed[i], indexed[j]] = [indexed[j], indexed[i]];
+        }
+        return {
+          domain: q.domain,
+          stem: q.stem,
+          options: indexed.map(item => item.text),
+          answer: indexed.findIndex(item => item.isCorrect),
+          rationale: q.rationale
+        };
+      });
+    }
+
+    function initQuiz() {
+      questions = buildShuffledQuestions();
+      currentIdx = 0;
+      userAnswers = new Array(questions.length).fill(null);
+      document.getElementById('completionBanner').classList.add('hidden');
+      renderAll();
+    }
+
+    function renderAll() {
+      renderHeaderStats();
+      renderNavigator();
+      renderQuestion();
+    }
+
+    function renderHeaderStats() {
+      let score = 0;
+      let answered = 0;
+      userAnswers.forEach((ans, idx) => {
+        if (ans !== null) {
+          answered++;
+          if (ans === questions[idx].answer) score++;
+        }
+      });
+      document.getElementById('scoreCounter').textContent = `${score} / ${questions.length}`;
+      document.getElementById('answeredCounter').textContent = `${answered} / ${questions.length} Answered`;
+
+      const banner = document.getElementById('completionBanner');
+      if (answered === questions.length) {
+        const pct = Math.round((score / questions.length) * 100);
+        document.getElementById('finalScoreTitle').textContent = `Final Score: ${score} / ${questions.length} (${pct}%)`;
+        document.getElementById('finalScoreMsg').textContent = pct >= 75
+          ? 'Board pass benchmark achieved (≥75%). Excellent mastery of ESC 2024 AF guidelines.'
+          : 'Review the red navigator items and 2024 Pearls tab to reach the ≥75% board benchmark.';
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    function renderNavigator() {
+      const nav = document.getElementById('questionNav');
+      nav.innerHTML = '';
+      questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = idx + 1;
+        let cls = 'w-8 h-8 rounded-lg text-xs font-extrabold shrink-0 transition flex items-center justify-center border ';
+        if (userAnswers[idx] === null) {
+          cls += 'bg-[#09090B] border-[#27272A] text-zinc-300 hover:border-zinc-500 ';
+        } else if (userAnswers[idx] === q.answer) {
+          cls += 'bg-emerald-600/25 border-emerald-500 text-emerald-300 ';
+        } else {
+          cls += 'bg-rose-600/25 border-rose-500 text-rose-300 ';
+        }
+        if (idx === currentIdx) {
+          cls += 'ring-2 ring-[#FACC15] border-[#FACC15] ';
+        }
+        btn.className = cls;
+        btn.onclick = () => { currentIdx = idx; renderAll(); };
+        nav.appendChild(btn);
+      });
+      const activeBtn = nav.children[currentIdx];
+      if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    function renderQuestion() {
+      const q = questions[currentIdx];
+      document.getElementById('qDomain').textContent = q.domain;
+      document.getElementById('qCounter').textContent = `Case ${currentIdx + 1} of ${questions.length}`;
+      document.getElementById('qStem').textContent = q.stem;
+
+      const list = document.getElementById('optionsList');
+      list.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      const chosen = userAnswers[currentIdx];
+
+      q.options.forEach((optText, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        let cardCls = 'bg-[#09090B] border-[#27272A] hover:border-[#FACC15]/70 text-zinc-100';
+        let badgeCls = 'bg-[#18181B] border border-[#27272A] text-zinc-300';
+
+        if (chosen !== null) {
+          if (i === q.answer) {
+            cardCls = 'bg-emerald-950/50 border-emerald-500 text-emerald-100';
+            badgeCls = 'bg-emerald-500 text-black';
+          } else if (i === chosen && i !== q.answer) {
+            cardCls = 'bg-rose-950/50 border-rose-500 text-rose-100';
+            badgeCls = 'bg-rose-500 text-white';
+          } else {
+            cardCls = 'bg-[#09090B] border-[#27272A] opacity-45 text-zinc-400';
+          }
+        }
+
+        btn.className = `w-full text-left p-3.5 sm:p-4 rounded-xl border transition flex items-start gap-3 ${cardCls}`;
+        btn.innerHTML = `
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${badgeCls}">${letters[i]}</span>
+          <span class="text-xs sm:text-sm font-medium leading-snug pt-0.5">${optText}</span>
+        `;
+        btn.onclick = () => selectAnswer(i);
+        list.appendChild(btn);
+      });
+
+      const ratBox = document.getElementById('rationaleBox');
+      if (chosen !== null) {
+        const isCorrect = chosen === q.answer;
+        ratBox.className = `mt-5 p-4 rounded-xl border text-xs sm:text-sm leading-relaxed ${
+          isCorrect ? 'bg-emerald-950/30 border-emerald-500/50 text-zinc-100' : 'bg-rose-950/30 border-rose-500/50 text-zinc-100'
+        }`;
+        ratBox.innerHTML = `
+          <div class="flex items-center flex-wrap gap-2 mb-2">
+            <span class="px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase tracking-wider">Resident Pearl</span>
+            <span class="font-extrabold ${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+              ${isCorrect ? '✓ Correct Answer' : '✕ Incorrect — Correct Option: ' + letters[q.answer]}
+            </span>
+          </div>
+          <p class="text-zinc-200">${q.rationale}</p>
+        `;
+      } else {
+        ratBox.className = 'hidden';
+      }
+
+      document.getElementById('prevBtn').disabled = currentIdx === 0;
+      document.getElementById('nextBtn').disabled = currentIdx === questions.length - 1;
+    }
+
+    function selectAnswer(optIdx) {
+      if (userAnswers[currentIdx] !== null) return;
+      userAnswers[currentIdx] = optIdx;
+      renderAll();
+    }
+
+    function moveQuestion(delta) {
+      const next = currentIdx + delta;
+      if (next >= 0 && next < questions.length) {
+        currentIdx = next;
+        renderAll();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function switchTab(tabName) {
+      ['quiz', 'algorithms', 'pearls'].forEach(t => {
+        document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tabName);
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === tabName) {
+          btn.className = 'py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition bg-[#FACC15] text-black';
+        } else {
+          btn.className = 'py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition text-zinc-400 hover:text-white';
+        }
+      });
+    }
+
+    function switchAlgoSub(sub) {
+      ['afcare', 'oac', 'rhythm'].forEach(s => {
+        document.getElementById(`algo-${s}`).classList.toggle('hidden', s !== sub);
+        const btn = document.getElementById(`algoBtn-${s}`);
+        btn.className = s === sub
+          ? 'px-3.5 py-2 rounded-xl text-xs font-extrabold bg-[#FACC15] text-black shrink-0'
+          : 'px-3.5 py-2 rounded-xl text-xs font-bold bg-[#18181B] border border-[#27272A] text-zinc-300 shrink-0';
+      });
+    }
+
+    function openResetModal() { document.getElementById('resetModal').classList.remove('hidden'); }
+    function closeResetModal() { document.getElementById('resetModal').classList.add('hidden'); }
+    function confirmReset() { closeResetModal(); initQuiz(); }
+
+    // One-tap .HTML export (clones DOM, removes #downloadBtn, downloads clean student .html file)
+    function downloadStudentHtml() {
+      try {
+        const clone = document.documentElement.cloneNode(true);
+        const dlBtn = clone.querySelector('#downloadBtn');
+        if (dlBtn) dlBtn.remove();
+        const modal = clone.querySelector('#resetModal');
+        if (modal) modal.classList.add('hidden');
+        const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
+        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Apex_Academy_ESC_2024_AF_Quiz.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('Export failed:', err);
+      }
+    }
+
+    window.onload = initQuiz;
+  </script>
+</body>
+</html>

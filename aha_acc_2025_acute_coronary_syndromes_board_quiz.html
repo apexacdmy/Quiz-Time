@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Apex Academy — AHA/ACC 2025 Acute Coronary Syndromes (30-MCQ)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    html, body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #09090B;
+      color: #FAFAFA;
+      overflow-x: hidden;
+      max-width: 100vw;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#09090B] text-[#FAFAFA] min-h-screen flex flex-col antialiased selection:bg-[#FACC15] selection:text-black">
+
+  <!-- Sticky Header (@apex_quiz_time) -->
+  <header class="sticky top-0 z-40 bg-[#09090B]/95 backdrop-blur-md border-b border-[#27272A]">
+    <div class="max-w-3xl mx-auto px-3 sm:px-5 py-3 flex items-center justify-between gap-2">
+      <!-- Left: Official Apex Academy SVG Logo & Title -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-white border-2 border-[#FACC15] p-1 flex items-center justify-center shrink-0 shadow-sm">
+          <svg viewBox="0 0 120 110" class="w-full h-full" aria-label="Apex Academy Logo">
+            <polygon points="60,8 22,24 60,40 98,24" fill="#000000"/>
+            <path d="M38,33 L38,44 C38,51 82,51 82,44 L82,33 L60,43 Z" fill="#000000"/>
+            <line x1="90" y1="27" x2="90" y2="45" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
+            <rect x="87.5" y="43" width="5" height="7" rx="1" fill="#000000"/>
+            <polygon points="60,52 20,98 37,98 60,64 83,98 100,98" fill="#000000"/>
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10px] sm:text-[11px] font-black tracking-widest uppercase text-white">APEX ACADEMY</span>
+            <span class="px-1.5 py-0.5 text-[10px] font-extrabold rounded bg-[#FACC15] text-black leading-none">AHA/ACC 2025</span>
+          </div>
+          <h1 class="text-xs sm:text-sm font-bold text-zinc-200 truncate mt-0.5">Acute Coronary Syndromes</h1>
+        </div>
+      </div>
+
+      <!-- Right: Live Score, One-Tap .HTML Export, Reset -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div class="px-2.5 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-center">
+          <div class="text-[9px] font-bold uppercase tracking-wider text-zinc-400 leading-none">SCORE</div>
+          <div id="scoreCounter" class="text-xs sm:text-sm font-black text-[#FACC15] leading-tight mt-0.5">0 / 30</div>
+        </div>
+        <button id="downloadBtn" onclick="downloadStudentHtml()" title="Download clean student HTML file" class="px-2.5 py-2 rounded-lg bg-[#FACC15] hover:bg-yellow-300 text-black text-[11px] sm:text-xs font-extrabold transition flex items-center gap-1">
+          <span>⬇</span><span class="hidden xs:inline sm:inline">.HTML</span>
+        </button>
+        <button onclick="openResetModal()" title="Reset Quiz" class="px-2.5 py-2 rounded-lg bg-[#18181B] hover:bg-zinc-800 border border-[#27272A] text-zinc-300 text-[11px] sm:text-xs font-bold transition">
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- 3-Column Tab Navigation Bar -->
+    <nav class="max-w-3xl mx-auto px-3 sm:px-5 pb-2.5">
+      <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-[#18181B] border border-[#27272A]">
+        <button id="tab-quiz" onclick="switchTab('quiz')" class="py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition bg-[#FACC15] text-black">
+          30-MCQ Quiz
+        </button>
+        <button id="tab-algorithms" onclick="switchTab('algorithms')" class="py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition text-zinc-400 hover:text-white">
+          PDF Algorithms
+        </button>
+        <button id="tab-pearls" onclick="switchTab('pearls')" class="py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition text-zinc-400 hover:text-white">
+          2025 Pearls
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-3 sm:px-5 py-4 sm:py-6">
+
+    <!-- TAB 1: 30-MCQ QUIZ -->
+    <section id="panel-quiz" class="space-y-4">
+      <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-3">
+        <div class="flex items-center justify-between mb-2 px-0.5">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Question Navigator (1–30)</span>
+          <span id="answeredCounter" class="text-[11px] font-bold text-[#FACC15]">0 / 30 Answered</span>
+        </div>
+        <div id="questionNav" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1"></div>
+      </div>
+
+      <div id="completionBanner" class="hidden bg-[#18181B] border-2 border-[#FACC15] rounded-2xl p-4 sm:p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase tracking-wider mb-1">Board Assessment Complete</span>
+            <h2 id="finalScoreTitle" class="text-lg sm:text-xl font-black text-white"></h2>
+            <p id="finalScoreMsg" class="text-xs sm:text-sm text-zinc-400 mt-0.5"></p>
+          </div>
+          <button onclick="openResetModal()" class="px-4 py-2.5 rounded-xl bg-[#FACC15] text-black font-extrabold text-xs sm:text-sm hover:bg-yellow-300 transition shrink-0">
+            Retake &amp; Reshuffle
+          </button>
+        </div>
+      </div>
+
+      <article class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-6 shadow-lg">
+        <div class="flex items-center justify-between gap-2 mb-3 pb-3 border-b border-[#27272A]">
+          <span id="qDomain" class="px-2.5 py-1 rounded-md bg-zinc-900 border border-[#27272A] text-[#FACC15] text-[11px] font-extrabold uppercase tracking-wider">Category</span>
+          <span id="qCounter" class="text-xs font-bold text-zinc-400">Case 1 of 30</span>
+        </div>
+
+        <h2 id="qStem" class="text-sm sm:text-base font-semibold leading-relaxed text-white mb-5"></h2>
+        <div id="optionsList" class="space-y-2.5"></div>
+        <div id="rationaleBox" class="hidden mt-5 p-4 rounded-xl border text-xs sm:text-sm leading-relaxed"></div>
+      </article>
+
+      <div class="flex items-center justify-between gap-3 pt-1">
+        <button id="prevBtn" onclick="moveQuestion(-1)" class="flex-1 sm:flex-none px-4 py-3 rounded-xl bg-[#18181B] hover:bg-zinc-800 border border-[#27272A] text-white text-xs sm:text-sm font-bold disabled:opacity-35 transition">
+          ← Previous
+        </button>
+        <button id="nextBtn" onclick="moveQuestion(1)" class="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-[#FACC15] hover:bg-yellow-300 text-black text-xs sm:text-sm font-extrabold disabled:opacity-35 transition">
+          Next Question →
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB 2: PDF ALGORITHMS -->
+    <section id="panel-algorithms" class="hidden space-y-4">
+      <a href="https://doi.org/10.1161/CIR.0000000000001309" target="_blank" rel="noopener noreferrer" class="block bg-[#18181B] border border-[#FACC15]/60 hover:border-[#FACC15] rounded-2xl p-4 transition">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#FACC15]">Official Source Guideline</div>
+            <div class="text-sm font-bold text-white mt-0.5">2025 ACC/AHA/ACEP/NAEMSP/SCAI ACS Guideline</div>
+            <div class="text-xs text-zinc-400 mt-0.5">Circulation • https://doi.org/10.1161/CIR.0000000000001309</div>
+          </div>
+          <span class="px-3 py-1.5 rounded-lg bg-[#FACC15] text-black text-xs font-extrabold shrink-0">Open DOI ↗</span>
+        </div>
+      </a>
+
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+        <button onclick="switchAlgoSub('dapt')" id="algoBtn-dapt" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-[#FACC15] text-black shrink-0">DAPT &amp; De-Escalation</button>
+        <button onclick="switchAlgoSub('pci')" id="algoBtn-pci" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#18181B] border border-[#27272A] text-zinc-300 shrink-0">PCI &amp; Shock MCS</button>
+        <button onclick="switchAlgoSub('lipids')" id="algoBtn-lipids" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#18181B] border border-[#27272A] text-zinc-300 shrink-0">Lipids &amp; Secondary Care</button>
+      </div>
+
+      <div id="algo-dapt" class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-5 space-y-3 text-xs sm:text-sm">
+        <h3 class="text-sm sm:text-base font-extrabold text-[#FACC15]">2025 Antiplatelet &amp; Anticoagulation Pathways</h3>
+        <ul class="space-y-2 text-zinc-300 list-disc pl-4">
+          <li><strong class="text-white">Ticagrelor Monotherapy (Class 1):</strong> Transition to ticagrelor monotherapy (stop aspirin) ≥1 month post-PCI in patients who tolerated DAPT to reduce bleeding.</li>
+          <li><strong class="text-white">Prasugrel Contraindication:</strong> Class 3 Harm in any patient with prior stroke or TIA; also Class 3 Harm upstream before anatomy is known.</li>
+          <li><strong class="text-white">ACS + OAC (e.g., AF):</strong> Stop aspirin 1–4 weeks post-PCI; continue DOAC + P2Y12 inhibitor (clopidogrel preferred).</li>
+          <li><strong class="text-white">GI Protection:</strong> PPI is Class 1 during DAPT in patients at elevated GI bleeding risk.</li>
+        </ul>
+      </div>
+
+      <div id="algo-pci" class="hidden bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-5 space-y-3 text-xs sm:text-sm">
+        <h3 class="text-sm sm:text-base font-extrabold text-[#FACC15]">Procedural PCI &amp; Cardiogenic Shock</h3>
+        <ul class="space-y-2 text-zinc-300 list-disc pl-4">
+          <li><strong class="text-white">Intravascular Imaging (Class 1):</strong> Upgraded to Class 1 (LOE A) for IVUS/OCT guidance in complex ACS PCI.</li>
+          <li><strong class="text-white">Radial Access (Class 1):</strong> Preferred over femoral to lower major bleeding and mortality.</li>
+          <li><strong class="text-white">Complete vs. Culprit-Only:</strong> Complete revascularization is Class 1 in stable STEMI/NSTE-ACS, whereas routine immediate non-culprit PCI in AMI-CS is Class 3 Harm (CULPRIT-SHOCK).</li>
+          <li><strong class="text-white">Shock MCS:</strong> Microaxial flow pump (Impella) is Class 2a in selected STEMI-CS (DanGer Shock); routine IABP or routine VA-ECMO is Class 3 No Benefit.</li>
+        </ul>
+      </div>
+
+      <div id="algo-lipids" class="hidden bg-[#18181B] border border-[#27272A] rounded-2xl p-4 sm:p-5 space-y-3 text-xs sm:text-sm">
+        <h3 class="text-sm sm:text-base font-extrabold text-[#FACC15]">Lipids, Anemia &amp; Secondary Prevention</h3>
+        <ul class="space-y-2 text-zinc-300 list-disc pl-4">
+          <li><strong class="text-white">LDL-C Intensification:</strong> High-intensity statin (Class 1). Recheck lipids in 4–8 weeks: add non-statin if LDL-C ≥70 mg/dL (Class 1) or 55–69 mg/dL (Class 2a).</li>
+          <li><strong class="text-white">Anemia (MINT Trial):</strong> RBC transfusion to maintain Hb ≥10 g/dL may be reasonable (Class 2b) in anemic ACS without active bleeding.</li>
+          <li><strong class="text-white">Colchicine:</strong> Low-dose 0.5 mg daily may be reasonable (Class 2b) to reduce recurrent MACE.</li>
+          <li><strong class="text-white">Cardiac Rehab:</strong> Outpatient Class 1; home-based cardiac rehab is a Class 2a alternative.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TAB 3: 2025 PEARLS -->
+    <section id="panel-pearls" class="hidden space-y-3">
+      <a href="https://doi.org/10.1161/CIR.0000000000001309" target="_blank" rel="noopener noreferrer" class="block bg-[#18181B] border border-[#FACC15]/60 hover:border-[#FACC15] rounded-2xl p-4 transition">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#FACC15]">High-Yield Board Review</div>
+            <div class="text-sm font-bold text-white mt-0.5">Top 2025 AHA/ACC ACS Paradigm Shifts</div>
+          </div>
+          <span class="px-3 py-1.5 rounded-lg bg-[#FACC15] text-black text-xs font-extrabold shrink-0">Guideline ↗</span>
+        </div>
+      </a>
+
+      <div class="space-y-2.5 text-xs sm:text-sm">
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 1 • IVUS/OCT Now Class 1</span>
+          <p class="text-zinc-200">Intracoronary imaging to guide complex ACS PCI moved from Class 2a to Class 1 (LOE A) based on RENOVATE-COMPLEX-PCI, OCTOBER, and ILUMIEN IV.</p>
+        </div>
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 2 • DanGer Shock (Impella)</span>
+          <p class="text-zinc-200">Microaxial flow pump is Class 2a in selected STEMI-associated cardiogenic shock (excluding comatose/anoxic arrest), while routine IABP and routine VA-ECMO are Class 3 No Benefit.</p>
+        </div>
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 3 • MINT Transfusion Shift</span>
+          <p class="text-zinc-200">Liberal transfusion targeting Hb ≥10 g/dL in non-bleeding anemic ACS patients is newly supported as Class 2b—shifting away from rigid Hb &lt;7 g/dL thresholds in AMI.</p>
+        </div>
+        <div class="bg-[#18181B] border border-[#27272A] rounded-2xl p-4">
+          <span class="inline-block px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase mb-1.5">Pearl 4 • Pharmacoinvasive Window</span>
+          <p class="text-zinc-200">If anticipated FMC-to-device &gt;120 min in STEMI (&lt;12h onset), give fibrinolysis within 30 min, then transfer for routine angiography within 2–24 hours (or immediate rescue PCI if failed).</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Standardized Apex Academy Footer -->
+  <footer class="border-t border-[#27272A] bg-[#09090B] py-4 px-4 mt-8">
+    <div class="max-w-3xl mx-auto flex items-center justify-center gap-2.5">
+      <div class="w-6 h-6 rounded-md bg-white border border-[#FACC15] p-0.5 flex items-center justify-center shrink-0">
+        <svg viewBox="0 0 120 110" class="w-full h-full" aria-hidden="true">
+          <polygon points="60,8 22,24 60,40 98,24" fill="#000000"/>
+          <path d="M38,33 L38,44 C38,51 82,51 82,44 L82,33 L60,43 Z" fill="#000000"/>
+          <line x1="90" y1="27" x2="90" y2="45" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
+          <rect x="87.5" y="43" width="5" height="7" rx="1" fill="#000000"/>
+          <polygon points="60,52 20,98 37,98 60,64 83,98 100,98" fill="#000000"/>
+        </svg>
+      </div>
+      <span class="text-xs font-semibold text-zinc-400">Apex Academy - Medical Education at the Apex</span>
+    </div>
+  </footer>
+
+  <!-- Custom Reset Confirmation Modal (#resetModal) -->
+  <div id="resetModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#18181B] border border-[#27272A] rounded-2xl max-w-sm w-full p-5 shadow-2xl">
+      <h3 class="text-base font-extrabold text-white mb-1.5">Reset Quiz Progress?</h3>
+      <p class="text-xs sm:text-sm text-zinc-400 mb-5">This will clear your score, reset all 30 answers, and reshuffle option order A–D.</p>
+      <div class="flex justify-end gap-2.5">
+        <button onclick="closeResetModal()" class="px-4 py-2 rounded-xl bg-zinc-900 border border-[#27272A] text-zinc-300 text-xs font-bold hover:bg-zinc-800">Cancel</button>
+        <button onclick="confirmReset()" class="px-4 py-2 rounded-xl bg-[#FACC15] text-black text-xs font-extrabold hover:bg-yellow-300">Reset Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 30 High-Yield Board-Level Questions: AHA/ACC 2025 Acute Coronary Syndromes Guideline
+    const RAW_QUESTIONS = [
+      {
+        domain: "Procedural PCI",
+        stem: "A 65-year-old man with NSTEMI undergoes PCI of a heavily calcified distal left main bifurcation lesion. How did the 2025 ACC/AHA ACS Guideline upgrade intravascular imaging (IVUS or OCT) to guide complex coronary PCI?",
+        options: [
+          "Elevated to a Class 1 recommendation to reduce ischemic events",
+          "Maintained as a Class 2a recommendation only for in-stent restenosis",
+          "Downgraded to a Class 2b recommendation due to contrast volume",
+          "Reserved exclusively for STEMI cases with visible thrombus burden"
+        ],
+        answer: 0,
+        rationale: "One of the headline 2025 ACS updates: intracoronary imaging (IVUS or OCT) to guide PCI in patients with ACS and complex coronary lesions was elevated from Class 2a to Class 1 (LOE A) based on RENOVATE-COMPLEX-PCI, OCTOBER, and ILUMIEN IV."
+      },
+      {
+        domain: "Antiplatelet Therapy",
+        stem: "A 62-year-old woman with NSTEMI undergoes uncomplicated drug-eluting stent placement and tolerates aspirin plus ticagrelor for 1 month without ischemic events. To reduce bleeding risk, what Class 1 strategy is newly recommended in 2025?",
+        options: [
+          "Transition to ticagrelor monotherapy ≥1 month post-PCI (stop aspirin)",
+          "Transition to aspirin monotherapy 1 month post-PCI (stop ticagrelor)",
+          "Switch to clopidogrel monotherapy after 14 days of dual therapy",
+          "Continue triple therapy with rivaroxaban 2.5 mg BID for 12 months"
+        ],
+        answer: 0,
+        rationale: "Supported by TWILIGHT, TICO, and ULTIMATE-DAPT, the 2025 ACC/AHA ACS Guideline gives a Class 1 recommendation for transitioning to ticagrelor monotherapy (discontinuing aspirin) ≥1 month post-PCI in patients who tolerated DAPT with ticagrelor."
+      },
+      {
+        domain: "Antiplatelet Therapy",
+        stem: "A 69-year-old man with prior ischemic stroke 2 years ago presents with anterior STEMI and undergoes primary PCI. Which oral P2Y12 inhibitor is strictly contraindicated (Class 3 Harm) in this patient?",
+        options: [
+          "Prasugrel due to increased risk of fatal intracranial hemorrhage",
+          "Ticagrelor due to lack of mortality benefit in anterior STEMI",
+          "Clopidogrel due to high stent thrombosis risk in prior stroke",
+          "Cangrelor due to irreversible platelet inhibition during PCI"
+        ],
+        answer: 0,
+        rationale: "While ticagrelor or prasugrel is preferred over clopidogrel for ACS PCI (Class 1), prasugrel is strictly contraindicated (Class 3 Harm) in patients with any history of prior stroke or transient ischemic attack (TRITON-TIMI 38)."
+      },
+      {
+        domain: "Upstream P2Y12",
+        stem: "A 64-year-old man presents to a community hospital with high-risk NSTEMI; transfer for coronary angiography will take 36 hours (>24 hours). What does the 2025 ACC/AHA Guideline state about upstream P2Y12 loading?",
+        options: [
+          "Upstream clopidogrel or ticagrelor may be considered to reduce MACE",
+          "Upstream prasugrel 60 mg is Class 1 before coronary anatomy is known",
+          "All oral P2Y12 inhibitors are contraindicated until angiography finishes",
+          "Intravenous abciximab infusion should replace oral P2Y12 loading"
+        ],
+        answer: 0,
+        rationale: "In NSTE-ACS scheduled for an invasive strategy with anticipated angiography >24 hours, upstream treatment with clopidogrel or ticagrelor may be considered (Class 2b) to reduce MACE. Upstream prasugrel before knowing anatomy is Class 3 Harm (ACCOAST)."
+      },
+      {
+        domain: "ACS & Anticoagulation",
+        stem: "A 72-year-old man with persistent atrial fibrillation on apixaban undergoes successful PCI for NSTEMI. What is the recommended timing for discontinuing aspirin per the 2025 ACC/AHA ACS Guideline?",
+        options: [
+          "Discontinue aspirin 1 to 4 weeks post-PCI; continue DOAC plus P2Y12",
+          "Continue triple therapy with aspirin, ticagrelor, and DOAC for 6 months",
+          "Discontinue apixaban for 3 months while administering standard DAPT",
+          "Discontinue P2Y12 at 1 week; continue DOAC plus aspirin indefinitely"
+        ],
+        answer: 0,
+        rationale: "In ACS patients requiring long-term oral anticoagulation who undergo PCI, aspirin discontinuation is recommended 1 to 4 weeks post-PCI (Class 1) while continuing a DOAC plus a P2Y12 inhibitor (clopidogrel preferred) to minimize bleeding."
+      },
+      {
+        domain: "Complete Revascularization",
+        stem: "A 59-year-old hemodynamically stable man with inferior STEMI undergoes successful primary PCI of the culprit RCA. Angiography reveals a severe 85% proximal LAD stenosis. What is the 2025 Class 1 revascularization strategy?",
+        options: [
+          "Perform complete revascularization during the index procedure or staged",
+          "Defer LAD intervention permanently unless refractory angina develops",
+          "Avoid non-culprit PCI in STEMI due to contrast-associated nephropathy",
+          "Perform immediate surgical CABG within 24 hours of successful RCA PCI"
+        ],
+        answer: 0,
+        rationale: "Complete revascularization is Class 1 in both STEMI and NSTE-ACS without cardiogenic shock. In STEMI, PCI of significant non-culprit lesions may be performed in a single index procedure (with some preference if uncomplicated) or staged."
+      },
+      {
+        domain: "Cardiogenic Shock",
+        stem: "A 66-year-old man presents with anterior STEMI complicated by cardiogenic shock (BP 76/44 mmHg on norepinephrine, lactate 5.4 mmol/L). Angiography shows an occluded proximal LAD and an 85% mid-LCx lesion. What is the recommended revascularization approach?",
+        options: [
+          "Emergency culprit-only LAD PCI; routine immediate non-culprit PCI is Class 3 Harm",
+          "Immediate simultaneous multivessel PCI of both LAD and LCx lesions (Class 1)",
+          "Fibrinolytic therapy first followed by staged angiography in 48 hours",
+          "Medical stabilization for 24 hours before attempting any coronary PCI"
+        ],
+        answer: 0,
+        rationale: "Based on CULPRIT-SHOCK, emergency revascularization of the culprit vessel is Class 1 in AMI-cardiogenic shock, whereas routine PCI of non-infarct-related arteries during the index procedure is Class 3 (Harm)."
+      },
+      {
+        domain: "Cardiogenic Shock MCS",
+        stem: "A 63-year-old man with anterior STEMI and refractory cardiogenic shock (SCAI Stage C/D, no coma/anoxic brain injury) undergoes primary LAD PCI. Based on DanGer Shock in the 2025 ACS Guideline, what is the role of a microaxial flow pump (Impella)?",
+        options: [
+          "Reasonable (Class 2a) in selected STEMI-CS patients to reduce mortality",
+          "Contraindicated (Class 3 Harm) across all STEMI cardiogenic shock cases",
+          "Inferior to routine intra-aortic balloon pump placement (Class 1)",
+          "Recommended routinely in all uncomplicated anterior STEMI without shock"
+        ],
+        answer: 0,
+        rationale: "Based on the DanGer Shock trial, the 2025 guideline states that a microaxial flow pump is reasonable (Class 2a) in selected patients with STEMI-associated cardiogenic shock to reduce mortality, with careful attention to bleeding, limb ischemia, and renal failure."
+      },
+      {
+        domain: "Cardiogenic Shock MCS",
+        stem: "What is the 2025 ACC/AHA ACS Guideline recommendation regarding routine use of an intra-aortic balloon pump (IABP) or routine VA-ECMO in patients with AMI-related cardiogenic shock?",
+        options: [
+          "Routine IABP or routine VA-ECMO is not recommended (Class 3 No Benefit)",
+          "Routine IABP is Class 1 first-line support for all AMI-CS patients",
+          "Routine VA-ECMO is Class 1 superior to culprit-vessel PCI alone",
+          "Both IABP and VA-ECMO are Class 2a for every NSTEMI with hypotension"
+        ],
+        answer: 0,
+        rationale: "Based on IABP-SHOCK II and ECLS-SHOCK, neither routine IABP nor routine VA-ECMO improves survival in unselected AMI-cardiogenic shock (Class 3 No Benefit), though MCS may be selected in refractory shock or mechanical complications."
+      },
+      {
+        domain: "Anemia & Transfusion",
+        stem: "A 74-year-old man with NSTEMI and chronic anemia (without active bleeding) has a hemoglobin of 8.4 g/dL. Incorporating the MINT trial, what red blood cell transfusion threshold is newly addressed in the 2025 ACS Guideline?",
+        options: [
+          "Transfusion to maintain hemoglobin ≥10 g/dL may be reasonable (Class 2b)",
+          "Strict restrictive transfusion only when hemoglobin falls <7.0 g/dL (Class 1)",
+          "Routine transfusion to maintain hemoglobin ≥12 g/dL is Class 1 recommended",
+          "Transfusion is strictly contraindicated (Class 3 Harm) unless actively bleeding"
+        ],
+        answer: 0,
+        rationale: "Reflecting the MINT trial, the 2025 guideline states that RBC transfusion to maintain a hemoglobin of 10 g/dL may be reasonable (Class 2b) in patients with ACS and acute or chronic anemia who are not actively bleeding."
+      },
+      {
+        domain: "Lipid Management",
+        stem: "A 58-year-old woman hospitalized for STEMI is started on atorvastatin 80 mg daily; her baseline LDL-C is 148 mg/dL. Six weeks later on maximally tolerated statin, her LDL-C is 78 mg/dL. What is the 2025 Class 1 next step?",
+        options: [
+          "Add a non-statin agent (ezetimibe, PCSK9 mAb, inclisiran, or bempedoic acid)",
+          "Continue atorvastatin monotherapy because LDL-C is below 100 mg/dL",
+          "Switch atorvastatin 80 mg to simvastatin 40 mg plus omega-3 esters",
+          "Wait 12 months before repeating lipids or adding non-statin therapy"
+        ],
+        answer: 0,
+        rationale: "High-intensity statin is Class 1 for all ACS patients (with option for concurrent ezetimibe at index admission). If LDL-C remains ≥70 mg/dL on maximally tolerated statin, adding a non-statin lipid-lowering agent is Class 1."
+      },
+      {
+        domain: "Lipid Management",
+        stem: "A 61-year-old man post-NSTEMI on rosuvastatin 40 mg daily has a 6-week fasting LDL-C of 62 mg/dL (between 55 and 69 mg/dL). What does the 2025 ACC/AHA ACS Guideline advise?",
+        options: [
+          "Reasonable (Class 2a) to further intensify therapy with a non-statin agent",
+          "Reduce rosuvastatin dose by half because LDL-C is already below 70 mg/dL",
+          "Adding ezetimibe is Class 3 No Benefit once LDL-C is under 70 mg/dL",
+          "Discontinue lipid monitoring permanently after achieving LDL-C <70 mg/dL"
+        ],
+        answer: 0,
+        rationale: "In very high-risk post-ACS patients already on maximally tolerated statin, further intensifying lipid-lowering therapy with a non-statin agent is reasonable (Class 2a) when LDL-C is 55 to <70 mg/dL (targeting <55 mg/dL)."
+      },
+      {
+        domain: "Procedural Access",
+        stem: "In patients with STEMI or NSTE-ACS undergoing coronary angiography and PCI, which vascular access site carries a Class 1 preference in the 2025 ACC/AHA Guideline?",
+        options: [
+          "Radial approach over femoral approach to reduce bleeding and mortality",
+          "Femoral approach over radial approach to shorten door-to-balloon time",
+          "Brachial cutdown approach over radial access in elderly female patients",
+          "Routine dual femoral access for all single-vessel NSTE-ACS interventions"
+        ],
+        answer: 0,
+        rationale: "The radial approach is preferred over the femoral approach (Class 1, LOE A) in ACS patients undergoing PCI to reduce major bleeding, vascular access-site complications, and all-cause mortality."
+      },
+      {
+        domain: "NSTE-ACS Invasive Timing",
+        stem: "A 67-year-old man with NSTEMI has recurrent severe chest pain refractory to IV nitroglycerin, dynamic ST depressions, and non-sustained ventricular tachycardia. What is the recommended timing of coronary angiography?",
+        options: [
+          "Immediate invasive strategy (<2 hours) regardless of troponin trend",
+          "Early invasive strategy within 24 hours after medical stabilization",
+          "Delayed invasive strategy within 72 hours after stress echocardiography",
+          "Selective ischemia-guided strategy with outpatient nuclear stress test"
+        ],
+        answer: 0,
+        rationale: "Very high-risk NSTE-ACS features (refractory angina, hemodynamic instability/shock, acute heart failure, life-threatening arrhythmias, or mechanical complications) mandate an immediate invasive strategy (<2 hours)."
+      },
+      {
+        domain: "NSTE-ACS Risk Stratification",
+        stem: "A 55-year-old woman with low-risk NSTE-ACS (GRACE score 85, no ongoing angina, normal LVEF, minimal troponin rise) is hemodynamically stable. Which diagnostic pathway is supported by the 2025 guideline?",
+        options: [
+          "Either a routine invasive or selective invasive approach with risk testing",
+          "Mandatory immediate (<2 hours) emergent cardiac catheterization",
+          "Fibrinolytic therapy with tenecteplase followed by routine angiography",
+          "Discharge directly from the ED without any cardiac risk stratification"
+        ],
+        answer: 0,
+        rationale: "In low-risk NSTE-ACS, either a routine invasive or selective invasive approach with further noninvasive risk stratification is recommended (Class 1), whereas intermediate- or high-risk NSTE-ACS warrants an in-hospital invasive approach (Class 1)."
+      },
+      {
+        domain: "STEMI Reperfusion Timing",
+        stem: "A 60-year-old man presents to a non-PCI-capable rural ED with anterior STEMI (symptom onset 90 minutes ago). Estimated transfer time from first medical contact (FMC) to device activation at the nearest PCI center is 150 minutes. What is indicated?",
+        options: [
+          "Administer fibrinolytic therapy within 30 minutes if no contraindications",
+          "Transfer for primary PCI despite FMC-to-device time exceeding 120 minutes",
+          "Administer glycoprotein IIb/IIIa inhibitor alone and transfer in 6 hours",
+          "Defer reperfusion because symptom duration is already over 60 minutes"
+        ],
+        answer: 0,
+        rationale: "When anticipated FMC-to-device time exceeds 120 minutes in a STEMI patient presenting within 12 hours of symptom onset without contraindications, immediate fibrinolytic therapy (goal door-to-needle ≤30 min) is Class 1, followed by transfer for early angiography (2–24 hours)."
+      },
+      {
+        domain: "Post-Fibrinolysis PCI",
+        stem: "Following successful fibrinolytic therapy (ST resolution >50%, pain resolved) in a 57-year-old man transferred to a PCI-capable center, what is the optimal timing window for routine coronary angiography (pharmacoinvasive strategy)?",
+        options: [
+          "Perform routine angiography between 2 and 24 hours after fibrinolysis",
+          "Perform immediate PCI within 30 minutes of lytic bolus in all cases",
+          "Delay angiography for 7 days to eliminate bleeding complications",
+          "Avoid angiography completely unless recurrent ST elevation occurs"
+        ],
+        answer: 0,
+        rationale: "After successful fibrinolysis, a pharmacoinvasive strategy with routine angiography between 2 and 24 hours is Class 1 (if fibrinolysis fails, immediate rescue PCI is Class 1)."
+      },
+      {
+        domain: "GI Bleeding Prevention",
+        stem: "A 76-year-old man with prior peptic ulcer disease undergoes PCI for NSTEMI and is discharged on aspirin plus ticagrelor. Which gastroprotective medication is Class 1 recommended?",
+        options: [
+          "Proton pump inhibitor (PPI) therapy throughout dual antiplatelet therapy",
+          "H2-receptor antagonist only because PPIs completely block ticagrelor",
+          "Oral sucralfate four times daily in place of acid suppression therapy",
+          "No gastroprotection unless hemoglobin drops below 10 g/dL at follow-up"
+        ],
+        answer: 0,
+        rationale: "A PPI is Class 1 recommended in ACS patients on DAPT who are at elevated risk for GI bleeding (age ≥65, prior GI bleed/ulcer, concurrent OAC/steroids/NSAIDs). Note: omeprazole/esomeprazole should be avoided specifically with clopidogrel (use pantoprazole)."
+      },
+      {
+        domain: "Secondary Prevention",
+        stem: "A 56-year-old man post-STEMI (LVEF 52%) is on optimal DAPT, high-intensity statin, and beta-blocker. What is the 2025 ACC/AHA Guideline position on low-dose colchicine (0.5 mg daily) for secondary prevention?",
+        options: [
+          "Low-dose colchicine may be reasonable (Class 2b) to reduce recurrent MACE",
+          "Low-dose colchicine is Class 1 mandatory for every ACS discharge",
+          "Colchicine is Class 3 Harm in all patients with coronary artery disease",
+          "High-dose colchicine 1.8 mg daily is preferred for 30 days post-MI"
+        ],
+        answer: 0,
+        rationale: "Supported by COLCOT and LoDoCo2 (while weighing CLEAR-SYNERGY), low-dose colchicine 0.5 mg daily may be reasonable (Class 2b) in selected post-ACS patients to reduce recurrent cardiovascular events, avoiding use in severe CKD."
+      },
+      {
+        domain: "Oxygen Therapy",
+        stem: "A 61-year-old woman presents with uncomplicated NSTEMI, normal respiratory effort, and room-air pulse oximetry (SpO₂) of 95%. What is the guideline recommendation regarding supplemental oxygen?",
+        options: [
+          "Do not administer routine supplemental oxygen when SpO₂ is ≥90%",
+          "Administer 4 L/min nasal oxygen routinely to maximize myocardial delivery",
+          "Administer high-flow oxygen to maintain SpO₂ strictly at 100%",
+          "Use non-invasive positive-pressure ventilation for all NSTEMI admissions"
+        ],
+        answer: 0,
+        rationale: "Based on DETO2X-AMI and AVOID, routine supplemental oxygen in normoxemic ACS patients (SpO₂ ≥90%) offers no benefit and may cause coronary vasoconstriction (Class 3 No Benefit)."
+      },
+      {
+        domain: "Mechanical Complications",
+        stem: "Four days after a late-presenting inferior STEMI, a 71-year-old man suddenly develops severe pulmonary edema, BP 74/42 mmHg, and a new harsh holosystolic murmur radiating to the axilla. Bedside echo confirms papillary muscle rupture. What is definitive management?",
+        options: [
+          "Urgent surgical mitral valve repair/replacement with temporary MCS bridge",
+          "Immediate systemic thrombolysis to restore papillary muscle perfusion",
+          "High-dose IV beta-blocker infusion to reduce regurgitant orifice area",
+          "Deferred elective mitral valve surgery after 6 weeks of scar healing"
+        ],
+        answer: 0,
+        rationale: "Acute papillary muscle rupture causing severe mitral regurgitation and cardiogenic shock is a surgical emergency requiring urgent mitral valve surgery (usually replacement), stabilized preoperatively with afterload reduction/MCS (IABP or Impella/VA-ECMO)."
+      },
+      {
+        domain: "Anticoagulation in PCI",
+        stem: "A 63-year-old woman with NSTEMI undergoing primary radial PCI has a history of heparin-induced thrombocytopenia (HIT) 2 months ago. Which intraprocedural parenteral anticoagulant is recommended?",
+        options: [
+          "Intravenous bivalirudin infusion as an alternative to unfractionated heparin",
+          "Subcutaneous fondaparinux monotherapy without supplemental heparin",
+          "Standard unfractionated heparin bolus plus IV hydrocortisone prophylaxis",
+          "Oral apixaban 10 mg loading dose 1 hour before coronary catheterization"
+        ],
+        answer: 0,
+        rationale: "Bivalirudin is the preferred intraprocedural anticoagulant in patients with a history of HIT (Class 1). Fondaparinux monotherapy during PCI is Class 3 Harm due to catheter thrombosis."
+      },
+      {
+        domain: "Beta-Blockers & LVEF",
+        stem: "A 58-year-old man presents with anterior STEMI, HR 96 bpm, BP 134/82 mmHg, Killip Class I (no rales or shock). After primary PCI, his LVEF is 36%. When should oral beta-blocker therapy be initiated?",
+        options: [
+          "Initiate oral beta-blocker within 24 hours once hemodynamically stable",
+          "Administer high-dose IV metoprolol immediately to every Killip III patient",
+          "Defer beta-blocker initiation for 6 weeks until repeat echocardiography",
+          "Avoid beta-blockers permanently when LVEF is below 40% post-STEMI"
+        ],
+        answer: 0,
+        rationale: "Oral beta-blockers should be initiated within 24 hours in ACS patients without signs of acute HF, low output, cardiogenic shock, or AV block (Class 1), and are strongly indicated long-term especially when LVEF ≤40%."
+      },
+      {
+        domain: "MRA Therapy Post-MI",
+        stem: "A 64-year-old woman post-anterior STEMI has an LVEF of 35% and mild symptomatic heart failure on lisinopril and carvedilol (eGFR 62 mL/min, K+ 4.3 mEq/L). Which medication carries a Class 1 mortality benefit?",
+        options: [
+          "Mineralocorticoid receptor antagonist (eplerenone or spironolactone)",
+          "Oral digoxin 0.25 mg daily to enhance post-infarction contractility",
+          "Oral ivabradine 7.5 mg BID before optimizing beta-blocker dosing",
+          "Oral diltiazem extended-release to reduce myocardial oxygen demand"
+        ],
+        answer: 0,
+        rationale: "Based on EPHESUS, an MRA (eplerenone or spironolactone) is Class 1 recommended in post-MI patients with LVEF ≤40% and symptomatic HF or diabetes who are already receiving an ACEi/ARB and beta-blocker, provided eGFR >30 and K+ <5.0."
+      },
+      {
+        domain: "Cardiac Rehabilitation",
+        stem: "A 68-year-old man living 50 miles from the nearest hospital is discharged after uncomplicated NSTEMI PCI. What does the 2025 ACC/AHA ACS Guideline recommend regarding cardiac rehabilitation?",
+        options: [
+          "Refer to outpatient cardiac rehab, or a home-based program if unavailable",
+          "Avoid exercise training for 6 months after any drug-eluting stent",
+          "Limit cardiac rehab referrals exclusively to patients with LVEF <40%",
+          "Substitute unsupervised high-intensity interval training at discharge"
+        ],
+        answer: 0,
+        rationale: "Referral to a comprehensive outpatient cardiac rehabilitation program is Class 1 post-ACS; the 2025 guideline specifically highlights home-based cardiac rehabilitation as a valid Class 2a alternative when center-based programs are inaccessible."
+      },
+      {
+        domain: "Lipid Follow-Up Timing",
+        stem: "After starting high-intensity statin therapy during hospitalization for ACS, when does the 2025 ACC/AHA Guideline recommend obtaining a fasting lipid panel to assess efficacy and need for non-statin intensification?",
+        options: [
+          "4 to 8 weeks after initiating or adjusting lipid-lowering therapy",
+          "6 to 12 months after hospital discharge at the annual checkup",
+          "At 48 hours post-PCI prior to discharge from the coronary care unit",
+          "Only if the patient develops recurrent angina or elevated CK levels"
+        ],
+        answer: 0,
+        rationale: "Obtaining a fasting lipid panel 4 to 8 weeks after initiating or adjusting lipid-lowering therapy is Class 1 to confirm adherence, verify ≥50% LDL-C reduction, and promptly add non-statin therapy if LDL-C remains ≥70 mg/dL (or 55–69 mg/dL)."
+      },
+      {
+        domain: "Left Ventricular Thrombus",
+        stem: "A 57-year-old man with delayed-presentation anterior STEMI has apical akinesis and a mobile mural LV thrombus on contrast echocardiography. What is the recommended anticoagulation duration and follow-up?",
+        options: [
+          "Oral anticoagulation for at least 3 months with repeat imaging to confirm resolution",
+          "Dual antiplatelet therapy alone without anticoagulation for 12 months",
+          "Two weeks of prophylactic enoxaparin followed by aspirin monotherapy",
+          "Immediate surgical ventriculotomy to excise every uncomplicated LV thrombus"
+        ],
+        answer: 0,
+        rationale: "Oral anticoagulation (VKA or DOAC) for at least 3 months is recommended for post-MI LV thrombus, followed by repeat cardiac imaging (echocardiography or CMR) to assess thrombus resolution before considering cessation."
+      },
+      {
+        domain: "MINOCA Evaluation",
+        stem: "A 51-year-old woman presents with NSTEMI (troponin rise, dynamic T-wave inversions), but coronary angiography shows no obstructive stenosis (≥50%). Which diagnostic modality best differentiates myocarditis, Takotsubo, and true ischemic MINOCA?",
+        options: [
+          "Cardiac magnetic resonance (CMR) with late gadolinium enhancement",
+          "Repeat routine transthoracic echocardiography after 6 months",
+          "Coronary artery calcium scoring via non-contrast chest CT",
+          "Exercise treadmill stress ECG testing prior to hospital discharge"
+        ],
+        answer: 0,
+        rationale: "Cardiac MRI (CMR) with T2 mapping and late gadolinium enhancement is the key Class 1/2a diagnostic tool in MINOCA to distinguish subendocardial/transmural MI from myocarditis or Takotsubo cardiomyopathy and guide targeted therapy."
+      },
+      {
+        domain: "NSAID Contraindication",
+        stem: "A 66-year-old man admitted with NSTEMI takes celecoxib 200 mg daily for knee osteoarthritis and asks if he can continue it post-PCI. What is the 2025 ACC/AHA ACS Guideline recommendation?",
+        options: [
+          "Discontinue all non-aspirin NSAIDs (Class 3 Harm) due to MACE and rupture risk",
+          "Continue celecoxib because COX-2 inhibitors do not impair aspirin binding",
+          "Switch celecoxib to high-dose ibuprofen 800 mg TID for safer analgesia",
+          "Continue NSAIDs freely as long as a proton pump inhibitor is prescribed"
+        ],
+        answer: 0,
+        rationale: "Both non-selective NSAIDs and selective COX-2 inhibitors increase the risk of mortality, reinfarction, hypertension, heart failure, and myocardial rupture in ACS patients and must be discontinued (Class 3 Harm)."
+      },
+      {
+        domain: "Multivessel NSTE-ACS",
+        stem: "A 68-year-old man with diabetes and NSTEMI (LVEF 42%) has complex 3-vessel disease (SYNTAX score 36) involving the proximal LAD and distal left main. How does the 2025 guideline direct revascularization modality selection?",
+        options: [
+          "Heart Team evaluation favoring CABG over multivessel PCI given CAD complexity",
+          "Immediate ad-hoc 3-vessel PCI during diagnostic angiography in all diabetics",
+          "Optimal medical therapy alone because CABG is contraindicated in NSTEMI",
+          "Culprit-only balloon angioplasty without stenting or surgical consultation"
+        ],
+        answer: 0,
+        rationale: "In multivessel NSTE-ACS, the choice between CABG and multivessel PCI should be guided by a multidisciplinary Heart Team based on anatomical complexity (SYNTAX score), diabetes, and comorbidities—favoring CABG in diabetic patients with complex 3-vessel/left main disease."
+      }
+    ];
+
+    let questions = [];
+    let currentIdx = 0;
+    let userAnswers = [];
+
+    function buildShuffledQuestions() {
+      return RAW_QUESTIONS.map(q => {
+        const indexed = q.options.map((text, idx) => ({ text, isCorrect: idx === q.answer }));
+        for (let i = indexed.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [indexed[i], indexed[j]] = [indexed[j], indexed[i]];
+        }
+        return {
+          domain: q.domain,
+          stem: q.stem,
+          options: indexed.map(item => item.text),
+          answer: indexed.findIndex(item => item.isCorrect),
+          rationale: q.rationale
+        };
+      });
+    }
+
+    function initQuiz() {
+      questions = buildShuffledQuestions();
+      currentIdx = 0;
+      userAnswers = new Array(questions.length).fill(null);
+      document.getElementById('completionBanner').classList.add('hidden');
+      renderAll();
+    }
+
+    function renderAll() {
+      renderHeaderStats();
+      renderNavigator();
+      renderQuestion();
+    }
+
+    function renderHeaderStats() {
+      let score = 0;
+      let answered = 0;
+      userAnswers.forEach((ans, idx) => {
+        if (ans !== null) {
+          answered++;
+          if (ans === questions[idx].answer) score++;
+        }
+      });
+      document.getElementById('scoreCounter').textContent = `${score} / ${questions.length}`;
+      document.getElementById('answeredCounter').textContent = `${answered} / ${questions.length} Answered`;
+
+      const banner = document.getElementById('completionBanner');
+      if (answered === questions.length) {
+        const pct = Math.round((score / questions.length) * 100);
+        document.getElementById('finalScoreTitle').textContent = `Final Score: ${score} / ${questions.length} (${pct}%)`;
+        document.getElementById('finalScoreMsg').textContent = pct >= 75
+          ? 'Board pass benchmark achieved (≥75%). Excellent mastery of AHA/ACC 2025 ACS guidelines.'
+          : 'Review the red navigator items and 2025 Pearls tab to reach the ≥75% board benchmark.';
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    function renderNavigator() {
+      const nav = document.getElementById('questionNav');
+      nav.innerHTML = '';
+      questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = idx + 1;
+        let cls = 'w-8 h-8 rounded-lg text-xs font-extrabold shrink-0 transition flex items-center justify-center border ';
+        if (userAnswers[idx] === null) {
+          cls += 'bg-[#09090B] border-[#27272A] text-zinc-300 hover:border-zinc-500 ';
+        } else if (userAnswers[idx] === q.answer) {
+          cls += 'bg-emerald-600/25 border-emerald-500 text-emerald-300 ';
+        } else {
+          cls += 'bg-rose-600/25 border-rose-500 text-rose-300 ';
+        }
+        if (idx === currentIdx) cls += 'ring-2 ring-[#FACC15] border-[#FACC15] ';
+        btn.className = cls;
+        btn.onclick = () => { currentIdx = idx; renderAll(); };
+        nav.appendChild(btn);
+      });
+      const activeBtn = nav.children[currentIdx];
+      if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    function renderQuestion() {
+      const q = questions[currentIdx];
+      document.getElementById('qDomain').textContent = q.domain;
+      document.getElementById('qCounter').textContent = `Case ${currentIdx + 1} of ${questions.length}`;
+      document.getElementById('qStem').textContent = q.stem;
+
+      const list = document.getElementById('optionsList');
+      list.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      const chosen = userAnswers[currentIdx];
+
+      q.options.forEach((optText, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        let cardCls = 'bg-[#09090B] border-[#27272A] hover:border-[#FACC15]/70 text-zinc-100';
+        let badgeCls = 'bg-[#18181B] border border-[#27272A] text-zinc-300';
+
+        if (chosen !== null) {
+          if (i === q.answer) {
+            cardCls = 'bg-emerald-950/50 border-emerald-500 text-emerald-100';
+            badgeCls = 'bg-emerald-500 text-black';
+          } else if (i === chosen && i !== q.answer) {
+            cardCls = 'bg-rose-950/50 border-rose-500 text-rose-100';
+            badgeCls = 'bg-rose-500 text-white';
+          } else {
+            cardCls = 'bg-[#09090B] border-[#27272A] opacity-45 text-zinc-400';
+          }
+        }
+
+        btn.className = `w-full text-left p-3.5 sm:p-4 rounded-xl border transition flex items-start gap-3 ${cardCls}`;
+        btn.innerHTML = `
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${badgeCls}">${letters[i]}</span>
+          <span class="text-xs sm:text-sm font-medium leading-snug pt-0.5">${optText}</span>
+        `;
+        btn.onclick = () => selectAnswer(i);
+        list.appendChild(btn);
+      });
+
+      const ratBox = document.getElementById('rationaleBox');
+      if (chosen !== null) {
+        const isCorrect = chosen === q.answer;
+        ratBox.className = `mt-5 p-4 rounded-xl border text-xs sm:text-sm leading-relaxed ${
+          isCorrect ? 'bg-emerald-950/30 border-emerald-500/50 text-zinc-100' : 'bg-rose-950/30 border-rose-500/50 text-zinc-100'
+        }`;
+        ratBox.innerHTML = `
+          <div class="flex items-center flex-wrap gap-2 mb-2">
+            <span class="px-2 py-0.5 rounded bg-[#FACC15] text-black text-[10px] font-black uppercase tracking-wider">Resident Pearl</span>
+            <span class="font-extrabold ${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+              ${isCorrect ? '✓ Correct Answer' : '✕ Incorrect — Correct Option: ' + letters[q.answer]}
+            </span>
+          </div>
+          <p class="text-zinc-200">${q.rationale}</p>
+        `;
+      } else {
+        ratBox.className = 'hidden';
+      }
+
+      document.getElementById('prevBtn').disabled = currentIdx === 0;
+      document.getElementById('nextBtn').disabled = currentIdx === questions.length - 1;
+    }
+
+    function selectAnswer(optIdx) {
+      if (userAnswers[currentIdx] !== null) return;
+      userAnswers[currentIdx] = optIdx;
+      renderAll();
+    }
+
+    function moveQuestion(delta) {
+      const next = currentIdx + delta;
+      if (next >= 0 && next < questions.length) {
+        currentIdx = next;
+        renderAll();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function switchTab(tabName) {
+      ['quiz', 'algorithms', 'pearls'].forEach(t => {
+        document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tabName);
+        const btn = document.getElementById(`tab-${t}`);
+        btn.className = t === tabName
+          ? 'py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition bg-[#FACC15] text-black'
+          : 'py-2 px-2 rounded-lg text-xs sm:text-sm font-bold transition text-zinc-400 hover:text-white';
+      });
+    }
+
+    function switchAlgoSub(sub) {
+      ['dapt', 'pci', 'lipids'].forEach(s => {
+        document.getElementById(`algo-${s}`).classList.toggle('hidden', s !== sub);
+        const btn = document.getElementById(`algoBtn-${s}`);
+        btn.className = s === sub
+          ? 'px-3.5 py-2 rounded-xl text-xs font-extrabold bg-[#FACC15] text-black shrink-0'
+          : 'px-3.5 py-2 rounded-xl text-xs font-bold bg-[#18181B] border border-[#27272A] text-zinc-300 shrink-0';
+      });
+    }
+
+    function openResetModal() { document.getElementById('resetModal').classList.remove('hidden'); }
+    function closeResetModal() { document.getElementById('resetModal').classList.add('hidden'); }
+    function confirmReset() { closeResetModal(); initQuiz(); }
+
+    function downloadStudentHtml() {
+      try {
+        const clone = document.documentElement.cloneNode(true);
+        const dlBtn = clone.querySelector('#downloadBtn');
+        if (dlBtn) dlBtn.remove();
+        const modal = clone.querySelector('#resetModal');
+        if (modal) modal.classList.add('hidden');
+        const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
+        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Apex_Academy_AHA_2025_ACS_Quiz.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('Export failed:', err);
+      }
+    }
+
+    window.onload = initQuiz;
+  </script>
+</body>
+</html>

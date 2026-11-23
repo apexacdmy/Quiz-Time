@@ -88,13 +88,13 @@
             <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 text-center sm:text-left">
                 <div class="space-y-2 max-w-xl">
                     <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-yellow-400/15 border border-yellow-400/40 text-yellow-400 text-[11px] font-black uppercase tracking-wider">
-                        <span>⚡ Interactive Case-Based Learning</span>
+                        <span>⚡ Interactive Case-Based Board Learning</span>
                     </div>
                     <h2 class="text-xl sm:text-3xl font-black tracking-tight text-white leading-tight">
                         Master Clinical Cardiology Guidelines
                     </h2>
                     <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                        Select a guideline exam below to launch 20 high-yield clinical vignettes, interactive decision flowcharts, evidence-based drug dosing tables, and rapid-fire resident pearls.
+                        Select a guideline exam below to launch 20–30 high-yield board-level clinical vignettes, interactive decision algorithms, evidence-based drug dosing tables, and rapid-fire resident pearls.
                     </p>
                 </div>
 
@@ -116,24 +116,185 @@
             <!-- Search & Society Filter Bar -->
             <div class="mt-5 pt-4 border-t border-zinc-800 flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
                 <div class="relative flex-1">
-                    <input type="text" id="quiz-search" oninput="filterQuizzes()" placeholder="Search guideline quizzes (e.g., Heart Failure, Perioperative, ESC, AHA)..." class="w-full bg-zinc-900 text-white placeholder-zinc-400 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 border border-zinc-700 focus:outline-none focus:border-yellow-400 font-medium">
+                    <input type="text" id="quiz-search" oninput="filterQuizzes()" placeholder="Search quizzes (e.g., ACS, PE, Hypertension, AF, Heart Failure, Perioperative)..." class="w-full bg-zinc-900 text-white placeholder-zinc-400 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 border border-zinc-700 focus:outline-none focus:border-yellow-400 font-medium">
                 </div>
                 <div class="flex items-center gap-1.5">
-                    <button onclick="setFilter('all')" id="filter-all" class="filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-black bg-yellow-400 text-zinc-950 transition">All (2)</button>
-                    <button onclick="setFilter('ESC')" id="filter-ESC" class="filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-bold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:border-zinc-600 transition">ESC</button>
-                    <button onclick="setFilter('AHA')" id="filter-AHA" class="filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-bold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:border-zinc-600 transition">AHA/ACC</button>
+                    <button onclick="setFilter('all')" id="filter-all" class="filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-black bg-yellow-400 text-zinc-950 transition">All (6)</button>
+                    <button onclick="setFilter('ESC')" id="filter-ESC" class="filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-bold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:border-zinc-600 transition">ESC (2)</button>
+                    <button onclick="setFilter('AHA')" id="filter-AHA" class="filter-btn flex-1 sm:flex-initial px-3 py-2 rounded-xl text-xs font-bold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:border-zinc-600 transition">AHA/ACC (4)</button>
                 </div>
             </div>
         </div>
 
+        <!-- Quiz Grid -->
         <div id="quiz-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 fade-in">
 
-            <!-- QUIZ CARD 2 (NEWEST): 2026 ESC Heart Failure Guidelines -->
-            <div class="quiz-card bg-white rounded-2xl border-2 border-zinc-900 overflow-hidden flex flex-col justify-between shadow-sm" data-society="ESC" data-title="2026 ESC Guidelines for the Management of Heart Failure HFrEF HFpEF">
+            <!-- QUIZ CARD 6 (NEW): 2026 ACC/AHA Acute Pulmonary Embolism -->
+            <div class="quiz-card bg-white rounded-2xl border-2 border-zinc-900 overflow-hidden flex flex-col justify-between shadow-sm" data-society="AHA" data-title="2026 ACC/AHA Acute Pulmonary Embolism PE PERT VA-ECMO YEARS PERC CTEPH">
                 <div>
                     <div class="bg-zinc-950 text-white px-4 sm:px-5 py-3.5 border-b-2 border-zinc-900 flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 rounded bg-yellow-400 text-zinc-950 font-black text-[10px] uppercase tracking-wider">NEW • QUIZ #02</span>
+                            <span class="px-2 py-0.5 rounded bg-yellow-400 text-zinc-950 font-black text-[10px] uppercase tracking-wider">NEW • QUIZ #06</span>
+                            <span class="px-2 py-0.5 rounded bg-zinc-800 text-yellow-400 border border-zinc-700 font-mono font-bold text-[10px]">ACC/AHA 2026</span>
+                        </div>
+                        <span class="text-[11px] font-mono font-bold text-yellow-400">30 MCQs</span>
+                    </div>
+
+                    <div class="p-4 sm:p-5 space-y-3">
+                        <h3 class="text-base sm:text-lg font-black text-zinc-950 leading-snug">
+                            2026 ACC/AHA Multisociety Guideline for Acute Pulmonary Embolism
+                        </h3>
+                        <p class="text-xs text-zinc-600 leading-relaxed">
+                            Master the new A–E clinical severity categories (physiology over anatomy), normotensive shock (D2), PERC &amp; YEARS pathways, PERT activation thresholds (≥C3), catheter-directed &amp; mechanical thrombectomy, VA-ECMO in E2, pregnancy/cancer PE, and 1-year CTEPH surveillance.
+                        </p>
+
+                        <!-- Feature Chips -->
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ 30 Board Vignettes</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ A–E Severity Matrix</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ PERT &amp; VA-ECMO</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 sm:p-5 pt-3 bg-zinc-50 border-t border-zinc-200 flex flex-col sm:flex-row gap-2">
+                    <a href="acc_2026_pe_quiz.html" class="flex-1 py-3 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-yellow-400 font-black text-xs sm:text-sm text-center flex items-center justify-center gap-2 shadow-sm transition active:scale-95">
+                        <span>Start ACC 2026 PE Quiz</span>
+                        <span>&rarr;</span>
+                    </a>
+                    <a href="https://doi.org/10.1016/j.jacc.2025.12.001" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-300 font-bold text-xs text-center flex items-center justify-center gap-1 transition">
+                        <span>Guideline</span>
+                        <span>&nearr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- QUIZ CARD 5 (NEW): 2025 AHA/ACC Acute Coronary Syndromes -->
+            <div class="quiz-card bg-white rounded-2xl border-2 border-zinc-900 overflow-hidden flex flex-col justify-between shadow-sm" data-society="AHA" data-title="2025 AHA/ACC Acute Coronary Syndromes ACS STEMI NSTEMI PCI DAPT Impella IVUS OCT MINT">
+                <div>
+                    <div class="bg-zinc-950 text-white px-4 sm:px-5 py-3.5 border-b-2 border-zinc-900 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded bg-yellow-400 text-zinc-950 font-black text-[10px] uppercase tracking-wider">NEW • QUIZ #05</span>
+                            <span class="px-2 py-0.5 rounded bg-zinc-800 text-yellow-400 border border-zinc-700 font-mono font-bold text-[10px]">AHA/ACC 2025</span>
+                        </div>
+                        <span class="text-[11px] font-mono font-bold text-yellow-400">30 MCQs</span>
+                    </div>
+
+                    <div class="p-4 sm:p-5 space-y-3">
+                        <h3 class="text-base sm:text-lg font-black text-zinc-950 leading-snug">
+                            2025 AHA/ACC Guideline for the Management of Acute Coronary Syndromes
+                        </h3>
+                        <p class="text-xs text-zinc-600 leading-relaxed">
+                            Challenge yourself on Class 1 IVUS/OCT complex PCI guidance, ≥1-month ticagrelor monotherapy (Class 1), DanGer Shock microaxial flow pumps (Class 2a), CULPRIT-SHOCK culprit-only PCI, MINT transfusion thresholds (Hb ≥10 g/dL), lipid intensification (&lt;70 / 55–69), and MINOCA CMR.
+                        </p>
+
+                        <!-- Feature Chips -->
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ 30 Board Vignettes</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ DAPT &amp; Shock MCS</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ IVUS/OCT Class 1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 sm:p-5 pt-3 bg-zinc-50 border-t border-zinc-200 flex flex-col sm:flex-row gap-2">
+                    <a href="aha_2025_acs_quiz.html" class="flex-1 py-3 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-yellow-400 font-black text-xs sm:text-sm text-center flex items-center justify-center gap-2 shadow-sm transition active:scale-95">
+                        <span>Start AHA 2025 ACS Quiz</span>
+                        <span>&rarr;</span>
+                    </a>
+                    <a href="https://doi.org/10.1161/CIR.0000000000001309" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-300 font-bold text-xs text-center flex items-center justify-center gap-1 transition">
+                        <span>Guideline</span>
+                        <span>&nearr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- QUIZ CARD 4 (NEW): 2025 AHA/ACC High Blood Pressure / Hypertension -->
+            <div class="quiz-card bg-white rounded-2xl border-2 border-zinc-900 overflow-hidden flex flex-col justify-between shadow-sm" data-society="AHA" data-title="2025 AHA/ACC High Blood Pressure Hypertension HTN PREVENT Primary Aldosteronism Renal Denervation">
+                <div>
+                    <div class="bg-zinc-950 text-white px-4 sm:px-5 py-3.5 border-b-2 border-zinc-900 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded bg-yellow-400 text-zinc-950 font-black text-[10px] uppercase tracking-wider">NEW • QUIZ #04</span>
+                            <span class="px-2 py-0.5 rounded bg-zinc-800 text-yellow-400 border border-zinc-700 font-mono font-bold text-[10px]">AHA/ACC 2025</span>
+                        </div>
+                        <span class="text-[11px] font-mono font-bold text-yellow-400">30 MCQs</span>
+                    </div>
+
+                    <div class="p-4 sm:p-5 space-y-3">
+                        <h3 class="text-base sm:text-lg font-black text-zinc-950 leading-snug">
+                            2025 AHA/ACC Multisociety High Blood Pressure Guideline
+                        </h3>
+                        <p class="text-xs text-zinc-600 leading-relaxed">
+                            Test race-free PREVENT ≥7.5% initiation thresholds, removal of race-based drug selection, expanded normokalemic primary aldosteronism screening, routine UACR, "severe hypertension" replacing urgency, renal denervation (Class 2b), CHAP pregnancy targets, and dementia prevention.
+                        </p>
+
+                        <!-- Feature Chips -->
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ 30 Board Vignettes</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ PREVENT &amp; Targets</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ Resistant HTN &amp; PA</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 sm:p-5 pt-3 bg-zinc-50 border-t border-zinc-200 flex flex-col sm:flex-row gap-2">
+                    <a href="aha_2025_htn_quiz.html" class="flex-1 py-3 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-yellow-400 font-black text-xs sm:text-sm text-center flex items-center justify-center gap-2 shadow-sm transition active:scale-95">
+                        <span>Start AHA 2025 HTN Quiz</span>
+                        <span>&rarr;</span>
+                    </a>
+                    <a href="https://doi.org/10.1161/CIR.0000000000001356" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-300 font-bold text-xs text-center flex items-center justify-center gap-1 transition">
+                        <span>Guideline</span>
+                        <span>&nearr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- QUIZ CARD 3 (NEW): 2024 ESC Atrial Fibrillation -->
+            <div class="quiz-card bg-white rounded-2xl border-2 border-zinc-900 overflow-hidden flex flex-col justify-between shadow-sm" data-society="ESC" data-title="2024 ESC/EACTS Guidelines for the Management of Atrial Fibrillation AF-CARE CHA2DS2-VA DOAC Ablation LAAOS">
+                <div>
+                    <div class="bg-zinc-950 text-white px-4 sm:px-5 py-3.5 border-b-2 border-zinc-900 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded bg-yellow-400 text-zinc-950 font-black text-[10px] uppercase tracking-wider">NEW • QUIZ #03</span>
+                            <span class="px-2 py-0.5 rounded bg-zinc-800 text-yellow-400 border border-zinc-700 font-mono font-bold text-[10px]">ESC 2024</span>
+                        </div>
+                        <span class="text-[11px] font-mono font-bold text-yellow-400">30 MCQs</span>
+                    </div>
+
+                    <div class="p-4 sm:p-5 space-y-3">
+                        <h3 class="text-base sm:text-lg font-black text-zinc-950 leading-snug">
+                            2024 ESC/EACTS Guidelines for the Management of Atrial Fibrillation
+                        </h3>
+                        <p class="text-xs text-zinc-600 leading-relaxed">
+                            Assess mastery of the AF-CARE pathway, sex-neutral CHA₂DS₂-VA scoring, shortened ≤24-hour cardioversion window, first-line paroxysmal catheter ablation (Class I), LAAOS III surgical LAAO adjuncts, FRAIL-AF &amp; subclinical AHRE, and breakthrough stroke management.
+                        </p>
+
+                        <!-- Feature Chips -->
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ 30 Board Vignettes</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ AF-CARE &amp; CHA₂DS₂-VA</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300">✓ DOAC Dosing Table</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 sm:p-5 pt-3 bg-zinc-50 border-t border-zinc-200 flex flex-col sm:flex-row gap-2">
+                    <a href="esc_2024_af_quiz.html" class="flex-1 py-3 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-yellow-400 font-black text-xs sm:text-sm text-center flex items-center justify-center gap-2 shadow-sm transition active:scale-95">
+                        <span>Start ESC 2024 AF Quiz</span>
+                        <span>&rarr;</span>
+                    </a>
+                    <a href="https://doi.org/10.1093/eurheartj/ehae176" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-300 font-bold text-xs text-center flex items-center justify-center gap-1 transition">
+                        <span>Guideline</span>
+                        <span>&nearr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- QUIZ CARD 2: 2026 ESC Heart Failure Guidelines -->
+            <div class="quiz-card bg-white rounded-2xl border-2 border-zinc-900 overflow-hidden flex flex-col justify-between shadow-sm" data-society="ESC" data-title="2026 ESC Guidelines for the Management of Heart Failure HFrEF HFpEF Finerenone SGLT2i">
+                <div>
+                    <div class="bg-zinc-950 text-white px-4 sm:px-5 py-3.5 border-b-2 border-zinc-900 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded bg-yellow-400 text-zinc-950 font-black text-[10px] uppercase tracking-wider">QUIZ #02</span>
                             <span class="px-2 py-0.5 rounded bg-zinc-800 text-yellow-400 border border-zinc-700 font-mono font-bold text-[10px]">ESC 2026</span>
                         </div>
                         <span class="text-[11px] font-mono font-bold text-zinc-400">20 MCQs</span>
@@ -169,7 +330,7 @@
             </div>
 
             <!-- QUIZ CARD 1: 2026 AHA/ACC Perioperative CV Management -->
-            <div class="quiz-card bg-white rounded-2xl border-2 border-zinc-900 overflow-hidden flex flex-col justify-between shadow-sm" data-society="AHA" data-title="2026 AHA/ACC Perioperative Cardiovascular Management for Noncardiac Surgery">
+            <div class="quiz-card bg-white rounded-2xl border-2 border-zinc-900 overflow-hidden flex flex-col justify-between shadow-sm" data-society="AHA" data-title="2026 AHA/ACC Perioperative Cardiovascular Management for Noncardiac Surgery MINS DOAC">
                 <div>
                     <div class="bg-zinc-950 text-white px-4 sm:px-5 py-3.5 border-b-2 border-zinc-900 flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
@@ -208,6 +369,13 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- Empty Search State -->
+        <div id="empty-state" class="hidden bg-white rounded-2xl border-2 border-zinc-900 p-8 text-center shadow-sm">
+            <p class="text-sm font-black text-zinc-950">No matching guideline quizzes found.</p>
+            <p class="text-xs text-zinc-600 mt-1">Try clearing your search or switching back to "All (6)".</p>
+            <button onclick="resetFilters()" class="mt-3 px-4 py-2 rounded-xl bg-zinc-950 text-yellow-400 text-xs font-black hover:bg-zinc-800 transition">Show All Quizzes</button>
         </div>
 
         <!-- Value Proposition Banner -->
@@ -273,29 +441,47 @@
         function filterQuizzes() {
             const query = document.getElementById('quiz-search').value.toLowerCase().trim();
             const cards = document.querySelectorAll('.quiz-card');
+            let visibleCount = 0;
+
             cards.forEach(card => {
                 const society = card.getAttribute('data-society');
                 const title = card.getAttribute('data-title').toLowerCase();
                 const matchesSociety = (currentFilter === 'all' || society === currentFilter);
                 const matchesQuery = (!query || title.includes(query));
-                card.style.display = (matchesSociety && matchesQuery) ? 'flex' : 'none';
+                const show = matchesSociety && matchesQuery;
+                card.style.display = show ? 'flex' : 'none';
+                if (show) visibleCount++;
             });
+
+            const emptyState = document.getElementById('empty-state');
+            if (emptyState) {
+                emptyState.classList.toggle('hidden', visibleCount > 0);
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('quiz-search').value = '';
+            setFilter('all');
         }
 
         function downloadMenuHtml() {
-            const clone = document.documentElement.cloneNode(true);
-            const dlBtn = clone.querySelector('#download-menu-btn');
-            if (dlBtn) dlBtn.remove();
-            const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
-            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'index.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            try {
+                const clone = document.documentElement.cloneNode(true);
+                const dlBtn = clone.querySelector('#download-menu-btn');
+                if (dlBtn) dlBtn.remove();
+                const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
+                const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'index.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error('Download failed:', err);
+            }
         }
     </script>
 </body>

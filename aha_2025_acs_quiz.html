@@ -45,9 +45,11 @@
           <h1 class="text-xs sm:text-sm font-bold text-zinc-200 truncate mt-0.5">Acute Coronary Syndromes</h1>
         </div>
       </div>
-
-      <!-- Right: Live Score, One-Tap .HTML Export, Reset -->
+      <!-- Right: Back to Menu, Live Score, One-Tap .HTML Export, Reset -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <a href="index.html" title="Back to Quiz Hub Menu" class="px-2.5 py-2 rounded-lg bg-[#18181B] hover:bg-zinc-800 border border-[#FACC15]/60 hover:border-[#FACC15] text-[#FACC15] text-[11px] sm:text-xs font-extrabold transition flex items-center gap-1">
+          <span>←</span><span>Menu</span>
+        </a>
         <div class="px-2.5 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-center">
           <div class="text-[9px] font-bold uppercase tracking-wider text-zinc-400 leading-none">SCORE</div>
           <div id="scoreCounter" class="text-xs sm:text-sm font-black text-[#FACC15] leading-tight mt-0.5">0 / 30</div>
@@ -796,7 +798,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'Apex_Academy_AHA_2025_ACS_Quiz.html';
+        a.download = 'aha_2025_acs_quiz.html';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
